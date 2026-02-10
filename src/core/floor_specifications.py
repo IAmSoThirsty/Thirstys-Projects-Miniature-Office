@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 
 
 class ProgrammingLanguage(Enum):
-    """Programming Language Floors - One per language (35+ for complete civilizational coverage)"""
+    """Programming Language Floors - One per language (28 floors for complete civilizational coverage)"""
     # Core Systems Languages
     PYTHON = "python"
     RUST = "rust"
