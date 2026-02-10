@@ -1437,8 +1437,6 @@ CIVILIZATION LAYER: FINISHED
 
 def create_canonical_bundle() -> NonDesignCanonicalBundle:
     """Create a new canonical bundle with all 27 artifacts."""
-    from src.core.density_codex import get_core_laws
-    
     now = datetime.now()
     
     # I. Foundational Legitimacy Pack
