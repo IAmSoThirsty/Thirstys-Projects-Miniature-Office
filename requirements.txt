@@ -1,4 +1,4 @@
 flask==3.0.0
 flask-socketio==5.3.5
 python-socketio==5.10.0
-pillow==10.1.0
+pillow>=10.3.0
