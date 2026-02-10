@@ -17,6 +17,9 @@ from src.departments.department import Department, get_department_registry
 from src.core.mission import Task, DirectiveLevel, TaskState
 from src.tools.supply_store import get_supply_store, Tool, ToolMetadata, ToolTag
 from src.interfaces.contract import get_elevator_protocol, Contract, APIEndpoint, VersionBoundary
+from src.core.consigliere import get_consigliere, ExplanationType, TranslationType
+from src.core.head_of_security import get_head_of_security, ThreatLevel
+from src.core.floor_specifications import get_all_floors, get_floor_specification, ProgrammingLanguage
 
 
 app = Flask(__name__)
@@ -149,7 +152,20 @@ def api_index():
             'GET /api/contracts': 'List all contracts',
             'GET /api/departments': 'List all departments',
             'GET /api/audit/events': 'Get audit events',
-            'GET /api/supply-store': 'Get supply store inventory'
+            'GET /api/supply-store': 'Get supply store inventory',
+            'GET /api/consigliere': 'Get Consigliere state',
+            'POST /api/consigliere/explain': 'Request explanation from Consigliere',
+            'POST /api/consigliere/translate': 'Request translation from Consigliere',
+            'POST /api/consigliere/preview': 'Preview consequences',
+            'POST /api/consigliere/draft': 'Prepare draft directive',
+            'GET /api/security': 'Get Head of Security state',
+            'POST /api/security/grant': 'Grant permission',
+            'POST /api/security/revoke': 'Revoke permission',
+            'POST /api/security/audit': 'Trigger security audit',
+            'POST /api/security/lockdown': 'Trigger lockdown',
+            'POST /api/security/block': 'Block delivery',
+            'GET /api/floors': 'List all floor specifications',
+            'GET /api/floors/<language>': 'Get specific floor specification'
         }
     })
 
@@ -399,6 +415,311 @@ def get_supply_store_inventory():
         'available_count': len(store.get_available_tools()),
         'checked_out_count': len([t for t in store.tools.values() if not t.is_available])
     })
+
+
+# ===== Consigliere Endpoints (Advisory Executive) =====
+
+@app.route('/api/consigliere', methods=['GET'])
+def get_consigliere_state():
+    """Get Consigliere state and capabilities"""
+    consigliere = get_consigliere()
+    return jsonify(consigliere.to_dict())
+
+
+@app.route('/api/consigliere/explain', methods=['POST'])
+def consigliere_explain():
+    """
+    Request explanation from Consigliere.
+    
+    Body: {
+        "type": "why_blocked" | "why_decision" | "what_options",
+        "entity_id": "...",  # for why_blocked, why_decision
+        "situation": "...",  # for what_options
+        "context": {}  # optional
+    }
+    """
+    data = request.get_json()
+    consigliere = get_consigliere()
+    
+    explanation_type = data.get('type')
+    entity_id = data.get('entity_id')
+    situation = data.get('situation')
+    context = data.get('context', {})
+    
+    if explanation_type == 'why_blocked':
+        if not entity_id:
+            return jsonify({'error': 'entity_id required for why_blocked'}), 400
+        explanation = consigliere.explain_why_blocked(entity_id, context)
+    elif explanation_type == 'why_decision':
+        if not entity_id:
+            return jsonify({'error': 'entity_id required for why_decision'}), 400
+        explanation = consigliere.explain_why_decision(entity_id, context)
+    elif explanation_type == 'what_options':
+        if not situation:
+            return jsonify({'error': 'situation required for what_options'}), 400
+        explanation = consigliere.explain_what_options(situation, context)
+    else:
+        return jsonify({'error': f'Unknown explanation type: {explanation_type}'}), 400
+    
+    return jsonify(explanation.to_dict())
+
+
+@app.route('/api/consigliere/translate', methods=['POST'])
+def consigliere_translate():
+    """
+    Request translation from Consigliere.
+    
+    Body: {
+        "text": "civilizational text to translate"
+    }
+    """
+    data = request.get_json()
+    text = data.get('text')
+    
+    if not text:
+        return jsonify({'error': 'text required'}), 400
+    
+    consigliere = get_consigliere()
+    translation = consigliere.translate_civilization_to_human(text)
+    
+    return jsonify(translation.to_dict())
+
+
+@app.route('/api/consigliere/preview', methods=['POST'])
+def consigliere_preview():
+    """
+    Preview consequences of an action.
+    
+    Body: {
+        "action": "proposed action description",
+        "context": {}  # optional
+    }
+    """
+    data = request.get_json()
+    action = data.get('action')
+    context = data.get('context', {})
+    
+    if not action:
+        return jsonify({'error': 'action required'}), 400
+    
+    consigliere = get_consigliere()
+    preview = consigliere.preview_consequences(action, context)
+    
+    return jsonify(preview.to_dict())
+
+
+@app.route('/api/consigliere/draft', methods=['POST'])
+def consigliere_draft():
+    """
+    Prepare draft directive.
+    
+    Body: {
+        "goal": "what to accomplish",
+        "language": "python" | "rust" | etc.,
+        "constraints": []  # optional
+    }
+    """
+    data = request.get_json()
+    goal = data.get('goal')
+    language = data.get('language')
+    constraints = data.get('constraints', [])
+    
+    if not goal or not language:
+        return jsonify({'error': 'goal and language required'}), 400
+    
+    consigliere = get_consigliere()
+    draft = consigliere.prepare_draft_directive(goal, language, constraints)
+    
+    return jsonify(draft.to_dict())
+
+
+# ===== Head of Security Endpoints (Security Sovereign) =====
+
+@app.route('/api/security', methods=['GET'])
+def get_security_state():
+    """Get Head of Security state and capabilities"""
+    security = get_head_of_security()
+    return jsonify(security.to_dict())
+
+
+@app.route('/api/security/grant', methods=['POST'])
+def security_grant():
+    """
+    Grant permission.
+    
+    Body: {
+        "entity_id": "...",
+        "resource": "tool_name or operation",
+        "justification": "why this is needed",
+        "expires_in_hours": 24  # optional
+    }
+    """
+    data = request.get_json()
+    entity_id = data.get('entity_id')
+    resource = data.get('resource')
+    justification = data.get('justification')
+    expires_in_hours = data.get('expires_in_hours')
+    
+    if not entity_id or not resource or not justification:
+        return jsonify({'error': 'entity_id, resource, and justification required'}), 400
+    
+    security = get_head_of_security()
+    permission = security.grant_tool_access(entity_id, resource, justification, expires_in_hours)
+    
+    return jsonify(permission.to_dict())
+
+
+@app.route('/api/security/revoke', methods=['POST'])
+def security_revoke():
+    """
+    Revoke permission.
+    
+    Body: {
+        "permission_id": "...",
+        "reason": "why revoking"
+    }
+    """
+    data = request.get_json()
+    permission_id = data.get('permission_id')
+    reason = data.get('reason')
+    
+    if not permission_id or not reason:
+        return jsonify({'error': 'permission_id and reason required'}), 400
+    
+    security = get_head_of_security()
+    success = security.revoke_access(permission_id, reason)
+    
+    return jsonify({'success': success})
+
+
+@app.route('/api/security/audit', methods=['POST'])
+def security_audit():
+    """
+    Trigger security audit.
+    
+    Body: {
+        "type": "full_system" | "floor" | "cross_floor",
+        "scope": [],  # for floor or cross_floor
+        "reason": "why auditing"
+    }
+    """
+    data = request.get_json()
+    audit_type = data.get('type', 'full_system')
+    scope = data.get('scope', [])
+    reason = data.get('reason', 'Manual audit trigger')
+    
+    security = get_head_of_security()
+    
+    if audit_type == 'full_system':
+        audit = security.trigger_full_audit(reason)
+    elif audit_type == 'cross_floor':
+        audit = security.trigger_cross_floor_review(scope, reason)
+    else:
+        return jsonify({'error': f'Unknown audit type: {audit_type}'}), 400
+    
+    return jsonify(audit.to_dict())
+
+
+@app.route('/api/security/lockdown', methods=['POST'])
+def security_lockdown():
+    """
+    Trigger lockdown.
+    
+    Body: {
+        "scope": "building" | "floor:<floor_id>",
+        "reason": "emergency reason",
+        "threat_level": "low" | "medium" | "high" | "critical"
+    }
+    """
+    data = request.get_json()
+    scope = data.get('scope')
+    reason = data.get('reason')
+    threat_level_str = data.get('threat_level', 'medium')
+    
+    if not scope or not reason:
+        return jsonify({'error': 'scope and reason required'}), 400
+    
+    threat_level = ThreatLevel(threat_level_str)
+    security = get_head_of_security()
+    
+    if scope == 'building':
+        lockdown = security.freeze_building(reason, threat_level)
+    elif scope.startswith('floor:'):
+        floor_id = scope.split(':', 1)[1]
+        lockdown = security.trigger_floor_lockdown(floor_id, reason, threat_level)
+    else:
+        return jsonify({'error': f'Invalid scope: {scope}'}), 400
+    
+    return jsonify(lockdown.to_dict())
+
+
+@app.route('/api/security/block', methods=['POST'])
+def security_block():
+    """
+    Block delivery.
+    
+    Body: {
+        "artifact_id": "...",
+        "reason": "security concern",
+        "required_mitigations": []
+    }
+    """
+    data = request.get_json()
+    artifact_id = data.get('artifact_id')
+    reason = data.get('reason')
+    required_mitigations = data.get('required_mitigations', [])
+    
+    if not artifact_id or not reason:
+        return jsonify({'error': 'artifact_id and reason required'}), 400
+    
+    security = get_head_of_security()
+    block = security.block_delivery(artifact_id, reason, required_mitigations)
+    
+    return jsonify(block.to_dict())
+
+
+@app.route('/api/security/lockdowns', methods=['GET'])
+def get_active_lockdowns():
+    """Get active lockdowns"""
+    security = get_head_of_security()
+    return jsonify({'lockdowns': security.get_active_lockdowns()})
+
+
+@app.route('/api/security/blocked', methods=['GET'])
+def get_blocked_deliveries():
+    """Get blocked deliveries"""
+    security = get_head_of_security()
+    return jsonify({'blocked_deliveries': security.get_blocked_deliveries()})
+
+
+@app.route('/api/security/permissions', methods=['GET'])
+def get_active_permissions():
+    """Get active permissions"""
+    entity_id = request.args.get('entity_id')
+    security = get_head_of_security()
+    return jsonify({'permissions': security.get_active_permissions(entity_id)})
+
+
+# ===== Floor Specification Endpoints =====
+
+@app.route('/api/floors', methods=['GET'])
+def list_floors():
+    """List all floor specifications"""
+    floors = get_all_floors()
+    return jsonify({
+        'floors': [floor.to_dict() for floor in floors]
+    })
+
+
+@app.route('/api/floors/<language>', methods=['GET'])
+def get_floor(language: str):
+    """Get specific floor specification"""
+    try:
+        lang_enum = ProgrammingLanguage(language.lower())
+        floor = get_floor_specification(lang_enum)
+        return jsonify(floor.to_dict())
+    except ValueError:
+        return jsonify({'error': f'Unknown language: {language}'}), 404
 
 
 # ===== WebSocket Events =====
