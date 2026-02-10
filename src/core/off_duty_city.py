@@ -2,10 +2,15 @@
 OFF-DUTY AI CITY
 Spatialized Dormant Intelligence Zone
 
-Pokémon-Era Pixel Aesthetic · Non-Production Jurisdiction
+16-Bit Retro Pixel Aesthetic · Multi-Platform (Desktop/Mobile/VR) · Non-Production Jurisdiction
 
 This module implements the Off-Duty AI City where intelligence lives
 when not working. Strict firewall prevents any production crossings.
+
+Visual Design:
+- Desktop/Mobile: Classic top-down 16-bit pixel art with distinct silhouettes
+- VR: Immersive 3D spatial environment with full civilization embodiment
+- Production-grade rendering optimized for all platforms
 
 City Supremacy Clause:
 - Nothing ships code
@@ -87,7 +92,11 @@ class ReputationVisual(Enum):
 @dataclass
 class PixelRepresentation:
     """
-    16-bit Pokémon-era pixel embodiment
+    16-bit retro pixel embodiment with top-down perspective
+    
+    Production-grade visual representation for multi-platform rendering:
+    - Desktop/Mobile: Classic pixel art with distinct silhouettes
+    - VR: Low-poly 3D conversion maintaining symbolic clarity
     
     Symbolic embodiment, not anthropomorphism.
     Distinct silhouette per role.
@@ -490,7 +499,7 @@ class OffDutyCity:
     Complete Off-Duty AI City system
     
     Spatialized dormant intelligence zone.
-    Pokémon-era pixel aesthetic.
+    16-bit retro pixel aesthetic (Desktop/Mobile) with VR spatial rendering.
     Strict production firewall.
     """
     city_id: str
