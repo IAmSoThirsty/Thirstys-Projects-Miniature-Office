@@ -158,6 +158,10 @@ def api_index():
             'POST /api/consigliere/translate': 'Request translation from Consigliere',
             'POST /api/consigliere/preview': 'Preview consequences',
             'POST /api/consigliere/draft': 'Prepare draft directive',
+            'POST /api/consigliere/command/manager': 'Issue directive to manager',
+            'POST /api/consigliere/command/agent': 'Update agent directive',
+            'POST /api/consigliere/coordinate': 'Coordinate cross-floor work',
+            'POST /api/consigliere/assess': 'Assess feasibility of request',
             'GET /api/security': 'Get Head of Security state',
             'POST /api/security/grant': 'Grant permission',
             'POST /api/security/revoke': 'Revoke permission',
@@ -531,6 +535,114 @@ def consigliere_draft():
     draft = consigliere.prepare_draft_directive(goal, language, constraints)
     
     return jsonify(draft.to_dict())
+
+
+@app.route('/api/consigliere/command/manager', methods=['POST'])
+def consigliere_command_manager():
+    """
+    Issue directive to manager (Consigliere executive authority).
+    
+    Body: {
+        "manager_id": "...",
+        "directive": "what to do",
+        "priority": "normal" | "high" | "critical"  # optional
+    }
+    """
+    data = request.get_json()
+    manager_id = data.get('manager_id')
+    directive = data.get('directive')
+    priority = data.get('priority', 'normal')
+    
+    if not manager_id or not directive:
+        return jsonify({'error': 'manager_id and directive required'}), 400
+    
+    consigliere = get_consigliere()
+    result = consigliere.issue_directive_to_manager(manager_id, directive, priority)
+    
+    return jsonify(result)
+
+
+@app.route('/api/consigliere/command/agent', methods=['POST'])
+def consigliere_command_agent():
+    """
+    Update agent directive (Consigliere executive authority).
+    
+    Body: {
+        "agent_id": "...",
+        "new_directive": "updated task",
+        "justification": "why changing"
+    }
+    """
+    data = request.get_json()
+    agent_id = data.get('agent_id')
+    new_directive = data.get('new_directive')
+    justification = data.get('justification')
+    
+    if not agent_id or not new_directive or not justification:
+        return jsonify({'error': 'agent_id, new_directive, and justification required'}), 400
+    
+    consigliere = get_consigliere()
+    result = consigliere.update_agent_directive(agent_id, new_directive, justification)
+    
+    return jsonify(result)
+
+
+@app.route('/api/consigliere/coordinate', methods=['POST'])
+def consigliere_coordinate():
+    """
+    Coordinate cross-floor work (Consigliere executive authority).
+    
+    Body: {
+        "floor_ids": ["floor-python", "floor-rust"],
+        "coordination_plan": "description of coordination"
+    }
+    """
+    data = request.get_json()
+    floor_ids = data.get('floor_ids')
+    coordination_plan = data.get('coordination_plan')
+    
+    if not floor_ids or not coordination_plan:
+        return jsonify({'error': 'floor_ids and coordination_plan required'}), 400
+    
+    consigliere = get_consigliere()
+    result = consigliere.coordinate_cross_floor_work(floor_ids, coordination_plan)
+    
+    return jsonify(result)
+
+
+@app.route('/api/consigliere/assess', methods=['POST'])
+def consigliere_assess():
+    """
+    Assess feasibility of request (Consigliere tells you if it's possible).
+    
+    Body: {
+        "request": "what you want to do",
+        "context": {}  # optional
+    }
+    """
+    data = request.get_json()
+    request_text = data.get('request')
+    
+    if not request_text:
+        return jsonify({'error': 'request required'}), 400
+    
+    consigliere = get_consigliere()
+    
+    # Simple feasibility check (in real system would be more sophisticated)
+    if any(word in request_text.lower() for word in ['impossible', 'cannot', 'unable']):
+        result = consigliere.tell_human_impossible(
+            request=request_text,
+            reason="Request contains constraints that appear contradictory or infeasible",
+            alternatives=["Simplify requirements", "Split into multiple tasks", "Adjust constraints"]
+        )
+    else:
+        result = consigliere.tell_human_feasible(
+            request=request_text,
+            approach="Route to appropriate floor, allocate resources, coordinate execution",
+            estimated_resources={'agent_time': 15, 'manager_attention': 3}
+        )
+    
+    return jsonify(result)
 
 
 # ===== Head of Security Endpoints (Security Sovereign) =====

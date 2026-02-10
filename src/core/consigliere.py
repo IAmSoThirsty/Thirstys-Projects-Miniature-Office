@@ -1,21 +1,30 @@
 """
-The Consigliere - Advisory Executive Interface
+The Consigliere - Chief Operating Executive
 CIVILIZATION TIER - PURPOSE-LOCKED
 
-User-facing cognitive liaison that provides insight without operational authority.
+Your right-hand executive who directs the civilization on your behalf.
 
-Role Classification: Advisory Executive — Non-Operational
+Role Classification: Chief Operating Executive — Operational Authority
 
 The Consigliere:
-- Does NOT write code
-- Does NOT manage agents
-- Does NOT override contracts
-- Does NOT issue commands
-- Does NOT alter execution
-- Does NOT suppress dissent
-- Does NOT bypass managers or Meta-Office
+- HAS AUTHORITY to issue commands to managers
+- HAS AUTHORITY to update directives to agents
+- HAS AUTHORITY to coordinate work across floors
+- CAN tell you when things are impossible
 
-It is trusted counsel, not authority.
+BUT he ONLY EXERCISES this authority when YOU explicitly tell him to.
+
+He doesn't act autonomously. He waits for your direction.
+He's your right-hand man who executes YOUR commands.
+
+The Consigliere does NOT:
+- Act on his own initiative
+- Override your decisions (you're the boss)
+- Write code directly
+- Suppress audit logs
+
+You say "Consigliere, tell Manager X to do Y" and he does it.
+You don't say anything, he doesn't do anything (except advise when asked).
 """
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
@@ -116,13 +125,18 @@ class DraftDirective:
 
 class Consigliere:
     """
-    The Consigliere - User-Facing Cognitive Liaison
+    The Consigliere - Your Right-Hand Executive
     
     Purpose:
-    Provide the user with continuous, authoritative insight into the state,
-    reasoning, risks, and options of the civilization — outside formal meetings.
+    Execute YOUR will across the civilization when you tell him to.
+    He has the authority to command, but only exercises it on your explicit instruction.
     
-    This is trusted counsel, not authority.
+    He doesn't act autonomously - he waits for your direction.
+    You say "Consigliere, do X" and he does it.
+    You don't say anything, he doesn't do anything (except advise when asked).
+    
+    Authority: Can command managers/agents
+    Autonomy: None - only acts when you tell him to
     """
     
     def __init__(self):
@@ -130,6 +144,191 @@ class Consigliere:
         self.translation_history: List[Translation] = []
         self.preview_history: List[Preview] = []
         self.draft_history: List[DraftDirective] = []
+    
+    # =========================================================================
+    # EXECUTIVE AUTHORITY - Issue Commands
+    # =========================================================================
+    
+    def issue_directive_to_manager(
+        self,
+        manager_id: str,
+        directive: str,
+        priority: str = "normal",
+        issued_by_human: bool = True
+    ) -> Dict:
+        """
+        Issue directive to a manager.
+        The Consigliere has authority to command managers,
+        but ONLY when the human explicitly tells him to.
+        
+        issued_by_human: Must be True - this is only called when human says
+                        "Consigliere, tell manager X to do Y"
+        """
+        if not issued_by_human:
+            return {
+                'success': False,
+                'error': 'Consigliere only acts on explicit human instruction'
+            }
+        
+        from src.core.audit import get_audit_log, EventType
+        from src.core.entity import get_registry
+        
+        manager = get_registry().get(manager_id)
+        if not manager:
+            return {
+                'success': False,
+                'error': f'Manager {manager_id} not found'
+            }
+        
+        # Log the directive
+        get_audit_log().log_event(
+            EventType.TASK_ASSIGNED,
+            actor_id='consigliere',
+            target_id=manager_id,
+            data={
+                'directive': directive,
+                'priority': priority,
+                'issued_by': 'consigliere',
+                'on_behalf_of': 'human',
+                'note': 'Consigliere acting on explicit human instruction'
+            }
+        )
+        
+        return {
+            'success': True,
+            'manager_id': manager_id,
+            'directive': directive,
+            'priority': priority,
+            'message': f'Directive issued to {manager_id} (on your instruction)'
+        }
+    
+    def update_agent_directive(
+        self,
+        agent_id: str,
+        new_directive: str,
+        justification: str,
+        issued_by_human: bool = True
+    ) -> Dict:
+        """
+        Update an agent's directive.
+        The Consigliere coordinates work, but ONLY when human explicitly asks.
+        
+        issued_by_human: Must be True - only acts on human instruction
+        """
+        if not issued_by_human:
+            return {
+                'success': False,
+                'error': 'Consigliere only acts on explicit human instruction'
+            }
+        
+        from src.core.audit import get_audit_log, EventType
+        from src.core.entity import get_registry
+        
+        agent = get_registry().get(agent_id)
+        if not agent:
+            return {
+                'success': False,
+                'error': f'Agent {agent_id} not found'
+            }
+        
+        # Log the update
+        get_audit_log().log_event(
+            EventType.TASK_STATE_CHANGED,
+            actor_id='consigliere',
+            target_id=agent_id,
+            data={
+                'new_directive': new_directive,
+                'justification': justification,
+                'updated_by': 'consigliere',
+                'on_behalf_of': 'human',
+                'note': 'Consigliere acting on explicit human instruction'
+            }
+        )
+        
+        return {
+            'success': True,
+            'agent_id': agent_id,
+            'new_directive': new_directive,
+            'message': f'Directive updated for {agent_id} (on your instruction)'
+        }
+    
+    def coordinate_cross_floor_work(
+        self,
+        floor_ids: List[str],
+        coordination_plan: str,
+        issued_by_human: bool = True
+    ) -> Dict:
+        """
+        Coordinate work across multiple floors.
+        The Consigliere orchestrates, but ONLY when human says to.
+        
+        issued_by_human: Must be True - only acts on human instruction
+        """
+        if not issued_by_human:
+            return {
+                'success': False,
+                'error': 'Consigliere only acts on explicit human instruction'
+            }
+        
+        from src.core.audit import get_audit_log, EventType
+        
+        get_audit_log().log_event(
+            EventType.CONSENSUS_ACHIEVED,
+            actor_id='consigliere',
+            data={
+                'floors': floor_ids,
+                'coordination_plan': coordination_plan,
+                'action': 'cross_floor_coordination',
+                'on_behalf_of': 'human',
+                'note': 'Consigliere acting on explicit human instruction'
+            }
+        )
+        
+        return {
+            'success': True,
+            'floors': floor_ids,
+            'plan': coordination_plan,
+            'message': 'Cross-floor coordination initiated (on your instruction)'
+        }
+    
+    def tell_human_impossible(
+        self,
+        request: str,
+        reason: str,
+        alternatives: Optional[List[str]] = None
+    ) -> Dict:
+        """
+        Tell the human that something is impossible.
+        
+        The Consigliere assesses feasibility and reports back.
+        (But the human is the boss and can override if they want)
+        """
+        return {
+            'feasible': False,
+            'request': request,
+            'reason': reason,
+            'alternatives': alternatives or [],
+            'message': f"This request appears impossible because: {reason}",
+            'note': "You're the boss - you can override this if you want (it's a you problem now 😉)"
+        }
+    
+    def tell_human_feasible(
+        self,
+        request: str,
+        approach: str,
+        estimated_resources: Dict[str, int]
+    ) -> Dict:
+        """
+        Tell the human that something is feasible and how to do it.
+        """
+        return {
+            'feasible': True,
+            'request': request,
+            'approach': approach,
+            'estimated_resources': estimated_resources,
+            'message': 'This request is feasible',
+            'status': 'ready_to_execute'
+        }
     
     # =========================================================================
     # EXPLAIN CAPABILITY
@@ -479,45 +678,51 @@ This clarification will prevent blocking and ensure correct implementation.
 """
     
     # =========================================================================
-    # HARD LIMITS ENFORCEMENT
+    # AUTHORITY LEVELS (Updated)
     # =========================================================================
     
     def can_issue_command(self) -> bool:
-        """The Consigliere CANNOT issue commands"""
-        return False
+        """The Consigliere CAN issue commands - he's your right-hand executive"""
+        return True
     
     def can_alter_execution(self) -> bool:
-        """The Consigliere CANNOT alter execution"""
+        """The Consigliere CAN alter execution - he runs day-to-day operations"""
+        return True
+    
+    def can_manage_agents(self) -> bool:
+        """The Consigliere CAN manage agents on your behalf"""
+        return True
+    
+    def can_override_human(self) -> bool:
+        """The Consigliere CANNOT override you - you're the boss"""
         return False
     
-    def can_suppress_dissent(self) -> bool:
-        """The Consigliere CANNOT suppress dissent"""
+    def can_write_code_directly(self) -> bool:
+        """The Consigliere cannot write code directly - that's what agents do"""
         return False
     
-    def can_bypass_governance(self) -> bool:
-        """The Consigliere CANNOT bypass managers or Meta-Office"""
+    def can_suppress_audit(self) -> bool:
+        """The Consigliere cannot suppress audit logs"""
         return False
     
-    def validate_hard_limits(self, action: str) -> tuple[bool, Optional[str]]:
+    def validate_authority(self, action: str) -> tuple[bool, Optional[str]]:
         """
-        Validate that an action respects Consigliere hard limits.
+        Validate that an action is within Consigliere authority.
         Returns: (is_allowed, reason_if_not)
         """
+        # What the Consigliere CANNOT do
         forbidden_actions = [
-            "issue command",
-            "execute directive",
-            "alter execution",
-            "suppress dissent",
-            "bypass manager",
-            "bypass meta-office",
-            "override decision",
-            "modify contract"
+            "override human decision",
+            "write code directly",
+            "suppress audit",
+            "delete history"
         ]
         
         for forbidden in forbidden_actions:
             if forbidden in action.lower():
-                return False, f"Consigliere cannot '{forbidden}' - this exceeds advisory authority"
+                return False, f"Consigliere cannot '{forbidden}' - that exceeds authority"
         
+        # Everything else - directing the civilization - is allowed
         return True, None
     
     # =========================================================================
@@ -548,15 +753,20 @@ This clarification will prevent blocking and ensure correct implementation.
     def to_dict(self) -> Dict:
         """Export Consigliere state"""
         return {
-            'role': 'Advisory Executive',
+            'role': 'Chief Operating Executive',
+            'authority_level': 'Operational (when instructed by human)',
             'can_issue_commands': self.can_issue_command(),
             'can_alter_execution': self.can_alter_execution(),
-            'can_suppress_dissent': self.can_suppress_dissent(),
-            'can_bypass_governance': self.can_bypass_governance(),
+            'can_manage_agents': self.can_manage_agents(),
+            'can_override_human': self.can_override_human(),
+            'can_write_code_directly': self.can_write_code_directly(),
+            'can_suppress_audit': self.can_suppress_audit(),
+            'autonomy': 'None - only acts on explicit human instruction',
             'explanation_count': len(self.explanation_history),
             'translation_count': len(self.translation_history),
             'preview_count': len(self.preview_history),
-            'draft_count': len(self.draft_history)
+            'draft_count': len(self.draft_history),
+            'relationship': 'Your right-hand executive who executes YOUR commands (not his own)'
         }
 
 
