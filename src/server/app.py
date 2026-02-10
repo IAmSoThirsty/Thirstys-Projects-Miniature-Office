@@ -20,6 +20,7 @@ from src.interfaces.contract import get_elevator_protocol, Contract, APIEndpoint
 from src.core.consigliere import get_consigliere, ExplanationType, TranslationType
 from src.core.head_of_security import get_head_of_security, ThreatLevel
 from src.core.floor_specifications import get_all_floors, get_floor_specification, ProgrammingLanguage
+from src.core.canonical_bundle import get_canonical_bundle
 
 
 app = Flask(__name__)
@@ -847,6 +848,475 @@ def handle_request_state():
     """Handle state request via WebSocket"""
     if simulation:
         emit('state_update', simulation.get_state())
+# ============================================================================
+# CANONICAL BUNDLE API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/canonical-bundle', methods=['GET'])
+def get_bundle_status():
+    """Get canonical bundle status and report."""
+    try:
+        bundle = get_canonical_bundle()
+        is_complete, missing = bundle.verify_bundle_completeness()
+        
+        return jsonify({
+            "bundle_id": bundle.bundle_id,
+            "version": bundle.version,
+            "created_at": bundle.created_at.isoformat(),
+            "is_complete": is_complete,
+            "missing_artifacts": missing,
+            "report": bundle.generate_bundle_report()
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/charter', methods=['GET'])
+def get_charter():
+    """Get the Civilization Charter."""
+    try:
+        bundle = get_canonical_bundle()
+        charter = bundle.charter
+        
+        return jsonify({
+            "charter_id": charter.charter_id,
+            "version": charter.version,
+            "issued_date": charter.issued_date.isoformat(),
+            "axioms": charter.axioms,
+            "is_immutable": charter.is_immutable,
+            "human_readable": charter.to_human_readable()
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/authority-ledger', methods=['GET'])
+def get_authority_ledger():
+    """Get the Authority & Role Ledger."""
+    try:
+        bundle = get_canonical_bundle()
+        ledger = bundle.authority_ledger
+        
+        return jsonify({
+            "ledger_id": ledger.ledger_id,
+            "created_at": ledger.created_at.isoformat(),
+            "total_grants": len(ledger.grants),
+            "active_grants": len([g for g in ledger.grants if not g.revoked])
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/purpose-lock', methods=['GET'])
+def get_purpose_lock():
+    """Get the Purpose Lock Attestation."""
+    try:
+        bundle = get_canonical_bundle()
+        purpose_lock = bundle.purpose_lock
+        
+        return jsonify({
+            "attestation_id": purpose_lock.attestation_id,
+            "version": purpose_lock.version,
+            "timestamp": purpose_lock.timestamp.isoformat(),
+            "overall_locked": purpose_lock.overall_locked,
+            "subsystems_checked": len(purpose_lock.subsystems_checked),
+            "report": purpose_lock.generate_attestation_report()
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/board-resolutions', methods=['GET'])
+def get_board_resolutions():
+    """Get the Board Resolution Archive."""
+    try:
+        bundle = get_canonical_bundle()
+        archive = bundle.board_resolutions
+        
+        return jsonify({
+            "archive_id": archive.archive_id,
+            "created_at": archive.created_at.isoformat(),
+            "total_resolutions": len(archive.resolutions),
+            "resolutions": [
+                {
+                    "resolution_id": r.resolution_id,
+                    "directive_id": r.directive_id,
+                    "decision": r.decision,
+                    "timestamp": r.timestamp.isoformat()
+                }
+                for r in archive.resolutions[:10]  # Latest 10
+            ]
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/precedents', methods=['GET'])
+def get_precedents():
+    """Get the Directive Precedent Corpus."""
+    try:
+        bundle = get_canonical_bundle()
+        corpus = bundle.precedent_corpus
+        
+        return jsonify({
+            "corpus_id": corpus.corpus_id,
+            "total_precedents": len(corpus.precedents),
+            "indexed_tags": len(corpus.index)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/meta-office-rulings', methods=['GET'])
+def get_meta_rulings():
+    """Get the Meta-Office Rulings Ledger."""
+    try:
+        bundle = get_canonical_bundle()
+        ledger = bundle.meta_office_rulings
+        
+        return jsonify({
+            "ledger_id": ledger.ledger_id,
+            "total_rulings": len(ledger.rulings),
+            "rulings": [
+                {
+                    "ruling_id": r.ruling_id,
+                    "ruling_type": r.ruling_type,
+                    "timestamp": r.timestamp.isoformat()
+                }
+                for r in ledger.rulings[:10]
+            ]
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/law-failure-matrix', methods=['GET'])
+def get_law_failure_matrix():
+    """Get the Law × Failure × Response Matrix."""
+    try:
+        bundle = get_canonical_bundle()
+        matrix = bundle.law_failure_matrix
+        
+        return jsonify({
+            "matrix_id": matrix.matrix_id,
+            "version": matrix.version,
+            "total_mappings": len(matrix.responses)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/formal-verification', methods=['GET'])
+def get_formal_verification():
+    """Get the Formal Law Verification Models."""
+    try:
+        bundle = get_canonical_bundle()
+        models = bundle.formal_verification
+        
+        return jsonify({
+            "model_id": models.model_id,
+            "version": models.version,
+            "total_invariants": len(models.invariants),
+            "verified_invariants": len([i for i in models.invariants if i.verified])
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/violation-playbooks', methods=['GET'])
+def get_violation_playbooks():
+    """Get the Invariant Violation Playbooks."""
+    try:
+        bundle = get_canonical_bundle()
+        playbooks = bundle.violation_playbooks
+        
+        return jsonify({
+            "playbooks_id": playbooks.playbooks_id,
+            "total_playbooks": len(playbooks.playbooks)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/execution-kernel', methods=['GET'])
+def get_execution_kernel():
+    """Get the Canonical Execution Kernel."""
+    try:
+        bundle = get_canonical_bundle()
+        kernel = bundle.execution_kernel
+        
+        return jsonify({
+            "kernel_id": kernel.kernel_id,
+            "version": kernel.version,
+            "conformance_criteria": kernel.conformance_criteria
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/simulation-traces', methods=['GET'])
+def get_simulation_traces():
+    """Get the Simulation Trace Corpus."""
+    try:
+        bundle = get_canonical_bundle()
+        corpus = bundle.simulation_traces
+        
+        return jsonify({
+            "corpus_id": corpus.corpus_id,
+            "total_traces": len(corpus.traces)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/reproducibility-packets', methods=['GET'])
+def get_reproducibility_packets():
+    """Get the Reproducibility Packets."""
+    try:
+        bundle = get_canonical_bundle()
+        packets = bundle.reproducibility_packets
+        
+        return jsonify({
+            "packets_id": packets.packets_id,
+            "total_packets": len(packets.packets)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/floor-profiles', methods=['GET'])
+def get_floor_profiles():
+    """Get the Floor Runtime Profiles."""
+    try:
+        bundle = get_canonical_bundle()
+        profiles = bundle.floor_profiles
+        
+        return jsonify({
+            "profiles_id": profiles.profiles_id,
+            "total_profiles": len(profiles.profiles)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/contract-registry', methods=['GET'])
+def get_contract_registry():
+    """Get the Cross-Floor Contract Registry."""
+    try:
+        bundle = get_canonical_bundle()
+        registry = bundle.contract_registry
+        
+        return jsonify({
+            "registry_id": registry.registry_id,
+            "total_contracts": len(registry.contracts),
+            "active_contracts": len([c for c in registry.contracts if c.is_active])
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/contract-drift', methods=['GET'])
+def get_contract_drift():
+    """Get the Contract Drift Reports."""
+    try:
+        bundle = get_canonical_bundle()
+        drift = bundle.contract_drift
+        
+        return jsonify({
+            "reports_id": drift.reports_id,
+            "total_reports": len(drift.reports)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/tool-provenance', methods=['GET'])
+def get_tool_provenance():
+    """Get the Tool Provenance & Trust Ledger."""
+    try:
+        bundle = get_canonical_bundle()
+        ledger = bundle.tool_provenance
+        
+        return jsonify({
+            "ledger_id": ledger.ledger_id,
+            "total_tools": len(ledger.tools)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/unsafe-exceptions', methods=['GET'])
+def get_unsafe_exceptions():
+    """Get the Unsafe Capability Exception Records."""
+    try:
+        bundle = get_canonical_bundle()
+        records = bundle.unsafe_exceptions
+        
+        return jsonify({
+            "records_id": records.records_id,
+            "total_exceptions": len(records.exceptions),
+            "active_exceptions": len([e for e in records.exceptions if not e.revoked])
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/consigliere-logs', methods=['GET'])
+def get_consigliere_logs():
+    """Get the Consigliere Interaction Logs."""
+    try:
+        bundle = get_canonical_bundle()
+        logs = bundle.consigliere_logs
+        
+        return jsonify({
+            "logs_id": logs.logs_id,
+            "total_interactions": len(logs.interactions)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/security-dossiers', methods=['GET'])
+def get_security_dossiers():
+    """Get the Security Decision Dossiers."""
+    try:
+        bundle = get_canonical_bundle()
+        dossiers = bundle.security_dossiers
+        
+        return jsonify({
+            "dossiers_id": dossiers.dossiers_id,
+            "total_decisions": len(dossiers.decisions)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/override-ledger', methods=['GET'])
+def get_override_ledger():
+    """Get the Override Cost Ledger."""
+    try:
+        bundle = get_canonical_bundle()
+        ledger = bundle.override_ledger
+        
+        return jsonify({
+            "ledger_id": ledger.ledger_id,
+            "total_overrides": len(ledger.overrides)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/amendments', methods=['GET'])
+def get_amendments():
+    """Get the Constitutional Amendment Registry."""
+    try:
+        bundle = get_canonical_bundle()
+        registry = bundle.amendment_registry
+        
+        return jsonify({
+            "registry_id": registry.registry_id,
+            "total_amendments": len(registry.amendments)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/rejected-proposals', methods=['GET'])
+def get_rejected_proposals():
+    """Get the Dormant / Rejected Proposal Archive."""
+    try:
+        bundle = get_canonical_bundle()
+        archive = bundle.rejected_proposals
+        
+        return jsonify({
+            "archive_id": archive.archive_id,
+            "total_proposals": len(archive.proposals)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/audit-interface', methods=['GET'])
+def get_audit_interface():
+    """Get the Independent Audit Interface."""
+    try:
+        bundle = get_canonical_bundle()
+        interface = bundle.audit_interface
+        
+        return jsonify({
+            "interface_id": interface.interface_id,
+            "accessible_artifacts": interface.accessible_artifacts,
+            "total_access_grants": len(interface.access_log)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/compliance-reports', methods=['GET'])
+def get_compliance_reports():
+    """Get the Compliance & Certification Reports."""
+    try:
+        bundle = get_canonical_bundle()
+        reports = bundle.compliance_reports
+        
+        return jsonify({
+            "reports_id": reports.reports_id,
+            "total_reports": len(reports.reports)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/freeze-protocol', methods=['GET'])
+def get_freeze_protocol():
+    """Get the Civilization Freeze Protocol."""
+    try:
+        bundle = get_canonical_bundle()
+        protocol = bundle.freeze_protocol
+        
+        return jsonify({
+            "protocol_id": protocol.protocol_id,
+            "is_frozen": protocol.is_frozen,
+            "frozen_at": protocol.frozen_at.isoformat() if protocol.frozen_at else None,
+            "access_locked": protocol.access_locked
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/shutdown-protocol', methods=['GET'])
+def get_shutdown_protocol():
+    """Get the Civilization Shutdown & Succession Protocol."""
+    try:
+        bundle = get_canonical_bundle()
+        protocol = bundle.shutdown_protocol
+        
+        return jsonify({
+            "protocol_id": protocol.protocol_id,
+            "is_shutdown": protocol.is_shutdown,
+            "shutdown_at": protocol.shutdown_at.isoformat() if protocol.shutdown_at else None
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/canonical-bundle/metrics-canon', methods=['GET'])
+def get_metrics_canon():
+    """Get the Success & Failure Metrics Canon."""
+    try:
+        bundle = get_canonical_bundle()
+        canon = bundle.metrics_canon
+        
+        return jsonify({
+            "canon_id": canon.canon_id,
+            "version": canon.version,
+            "correctness_metrics": canon.correctness_metrics,
+            "completeness_metrics": canon.completeness_metrics,
+            "trustworthiness_metrics": canon.trustworthiness_metrics,
+            "forbidden_metrics": canon.forbidden_metrics
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 def run_server(host='0.0.0.0', port=5000, debug=False):
