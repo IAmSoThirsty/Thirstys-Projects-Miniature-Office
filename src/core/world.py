@@ -7,11 +7,11 @@ from dataclasses import dataclass, field
 import uuid
 import json
 
-from ..core.entity import Entity, EntityType, get_registry
-from ..core.audit import get_audit_log, EventType
-from ..departments.department import Department
-from ..tools.supply_store import SupplyStore, get_supply_store
-from ..agents.agent import Agent, Manager
+from src.core.entity import Entity, EntityType, get_registry
+from src.core.audit import get_audit_log, EventType
+from src.departments.department import Department
+from src.tools.supply_store import SupplyStore, get_supply_store
+from src.agents.agent import Agent, Manager
 
 
 @dataclass

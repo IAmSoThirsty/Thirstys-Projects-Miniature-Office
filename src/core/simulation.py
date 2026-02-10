@@ -6,11 +6,11 @@ from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 import time
 
-from ..core.world import World, Floor, Office, get_world
-from ..core.mission import Task, TaskState, get_meeting_system
-from ..core.audit import get_audit_log, EventType
-from ..agents.agent import Agent, Manager, get_consensus_system
-from ..departments.department import get_department_registry
+from src.core.world import World, Floor, Office, get_world
+from src.core.mission import Task, TaskState, get_meeting_system
+from src.core.audit import get_audit_log, EventType
+from src.agents.agent import Agent, Manager, get_consensus_system
+from src.departments.department import get_department_registry
 
 
 @dataclass
@@ -42,7 +42,7 @@ class AgentExecutionEngine:
             return
         
         # Get current task
-        from ..core.entity import get_registry
+        from src.core.entity import get_registry
         task_entity = get_registry().get(agent.current_task_id)
         if not task_entity or not isinstance(task_entity, Task):
             return
@@ -110,7 +110,7 @@ class ManagerDecisionProtocol:
         - Approve tasks in approval state
         """
         # Get all tasks managed by this manager
-        from ..core.entity import get_registry
+        from src.core.entity import get_registry
         
         # Find tasks in manager's department
         if not manager.department_id:
@@ -177,7 +177,7 @@ class OfficeProcessor:
             return
         
         # Get manager's tasks
-        from ..core.entity import get_registry
+        from src.core.entity import get_registry
         
         # Find idle agents
         idle_agents = [a for a in office.get_agents() if a.status == "idle"]

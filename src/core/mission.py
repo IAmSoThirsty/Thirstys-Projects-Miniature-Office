@@ -8,8 +8,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
 
-from .entity import Entity, EntityType, RelationType
-from .audit import get_audit_log, EventType
+from src.core.entity import Entity, EntityType, RelationType
+from src.core.audit import get_audit_log, EventType
 
 
 class TaskState(Enum):

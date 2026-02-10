@@ -8,8 +8,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
 
-from ..core.entity import Entity, EntityType, RelationType, get_registry
-from ..core.audit import get_audit_log, EventType
+from src.core.entity import Entity, EntityType, RelationType, get_registry
+from src.core.audit import get_audit_log, EventType
 
 
 class FailureMode(Enum):

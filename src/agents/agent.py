@@ -8,9 +8,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
 
-from ..core.entity import Entity, EntityType, RelationType, get_registry
-from ..core.audit import get_audit_log, EventType
-from ..core.mission import Task, TaskState
+from src.core.entity import Entity, EntityType, RelationType, get_registry
+from src.core.audit import get_audit_log, EventType
+from src.core.mission import Task, TaskState
 
 
 class AgentRole(Enum):
@@ -174,9 +174,9 @@ class ConsensusDecision:
     """
     Result of a consensus process (Codex 2.2)
     """
-    decision_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     subject: str  # What is being decided
     target_id: str  # Entity being voted on
+    decision_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     votes: List[ConsensusVote] = field(default_factory=list)
     threshold: float = 0.66  # 2/3 majority by default
     outcome: Optional[bool] = None

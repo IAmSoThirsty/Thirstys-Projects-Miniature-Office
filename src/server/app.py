@@ -8,15 +8,15 @@ from typing import Dict, Optional
 import json
 import os
 
-from ..core.world import World, Floor, Office, create_world, get_world
-from ..core.simulation import SimulationEngine, create_simulation, SimulationConfig
-from ..core.entity import get_registry
-from ..core.audit import get_audit_log
-from ..agents.agent import Agent, Manager, AgentRole, CapabilityProfile
-from ..departments.department import Department, get_department_registry
-from ..core.mission import Task, DirectiveLevel, TaskState
-from ..tools.supply_store import get_supply_store, Tool, ToolMetadata, ToolTag
-from ..interfaces.contract import get_elevator_protocol, Contract, APIEndpoint, VersionBoundary
+from src.core.world import World, Floor, Office, create_world, get_world
+from src.core.simulation import SimulationEngine, create_simulation, SimulationConfig
+from src.core.entity import get_registry
+from src.core.audit import get_audit_log
+from src.agents.agent import Agent, Manager, AgentRole, CapabilityProfile
+from src.departments.department import Department, get_department_registry
+from src.core.mission import Task, DirectiveLevel, TaskState
+from src.tools.supply_store import get_supply_store, Tool, ToolMetadata, ToolTag
+from src.interfaces.contract import get_elevator_protocol, Contract, APIEndpoint, VersionBoundary
 
 
 app = Flask(__name__)
@@ -241,8 +241,9 @@ def get_agent_status(agent_id: str):
 @app.route('/api/agents', methods=['GET'])
 def list_agents():
     """List all agents"""
+    from src.core.entity import EntityType
     registry = get_registry()
-    agents = registry.get_by_type('agent')
+    agents = registry.get_by_type(EntityType.AGENT)
     
     return jsonify({
         'agents': [
@@ -298,9 +299,10 @@ def get_task(task_id: str):
 @app.route('/api/tasks', methods=['GET'])
 def list_tasks():
     """List all tasks"""
+    from src.core.entity import EntityType
     registry = get_registry()
     # Tasks are stored as ARTIFACT entities
-    all_entities = registry.get_by_type('artifact')
+    all_entities = registry.get_by_type(EntityType.ARTIFACT)
     tasks = [e for e in all_entities if isinstance(e, Task)]
     
     return jsonify({
@@ -367,7 +369,7 @@ def get_audit_events():
     
     # Get events based on filters
     if event_type:
-        from ..core.audit import EventType
+        from src.core.audit import EventType
         events = audit_log.get_events_by_type(EventType(event_type))
     elif actor_id:
         events = audit_log.get_events_by_actor(actor_id)

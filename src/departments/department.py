@@ -5,9 +5,8 @@ Implements Codex Section 3 (Departmental Architecture)
 from typing import Dict, List, Optional, Set
 from datetime import datetime
 
-from ..core.entity import Entity, EntityType, RelationType, get_registry
-from ..core.audit import get_audit_log, EventType
-from .agent import Agent, AgentRole, CapabilityProfile
+from src.core.entity import Entity, EntityType, RelationType, get_registry
+from src.core.audit import get_audit_log, EventType
 
 
 class Department(Entity):
@@ -15,14 +14,6 @@ class Department(Entity):
     Department represents a language/runtime domain (Codex 1.1).
     Each department must have all required roles (Codex 3.1)
     """
-    
-    REQUIRED_ROLES = {
-        AgentRole.ARCHITECT,
-        AgentRole.BUILDER,
-        AgentRole.VERIFIER,
-        AgentRole.SECURITY,
-        AgentRole.DOC_AGENT
-    }
     
     def __init__(
         self,
@@ -34,7 +25,7 @@ class Department(Entity):
         super().__init__(department_id, EntityType.DEPARTMENT, name)
         self.domain = domain
         self.toolchain = toolchain or []
-        self.agents: Dict[AgentRole, List[str]] = {role: [] for role in AgentRole}
+        self.agents: Dict = {}  # Role -> List of agent IDs
         self.contracts: List[str] = []  # Contract IDs this department implements
         
         # Register department
@@ -51,11 +42,13 @@ class Department(Entity):
             }
         )
     
-    def add_agent(self, agent: Agent):
+    def add_agent(self, agent):
         """
         Add an agent to this department.
         Agent must declare relationship before working here (Codex 1.2)
         """
+        from src.agents.agent import Agent
+        
         if agent.role not in self.agents:
             self.agents[agent.role] = []
         
@@ -72,19 +65,30 @@ class Department(Entity):
             data={'action': 'joined_department'}
         )
     
-    def get_missing_roles(self) -> Set[AgentRole]:
+    def get_missing_roles(self) -> Set:
         """
         Check for missing required roles.
         No department may neglect a role (Codex 3.1)
         """
+        from src.agents.agent import AgentRole
+        
+        REQUIRED_ROLES = {
+            AgentRole.ARCHITECT,
+            AgentRole.BUILDER,
+            AgentRole.VERIFIER,
+            AgentRole.SECURITY,
+            AgentRole.DOC_AGENT
+        }
         present_roles = {role for role, agents in self.agents.items() if agents}
-        return self.REQUIRED_ROLES - present_roles
+        return REQUIRED_ROLES - present_roles
     
-    def auto_spawn_assistants(self) -> List[Agent]:
+    def auto_spawn_assistants(self) -> List:
         """
         Auto-spawn assistant agents for missing roles (Codex 3.1).
         Missing roles auto-spawn assistant agents until fulfilled.
         """
+        from src.agents.agent import Agent, AgentRole
+        
         missing_roles = self.get_missing_roles()
         spawned_agents = []
         
@@ -113,8 +117,10 @@ class Department(Entity):
         
         return spawned_agents
     
-    def _default_capabilities_for_role(self, role: AgentRole) -> CapabilityProfile:
+    def _default_capabilities_for_role(self, role):
         """Generate default capabilities based on role and department domain"""
+        from src.agents.agent import AgentRole, CapabilityProfile
+        
         capabilities = CapabilityProfile()
         capabilities.languages.add(self.domain.lower())
         
@@ -151,7 +157,7 @@ class Department(Entity):
             if tool:
                 self.declare_relationship(tool, RelationType.USES)
     
-    def has_role_filled(self, role: AgentRole) -> bool:
+    def has_role_filled(self, role) -> bool:
         """Check if a specific role is filled"""
         return len(self.agents.get(role, [])) > 0
     
@@ -159,8 +165,10 @@ class Department(Entity):
         """Check if all required roles are filled"""
         return len(self.get_missing_roles()) == 0
     
-    def get_agents_by_role(self, role: AgentRole) -> List[Agent]:
+    def get_agents_by_role(self, role) -> List:
         """Get all agents with a specific role in this department"""
+        from src.agents.agent import Agent
+        
         agent_ids = self.agents.get(role, [])
         agents = []
         for agent_id in agent_ids:
