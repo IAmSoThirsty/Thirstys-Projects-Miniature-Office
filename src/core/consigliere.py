@@ -182,7 +182,7 @@ class Consigliere:
         
         # Log the directive
         get_audit_log().log_event(
-            EventType.TASK_ASSIGNED,
+            EventType.DIRECTIVE_CREATED,
             actor_id='consigliere',
             target_id=manager_id,
             data={
@@ -273,7 +273,7 @@ class Consigliere:
         from src.core.audit import get_audit_log, EventType
         
         get_audit_log().log_event(
-            EventType.CONSENSUS_ACHIEVED,
+            EventType.CONSENSUS_REACHED,
             actor_id='consigliere',
             data={
                 'floors': floor_ids,
@@ -363,7 +363,7 @@ class Consigliere:
         task = get_task_by_id(entity_id)
         if task:
             if task.state.value == "blocked":
-                answer = f"Task '{task.directive}' is blocked because:\n"
+                answer = f"Task '{task.description}' is blocked because:\n"
                 if task.preconditions:
                     unmet = [p for p in task.preconditions if not self._check_precondition(p)]
                     if unmet:

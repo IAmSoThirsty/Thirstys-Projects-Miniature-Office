@@ -331,3 +331,12 @@ _meeting_system = MeetingSystem()
 def get_meeting_system() -> MeetingSystem:
     """Get the global meeting system"""
     return _meeting_system
+
+
+def get_task_by_id(task_id: str) -> Optional[Task]:
+    """Get a task by ID from the entity registry"""
+    from src.core.entity import get_registry
+    entity = get_registry().get(task_id)
+    if entity and isinstance(entity, Task):
+        return entity
+    return None

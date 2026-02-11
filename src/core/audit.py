@@ -232,6 +232,21 @@ class AuditLog:
         # Sort by timestamp to show evolution
         return sorted(events, key=lambda e: e.timestamp)
     
+    def get_events(self, limit: Optional[int] = None) -> List[Dict]:
+        """
+        Get recent events as dictionaries.
+        Returns events in reverse chronological order.
+        """
+        all_events = list(self.graph.events.values())
+        # Sort by timestamp descending
+        all_events.sort(key=lambda e: e.timestamp, reverse=True)
+        
+        if limit:
+            all_events = all_events[:limit]
+        
+        # Convert to dict format
+        return [e.to_dict() for e in all_events]
+    
     def verify_integrity(self) -> bool:
         """Verify integrity of entire audit log"""
         return all(event.verify_integrity() for event in self.graph.events.values())
