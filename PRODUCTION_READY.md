@@ -137,7 +137,8 @@ See DEPLOYMENT.md for service file
 - ✅ CORS properly configured
 - ✅ Request size limits enforced
 - ✅ Dependencies scanned for CVEs
-- ✅ eventlet upgraded to 0.36.1
+- ✅ eventlet upgraded to 0.36.1 (security fixes)
+- ✅ gunicorn upgraded to 22.0.0 (fixes HTTP request smuggling CVEs)
 
 ## Performance Characteristics
 

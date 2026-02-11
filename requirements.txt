@@ -2,7 +2,7 @@ flask==3.0.0
 flask-socketio==5.3.5
 python-socketio==5.10.0
 pillow>=10.3.0
-gunicorn==21.2.0
+gunicorn==22.0.0
 eventlet==0.36.1
 pytest==7.4.3
 pytest-cov==4.1.0
