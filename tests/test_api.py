@@ -1,7 +1,7 @@
 """Integration tests for the Flask API."""
 import pytest
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.server import app as app_module
 from src.core.entity import EntityRegistry
 from src.core.audit import AuditLog
@@ -941,35 +941,42 @@ class TestAPIEndpoints:
             assert response.status_code == 404
             data = json.loads(response.data)
             assert 'error' in data
+
+
+class TestProductionMode:
+    """Test production mode configuration - isolated to avoid affecting other tests."""
     
-    def test_production_secret_key_check(self):
+    def test_production_secret_key_required(self):
         """Test that production mode requires SECRET_KEY."""
         import os
-        # Save current environment
-        old_env = os.environ.get('FLASK_ENV')
-        old_key = os.environ.get('SECRET_KEY')
+        import subprocess
+        import sys
         
-        try:
-            # Set production mode without SECRET_KEY
-            os.environ['FLASK_ENV'] = 'production'
-            if 'SECRET_KEY' in os.environ:
-                del os.environ['SECRET_KEY']
-            
-            # Try to import the app module (this should raise RuntimeError at line 34)
-            with pytest.raises(RuntimeError, match="SECRET_KEY environment variable must be set"):
-                import importlib
-                importlib.reload(app_module)
-        finally:
-            # Restore environment
-            if old_env:
-                os.environ['FLASK_ENV'] = old_env
-            elif 'FLASK_ENV' in os.environ:
-                del os.environ['FLASK_ENV']
-            if old_key:
-                os.environ['SECRET_KEY'] = old_key
-            # Reload to restore normal state
-            import importlib
-            importlib.reload(app_module)
+        # Test in subprocess to avoid affecting the current test environment
+        test_code = '''
+import os
+os.environ['FLASK_ENV'] = 'production'
+if 'SECRET_KEY' in os.environ:
+    del os.environ['SECRET_KEY']
+
+try:
+    import src.server.app
+    print("SHOULD_HAVE_FAILED")
+except RuntimeError as e:
+    if "SECRET_KEY" in str(e):
+        print("CORRECTLY_RAISED_ERROR")
+    else:
+        print("WRONG_ERROR")
+'''
+        result = subprocess.run(
+            [sys.executable, '-c', test_code],
+            capture_output=True,
+            text=True,
+            cwd='/home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office'
+        )
+        
+        # Check that the subprocess correctly raised the error
+        assert 'CORRECTLY_RAISED_ERROR' in result.stdout or 'SECRET_KEY' in result.stderr
 
 
 class TestWebSocketHandlers:
