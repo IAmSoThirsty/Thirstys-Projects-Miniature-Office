@@ -9,6 +9,10 @@ from src.core.off_duty_city import (
 )
 
 
+# Test constants
+FLOAT_COMPARISON_TOLERANCE = 0.01
+
+
 # ============================================================================
 # TEST ENUMERATIONS
 # ============================================================================
@@ -252,7 +256,7 @@ class TestAgentEmbodiment:
         """Test decreasing morale."""
         sample_embodiment.morale = 0.7
         sample_embodiment.adjust_morale(-0.2)
-        assert abs(sample_embodiment.morale - 0.5) < 0.01
+        assert abs(sample_embodiment.morale - 0.5) < FLOAT_COMPARISON_TOLERANCE
     
     def test_adjust_morale_clamp_upper(self, sample_embodiment):
         """Test morale clamped at upper bound."""
@@ -385,9 +389,9 @@ class TestResidentialDistrict:
         
         assert status["total_residents"] == 3
         # Average morale: (0.5 + 0.7 + 0.9) / 3 = 0.7
-        assert abs(status["average_morale"] - 0.7) < 0.01
+        assert abs(status["average_morale"] - 0.7) < FLOAT_COMPARISON_TOLERANCE
         # Average burnout: (0.1 + 0.2 + 0.3) / 3 = 0.2
-        assert abs(status["average_burnout"] - 0.2) < 0.01
+        assert abs(status["average_burnout"] - 0.2) < FLOAT_COMPARISON_TOLERANCE
 
 
 # ============================================================================
@@ -1457,9 +1461,7 @@ class TestOffDutyCityIntegration:
         assert embodiment.morale == 0.7
         assert embodiment.burnout_level == 0.4
         
-        # Check district stats reflect this
-        district_status = populated_city.zone_manager.residential_districts
-        # At least one agent has adjusted stats
-        agents = list(district_status.values())
+        # Check that adjusted agent is tracked in population
+        agents = list(populated_city.population.values())
         assert any(a.morale < 1.0 for a in agents)
         assert any(a.burnout_level > 0.0 for a in agents)
