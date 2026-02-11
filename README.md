@@ -9,7 +9,34 @@
 
 🚀 **PRODUCTION READY** - Fully deployed, tested, and production-hardened
 
+💻 **RUNS EVERYWHERE** - Desktop, Mobile, VR, Tablets - Access from any device!
+
 It's a spatialized, agent-orchestrated development environment where code synthesis, review, and integration are modeled as a living organization inside a simulated world.
+
+## 🎯 Super Easy Installation
+
+### One-Click Installers
+
+**Windows**: Right-click `install.ps1` → "Run with PowerShell" → Double-click `start.bat`
+
+**macOS**: Run `./install.sh` in Terminal → Double-click `start.command`
+
+**Linux**: Run `./install.sh` in Terminal → Run `./start.sh`
+
+**Docker** (All Platforms): `docker-compose up` - Done! ✅
+
+Then open your browser to `http://localhost:5000`
+
+📱 **Works on phones & tablets too!** See **[INSTALL.md](INSTALL.md)** for mobile & VR setup.
+
+## 🌐 Access From Anywhere
+
+- 🖥️ **Desktop**: Windows, macOS, Linux
+- 📱 **Mobile**: Android, iOS (via browser or PWA)
+- 🥽 **VR**: Quest Browser, Firefox Reality, any VR web browser
+- 💻 **Tablets**: iPad, Android tablets, Surface devices
+
+**It's a web app**, so once the server is running, access it from **any device** on your network!
 
 ## Core Concept
 
@@ -45,7 +72,31 @@ Controlled system evolution with safeguards:
 
 ## Quick Start
 
-### 🐳 Docker (Recommended)
+### 🚀 Super Easy (Recommended for Everyone)
+
+**One-Click Installation:**
+
+**Windows** 
+```cmd
+# Right-click install.ps1 → "Run with PowerShell"
+# Then double-click start.bat
+```
+
+**macOS**
+```bash
+./install.sh          # One-time setup
+./start.command       # Double-click to start!
+```
+
+**Linux**
+```bash
+./install.sh          # One-time setup  
+./start.sh           # Run to start
+```
+
+Then open your browser to `http://localhost:5000`
+
+### 🐳 Docker (Works on All Platforms)
 
 ```bash
 # Clone and run with Docker Compose
@@ -56,13 +107,22 @@ docker-compose up
 
 Then open your browser to `http://localhost:5000`
 
-### 🐍 Python Development
+### 🐍 Python Development (Manual)
 
 ```bash
 # Prerequisites: Python 3.9+
 pip install -r requirements.txt
 python3 run.py
 ```
+
+### 📱 Mobile & VR Access
+
+See **[INSTALL.md](INSTALL.md)** for complete instructions on:
+- Mobile phones (Android & iOS)
+- Tablets (iPad, Android tablets)
+- VR headsets (Quest, PSVR, PC VR)
+- Creating a Progressive Web App (PWA)
+- Network access from other devices
 
 ## Production Deployment
 
@@ -76,6 +136,7 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 
 ## Documentation
 
+- **[INSTALL.md](INSTALL.md)** - 📱 Installation for Desktop, Mobile, VR, and all platforms
 - **[QUICKSTART.md](QUICKSTART.md)** - Installation and basic usage
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system design (11 layers)
