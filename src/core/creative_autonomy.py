@@ -701,7 +701,7 @@ class BoundedCreativeAutonomy:
             violations.append(f"{len(self.creative_firewall.violations)} firewall violations")
         
         # Check for ideas executing without approval
-        pending = self.idle_initiative_channel.get_pending_proposals()
+        # (pending count is retrieved for audit purposes but not currently used)
         for proposal in self.idle_initiative_channel.proposals:
             if proposal.converted_to_directive and not proposal.human_decision:
                 violations.append(f"Proposal {proposal.proposal_id} executed without human approval")

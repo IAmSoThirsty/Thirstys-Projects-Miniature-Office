@@ -7,7 +7,6 @@ This is law ABOVE all other laws.
 from enum import Enum
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
-import json
 
 
 class PurposeConstitution:
@@ -499,8 +498,8 @@ class CodeAuthoringCivilization:
         # Store directive
         self.active_directives[directive.directive_id] = directive
         
-        # Convert to Cognitive Contract
-        contract = directive.to_cognitive_contract()
+        # Convert to Cognitive Contract (for audit trail)
+        _ = directive.to_cognitive_contract()
         
         return directive.directive_id
     

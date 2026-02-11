@@ -8,9 +8,7 @@ System can adapt while preserving core safeguards
 from enum import Enum
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
-from datetime import datetime
-import uuid
-import json
+from datetime import datetime, timezone
 
 from src.core.audit import get_audit_log, EventType
 
@@ -106,7 +104,7 @@ class ConstitutionalLaw:
         self.amendment_history.append({
             'description': amendment_description,
             'tick': tick,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         })
         self.last_amended_tick = tick
     
@@ -220,7 +218,7 @@ class MutationProposal:
             'from': old_status.value,
             'to': new_status.value,
             'reason': reason,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         })
         
         get_audit_log().log_event(
@@ -469,7 +467,10 @@ class ConstitutionalMutationEngine:
         # Check if proposal tries to change Meta-Office authority
         if "meta-office" in proposal.proposed_change.lower() and "authority" in proposal.proposed_change.lower():
             # Violation of Law 5
-            proposal.transition_to(MutationStatus.REJECTED, "Violates Law 5: Meta-Office cannot change its own authority")
+            proposal.transition_to(
+                MutationStatus.REJECTED,
+                "Violates Law 5: Meta-Office cannot change its own authority"
+            )
             return False
         
         proposal.meta_office_ruling = ruling

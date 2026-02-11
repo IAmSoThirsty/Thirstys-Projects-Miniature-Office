@@ -3,7 +3,6 @@ Department Management System
 Implements Codex Section 3 (Departmental Architecture)
 """
 from typing import Dict, List, Optional, Set
-from datetime import datetime
 
 from src.core.entity import Entity, EntityType, RelationType, get_registry
 from src.core.audit import get_audit_log, EventType
@@ -47,7 +46,7 @@ class Department(Entity):
         Add an agent to this department.
         Agent must declare relationship before working here (Codex 1.2)
         """
-        from src.agents.agent import Agent
+        from src.agents.agent import Agent  # noqa: F401
         
         if agent.role not in self.agents:
             self.agents[agent.role] = []
@@ -87,7 +86,7 @@ class Department(Entity):
         Auto-spawn assistant agents for missing roles (Codex 3.1).
         Missing roles auto-spawn assistant agents until fulfilled.
         """
-        from src.agents.agent import Agent, AgentRole
+        from src.agents.agent import Agent, AgentRole  # noqa: F401
         
         missing_roles = self.get_missing_roles()
         spawned_agents = []

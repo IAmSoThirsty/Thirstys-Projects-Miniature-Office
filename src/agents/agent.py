@@ -10,7 +10,7 @@ import uuid
 
 from src.core.entity import Entity, EntityType, RelationType, get_registry
 from src.core.audit import get_audit_log, EventType
-from src.core.mission import Task, TaskState
+from src.core.mission import Task
 
 
 class AgentRole(Enum):

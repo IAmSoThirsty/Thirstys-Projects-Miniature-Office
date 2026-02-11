@@ -15,10 +15,9 @@ This module contains all 27 canonical artifacts that prove:
 - Trustworthiness
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional, Any, Tuple
 from datetime import datetime
-from enum import Enum
 import json
 import hashlib
 
