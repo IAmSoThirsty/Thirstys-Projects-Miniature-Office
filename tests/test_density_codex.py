@@ -125,28 +125,13 @@ class TestInviolableLaws:
         assert len(laws) == 5
         assert all(isinstance(law, InviolableLaw) for law in laws)
     
-    def test_get_law_by_id(self):
-        """Test getting specific law by ID"""
-        law = InviolableLaws.get_law("law-1")
+    def test_access_specific_law(self):
+        """Test accessing specific law"""
+        law = InviolableLaws.CAUSALITY_PRESERVATION
         
         assert law is not None
-        assert law.law_id == "law-1"
-    
-    def test_get_nonexistent_law(self):
-        """Test getting non-existent law returns None"""
-        law = InviolableLaws.get_law("nonexistent")
-        assert law is None
-    
-    def test_validate_action(self):
-        """Test action validation against laws"""
-        # Valid action
-        result = InviolableLaws.validate_action("Execute with intent")
-        assert result['valid'] is True
-        
-        # May have violations depending on implementation
-        result = InviolableLaws.validate_action("Autonomous execution")
-        assert 'valid' in result
-        assert 'violations' in result
+        assert law.law_id == "INVIOLABLE-001"
+        assert "Causality" in law.principle
 
 
 class TestAuthorityNode:
@@ -175,6 +160,40 @@ class TestAuthorityRelation:
         assert relation.relation_type == "oversees"
 
 
+class TestAuthorityRelation:
+    """Test AuthorityRelation class"""
+    
+    def test_relation_creation(self):
+        """Test creating authority relation"""
+        relation = AuthorityRelation(
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority"
+        )
+        
+        assert relation.from_node == AuthorityNode.HUMAN
+        assert relation.to_node == AuthorityNode.META_OFFICE
+        assert relation.relation_type == "authority"
+    
+    def test_relation_validity(self):
+        """Test relation validity"""
+        # Valid authority relation (flows down)
+        relation = AuthorityRelation(
+            from_node=AuthorityNode.META_OFFICE,
+            to_node=AuthorityNode.MANAGER,
+            relation_type="authority"
+        )
+        assert relation.is_valid() is True
+        
+        # Invalid authority relation (would flow up)
+        relation2 = AuthorityRelation(
+            from_node=AuthorityNode.MANAGER,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority"
+        )
+        assert relation2.is_valid() is False
+
+
 class TestAuthorityGraph:
     """Test AuthorityGraph class"""
     
@@ -182,27 +201,34 @@ class TestAuthorityGraph:
         """Test creating authority graph"""
         graph = AuthorityGraph()
         assert graph is not None
+        assert len(graph.relations) == 0
     
     def test_add_relation(self):
         """Test adding authority relation"""
         graph = AuthorityGraph()
         
-        graph.add_relation("human", "meta_office", "oversees")
+        relation = AuthorityRelation(
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority"
+        )
         
-        # Check relation was added
-        assert len(graph.relations) > 0
+        result = graph.add_relation(relation)
+        
+        assert result is True
+        assert len(graph.relations) == 1
     
-    def test_can_authorize(self):
-        """Test checking authorization"""
+    def test_can_execute(self):
+        """Test checking execution authorization"""
         graph = AuthorityGraph()
         
-        # Setup some relations
-        graph.add_relation("human", "meta_office", "oversees")
-        graph.add_relation("meta_office", "manager", "delegates_to")
+        # Higher authority can execute on lower
+        result = graph.can_execute(AuthorityNode.META_OFFICE, AuthorityNode.AGENT)
+        assert result is True
         
-        # Test authorization checks
-        result = graph.can_authorize("human", "some_action")
-        assert isinstance(result, bool)
+        # Lower cannot execute on higher
+        result2 = graph.can_execute(AuthorityNode.AGENT, AuthorityNode.META_OFFICE)
+        assert result2 is False
 
 
 class TestFailureType:
@@ -221,25 +247,35 @@ class TestFirstClassFailure:
         """Test creating first-class failure"""
         failure = FirstClassFailure(
             failure_id="fail-001",
-            failure_type=FailureType.AXIOM_VIOLATION if hasattr(FailureType, 'AXIOM_VIOLATION') else list(FailureType)[0],
-            description="Test failure",
-            occurred_at_tick=100
+            failure_type=FailureType.AXIOM_VIOLATION,
+            occurred_at_tick=100,
+            caused_by="agent-001",
+            affected_entities=["entity-001", "entity-002"],
+            escalated_to=AuthorityNode.META_OFFICE,
+            resource_cost=50,
+            consequence="System halted for review"
         )
         
         assert failure.failure_id == "fail-001"
         assert failure.occurred_at_tick == 100
+        assert failure.recorded is True  # Default value
     
     def test_failure_to_dict(self):
         """Test failure serialization"""
         failure = FirstClassFailure(
             failure_id="fail-002",
-            failure_type=list(FailureType)[0],
-            description="Test",
-            occurred_at_tick=200
+            failure_type=FailureType.AUTHORITY_INVERSION,
+            occurred_at_tick=200,
+            caused_by="agent-002",
+            affected_entities=["entity-003"],
+            escalated_to=AuthorityNode.MANAGER,
+            resource_cost=25,
+            consequence="Authority check failed"
         )
         
         result = failure.to_dict()
         assert result['failure_id'] == "fail-002"
+        assert result['occurred_at_tick'] == 200
 
 
 class TestMetaOfficeCapability:
@@ -267,25 +303,31 @@ class TestHumanAction:
         """Test creating human action"""
         action = HumanAction(
             action_id="action-001",
-            power_used=list(HumanPower)[0],
-            target="system",
-            performed_at_tick=50
+            human_id="human-001",
+            power_exercised=HumanPower.ISSUE_BINDING_CONTRACT,
+            justification="Need to override for safety",
+            cost=100,
+            logged_at_tick=50
         )
         
         assert action.action_id == "action-001"
-        assert action.performed_at_tick == 50
+        assert action.logged_at_tick == 50
+        assert action.cost == 100
     
     def test_action_to_dict(self):
         """Test action serialization"""
         action = HumanAction(
             action_id="action-002",
-            power_used=list(HumanPower)[0],
-            target="test",
-            performed_at_tick=100
+            human_id="human-002",
+            power_exercised=HumanPower.FREEZE_WORLD,
+            justification="Emergency freeze",
+            cost=500,
+            logged_at_tick=100
         )
         
         result = action.to_dict()
         assert result['action_id'] == "action-002"
+        assert result['cost'] == 500
 
 
 class TestDensityCodex:
@@ -352,9 +394,13 @@ class TestDensityCodex:
         
         failure = FirstClassFailure(
             failure_id="fail-test",
-            failure_type=list(FailureType)[0],
-            description="Test failure",
-            occurred_at_tick=100
+            failure_type=FailureType.LAYER_BYPASS,
+            occurred_at_tick=100,
+            caused_by="agent-test",
+            affected_entities=["entity-001"],
+            escalated_to=AuthorityNode.META_OFFICE,
+            resource_cost=50,
+            consequence="Layer bypass detected"
         )
         
         codex.record_failure(failure)
@@ -366,9 +412,11 @@ class TestDensityCodex:
         
         action = HumanAction(
             action_id="action-test",
-            power_used=list(HumanPower)[0],
-            target="test",
-            performed_at_tick=50
+            human_id="human-test",
+            power_exercised=HumanPower.TRIGGER_AUDIT,
+            justification="Routine audit",
+            cost=10,
+            logged_at_tick=50
         )
         
         codex.record_human_action(action)

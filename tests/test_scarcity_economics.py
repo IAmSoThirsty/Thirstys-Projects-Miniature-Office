@@ -86,36 +86,32 @@ class TestResourceLedgerEntry:
     
     def test_entry_creation(self):
         """Test creating ledger entry"""
+        allocated = ResourceAllocation(agent_time=100, tool_slots=5)
+        
         entry = ResourceLedgerEntry(
             entity_id="agent-001",
-            resource_type=ResourceType.AGENT_TIME,
-            amount=50,
-            cost=10,
             tick=100,
-            reason="Task execution"
+            allocated=allocated
         )
         
         assert entry.entity_id == "agent-001"
-        assert entry.resource_type == ResourceType.AGENT_TIME
-        assert entry.amount == 50
-        assert entry.cost == 10
         assert entry.tick == 100
+        assert entry.allocated.agent_time == 100
     
     def test_entry_to_dict(self):
         """Test entry serialization"""
+        allocated = ResourceAllocation(agent_time=50, tool_slots=2)
+        
         entry = ResourceLedgerEntry(
             entity_id="agent-002",
-            resource_type=ResourceType.TOOL_SLOTS,
-            amount=2,
-            cost=5,
             tick=200,
-            reason="Tool checkout"
+            allocated=allocated
         )
         
         result = entry.to_dict()
         assert result['entity_id'] == "agent-002"
-        assert result['resource_type'] == 'tool_slots'
-        assert result['amount'] == 2
+        assert result['tick'] == 200
+        assert 'allocated' in result
 
 
 class TestResourceLedger:
@@ -124,132 +120,80 @@ class TestResourceLedger:
     def test_ledger_creation(self):
         """Test creating resource ledger"""
         ledger = ResourceLedger()
-        assert len(ledger.entries) == 0
-        assert len(ledger.allocations) == 0
+        assert len(ledger.ledger) == 0
+        assert len(ledger.priority_market) == 0
     
     def test_allocate_resources(self):
         """Test allocating resources to entity"""
         ledger = ResourceLedger()
         
-        ledger.allocate_resources(
-            "agent-001",
-            agent_time=100,
-            tool_slots=5
-        )
+        allocation = ResourceAllocation(agent_time=100, tool_slots=5)
+        entry = ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
         
-        assert "agent-001" in ledger.allocations
-        alloc = ledger.allocations["agent-001"]
-        assert alloc.agent_time == 100
-        assert alloc.tool_slots == 5
+        assert "agent-001" in ledger.ledger
+        assert entry.allocated.agent_time == 100
+        assert entry.allocated.tool_slots == 5
     
-    def test_get_allocation(self):
-        """Test getting allocation for entity"""
+    def test_get_entry(self):
+        """Test getting ledger entry"""
         ledger = ResourceLedger()
         
-        ledger.allocate_resources("agent-001", agent_time=50)
+        allocation = ResourceAllocation(agent_time=50)
+        ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
         
-        alloc = ledger.get_allocation("agent-001")
-        assert alloc is not None
-        assert alloc.agent_time == 50
-        
-        # Non-existent entity
-        alloc2 = ledger.get_allocation("nonexistent")
-        assert alloc2 is not None  # Returns new empty allocation
-        assert alloc2.agent_time == 0
+        # Access entry from ledger
+        entry = ledger.ledger["agent-001"][100]
+        assert entry is not None
+        assert entry.allocated.agent_time == 50
     
-    def test_record_consumption(self):
-        """Test recording resource consumption"""
+    def test_spend_resource(self):
+        """Test spending resources"""
         ledger = ResourceLedger()
         
-        ledger.allocate_resources("agent-001", agent_time=100)
+        allocation = ResourceAllocation(agent_time=100)
+        ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
         
-        result = ledger.record_consumption(
-            entity_id="agent-001",
-            resource_type=ResourceType.AGENT_TIME,
-            amount=30,
-            cost=10,
-            tick=100,
-            reason="Task work"
-        )
+        # Spend some resources
+        result = ledger.spend_resource("agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=30)
         
         assert result is True
-        assert len(ledger.entries) == 1
-        
-        # Check consumption was applied
-        alloc = ledger.get_allocation("agent-001")
-        assert alloc.agent_time == 70
+        entry = ledger.ledger["agent-001"][100]
+        assert entry.spent.agent_time == 30
     
-    def test_record_consumption_insufficient(self):
-        """Test recording consumption with insufficient resources"""
+    def test_spend_resource_insufficient(self):
+        """Test spending with insufficient resources"""
         ledger = ResourceLedger()
         
-        ledger.allocate_resources("agent-001", agent_time=20)
+        allocation = ResourceAllocation(agent_time=20)
+        ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
         
-        result = ledger.record_consumption(
-            entity_id="agent-001",
-            resource_type=ResourceType.AGENT_TIME,
-            amount=50,
-            cost=10,
-            tick=100,
-            reason="Task work"
-        )
+        # Try to spend more than allocated
+        result = ledger.spend_resource("agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=50)
         
         assert result is False
-        assert len(ledger.entries) == 0
-    
-    def test_get_entity_consumption(self):
-        """Test getting entity's consumption history"""
-        ledger = ResourceLedger()
-        
-        ledger.allocate_resources("agent-001", agent_time=100)
-        ledger.record_consumption("agent-001", ResourceType.AGENT_TIME, 20, 5, 100, "Task 1")
-        ledger.record_consumption("agent-001", ResourceType.AGENT_TIME, 30, 8, 200, "Task 2")
-        
-        entries = ledger.get_entity_consumption("agent-001")
-        assert len(entries) == 2
-        assert entries[0].amount == 20
-        assert entries[1].amount == 30
-    
-    def test_get_total_cost(self):
-        """Test calculating total cost for entity"""
-        ledger = ResourceLedger()
-        
-        ledger.allocate_resources("agent-001", agent_time=100)
-        ledger.record_consumption("agent-001", ResourceType.AGENT_TIME, 20, 5, 100, "Task 1")
-        ledger.record_consumption("agent-001", ResourceType.AGENT_TIME, 30, 10, 200, "Task 2")
-        
-        total_cost = ledger.get_total_cost("agent-001")
-        assert total_cost == 15  # 5 + 10
 
 
 class TestTaskCostProfile:
     """Test TaskCostProfile class"""
     
-    def test_cost_profile_creation(self):
-        """Test creating task cost profile"""
-        profile = TaskCostProfile(
-            task_id="task-001",
-            agent_time_cost=50,
-            manager_attention_cost=5,
-            tool_slots_cost=2
-        )
+    def test_calculate_cost_base(self):
+        """Test basic cost calculation"""
+        cost = TaskCostProfile.calculate_cost()
         
-        assert profile.task_id == "task-001"
-        assert profile.agent_time_cost == 50
-        assert profile.manager_attention_cost == 5
+        assert cost.agent_time == 10  # Base cost
+        assert cost.manager_attention == 1
     
-    def test_cost_profile_to_dict(self):
-        """Test cost profile serialization"""
-        profile = TaskCostProfile(
-            task_id="task-002",
-            agent_time_cost=30,
-            manager_attention_cost=3,
-            tool_slots_cost=1
-        )
+    def test_calculate_cost_high_risk(self):
+        """Test high risk cost multiplier"""
+        cost = TaskCostProfile.calculate_cost(is_high_risk=True)
         
-        result = profile.to_dict()
-        assert result['task_id'] == "task-002"
-        assert result['agent_time_cost'] == 30
+        assert cost.agent_time == 15  # 10 * 1.5
+    
+    def test_calculate_cost_rework(self):
+        """Test rework cost multiplier"""
+        cost = TaskCostProfile.calculate_cost(is_rework=True)
+        
+        assert cost.agent_time == 20  # 10 * 2.0 (double for rework)
 
 
 class TestPriorityBid:
@@ -260,58 +204,59 @@ class TestPriorityBid:
         bid = PriorityBid(
             bid_id="bid-001",
             task_id="task-001",
-            bid_amount=100,
-            submitted_by="agent-001",
-            submitted_at_tick=50
+            resource_type=ResourceType.AGENT_TIME,
+            amount_requested=50,
+            priority_offered=10,
+            justification="High priority task",
+            submitted_at_tick=100
         )
         
         assert bid.bid_id == "bid-001"
         assert bid.task_id == "task-001"
-        assert bid.bid_amount == 100
+        assert bid.amount_requested == 50
     
     def test_bid_to_dict(self):
         """Test bid serialization"""
         bid = PriorityBid(
             bid_id="bid-002",
             task_id="task-002",
-            bid_amount=75,
-            submitted_by="agent-002",
-            submitted_at_tick=100
+            resource_type=ResourceType.TOOL_SLOTS,
+            amount_requested=3,
+            priority_offered=5,
+            justification="Need tools",
+            submitted_at_tick=200
         )
         
         result = bid.to_dict()
         assert result['bid_id'] == "bid-002"
-        assert result['bid_amount'] == 75
+        assert result['amount_requested'] == 3
 
 
 class TestEconomicLaws:
     """Test EconomicLaws class"""
     
-    def test_get_all_laws(self):
-        """Test getting all economic laws"""
-        laws = EconomicLaws.get_all()
-        
-        assert len(laws) > 0
-        assert all(isinstance(law, dict) for law in laws)
+    def test_enforce_no_free_parallelism(self):
+        """Test parallel task cost enforcement"""
+        cost = EconomicLaws.enforce_no_free_parallelism(5)
+        assert cost == 50  # 5 tasks * 10 time units each
     
-    def test_validate_allocation(self):
-        """Test validating resource allocation"""
-        result = EconomicLaws.validate_allocation({
-            'agent_time': 100,
-            'manager_attention': 10
-        })
-        
-        assert 'valid' in result
+    def test_calculate_rework_penalty(self):
+        """Test rework penalty calculation"""
+        penalty = EconomicLaws.calculate_rework_penalty(10)
+        assert penalty == 20  # Double the original cost
     
-    def test_check_scarcity(self):
-        """Test checking scarcity compliance"""
-        result = EconomicLaws.check_scarcity(
-            ResourceType.AGENT_TIME,
-            available=100,
-            requested=50
-        )
+    def test_calculate_blocked_overhead(self):
+        """Test blocked task overhead"""
+        overhead = EconomicLaws.calculate_blocked_overhead(5)
+        assert overhead == 10  # Double attention cost
+    
+    def test_validate_meta_office_budget(self):
+        """Test meta-office budget validation"""
+        # Within budget
+        assert EconomicLaws.validate_meta_office_budget(50, 100) is True
         
-        assert 'sufficient' in result or 'compliant' in result or result is True or isinstance(result, bool)
+        # Over budget
+        assert EconomicLaws.validate_meta_office_budget(150, 100) is False
 
 
 class TestGlobalLedger:
