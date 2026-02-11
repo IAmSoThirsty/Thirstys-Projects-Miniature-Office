@@ -270,8 +270,8 @@ class TestContract:
         
         # Check relationship was created
         relationships = consumer_dept.relationships
-        uses_relationships = [r for r in relationships if r["type"] == RelationType.USES]
-        assert any(r["target_id"] == contract.entity_id for r in uses_relationships)
+        uses_relationships = [r for r in relationships if r.relation_type == RelationType.USES]
+        assert any(r.target_id == contract.entity_id for r in uses_relationships)
     
     def test_is_compatible_with_same_major(self):
         """Test contract compatibility with same major version"""

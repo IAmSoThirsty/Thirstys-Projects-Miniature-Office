@@ -51,7 +51,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_no_task(self):
         """Test processing agent with no task"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         agent.current_task_id = None
         
         # Should complete without error
@@ -60,7 +60,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_task_not_found(self):
         """Test processing agent with invalid task"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         agent.current_task_id = "nonexistent-task"
         
         # Should complete without error
@@ -69,7 +69,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_already_blocked(self):
         """Test processing blocked agent"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         agent.current_task_id = task.entity_id
         agent.status = "blocked"
@@ -79,7 +79,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_preconditions_not_met(self):
         """Test processing agent when preconditions not met"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.preconditions = ["unmet-condition"]
         agent.current_task_id = task.entity_id
@@ -91,7 +91,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_needs_meeting(self):
         """Test processing agent when task needs meeting"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.ambiguity_score = 0.8  # High ambiguity triggers meeting
         agent.current_task_id = task.entity_id
@@ -102,7 +102,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_transition_scheduled_to_review(self):
         """Test agent transitions scheduled task to review"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.SCHEDULED
         task.ambiguity_score = 0.0  # No meeting needed
@@ -115,7 +115,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_check_postconditions_in_review(self):
         """Test agent checks postconditions in review state"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.IN_REVIEW
         task.ambiguity_score = 0.0
@@ -128,7 +128,7 @@ class TestAgentExecutionEngine:
     
     def test_process_agent_approval_state(self):
         """Test agent in approval state (requires manager)"""
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.APPROVAL
         task.ambiguity_score = 0.0
@@ -145,7 +145,7 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_no_department(self):
         """Test processing manager without department"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
         manager.department_id = None
         
         # Should complete without error
@@ -154,7 +154,7 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_department_not_found(self):
         """Test processing manager with nonexistent department"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
         manager.department_id = "nonexistent-dept"
         
         # Should complete without error
@@ -163,7 +163,7 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_no_agents(self):
         """Test processing manager with no agents"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
         dept = Department("dept-1", "Test Dept", "python")
         manager.department_id = dept.entity_id
         manager.managed_agents = []
@@ -174,8 +174,8 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_agent_no_task(self):
         """Test processing manager when agent has no task"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         dept = Department("dept-1", "Test Dept", "python")
         
         manager.department_id = dept.entity_id
@@ -187,8 +187,8 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_task_not_in_approval(self):
         """Test processing manager when task not in approval state"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.SCHEDULED
         dept = Department("dept-1", "Test Dept", "python")
@@ -203,8 +203,8 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_task_not_ready_for_commit(self):
         """Test processing manager when task not ready for commit"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.APPROVAL
         task.postconditions = ["unmet-condition"]  # Not ready
@@ -220,8 +220,8 @@ class TestManagerDecisionProtocol:
     
     def test_process_manager_approve_task(self):
         """Test manager approving a task"""
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, {"python"})
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
         task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
         task.state = TaskState.APPROVAL
         task.postconditions = []  # Empty = ready
@@ -241,7 +241,8 @@ class TestOfficeProcessor:
     
     def test_process_office_no_manager(self):
         """Test processing office without manager"""
-        office = Office("office-1", "Test Office", "Builder")
+        dept = Department("dept-test", "Test Dept", "python")
+        office = Office("office-1", dept)
         office.manager = None
         
         # Should complete without error
@@ -249,10 +250,11 @@ class TestOfficeProcessor:
     
     def test_process_office_with_agents(self):
         """Test processing office with agents"""
-        office = Office("office-1", "Test Office", "Builder")
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent1 = Agent("agent-1", "Agent 1", AgentRole.BUILDER, {"python"})
-        agent2 = Agent("agent-2", "Agent 2", AgentRole.BUILDER, {"python"})
+        dept = Department("dept-test", "Test Dept", "python")
+        office = Office("office-1", dept)
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent1 = Agent("agent-1", "Agent 1", AgentRole.BUILDER, "dept-1")
+        agent2 = Agent("agent-2", "Agent 2", AgentRole.BUILDER, "dept-1")
         
         office.manager = manager
         office.add_agent(agent1)
@@ -263,9 +265,10 @@ class TestOfficeProcessor:
     
     def test_process_office_idle_agents(self):
         """Test processing office with idle agents"""
-        office = Office("office-1", "Test Office", "Builder")
-        manager = Manager("manager-1", "Test Manager", AgentRole.MANAGER, {"python"})
-        agent = Agent("agent-1", "Agent 1", AgentRole.BUILDER, {"python"})
+        dept = Department("dept-test", "Test Dept", "python")
+        office = Office("office-1", dept)
+        manager = Manager("manager-1", "Test Manager", "dept-1")
+        agent = Agent("agent-1", "Agent 1", AgentRole.BUILDER, "dept-1")
         agent.status = "idle"
         
         office.manager = manager
@@ -292,8 +295,10 @@ class TestFloorSimulator:
         dept = Department("dept-1", "Python Department", "python")
         floor.department = dept
         
-        office1 = Office("office-1", "Builder Office", "Builder")
-        office2 = Office("office-2", "Reviewer Office", "Reviewer")
+        dept = Department("dept-test", "Test Dept", "python")
+        office1 = Office("office-1", dept)
+        dept = Department("dept-test", "Test Dept", "python")
+        office2 = Office("office-2", dept)
         floor.add_office(office1)
         floor.add_office(office2)
         
@@ -596,3 +601,150 @@ class TestCreateSimulation:
         
         with pytest.raises(ValueError, match="No world instance available"):
             create_simulation()
+
+
+class TestSimulationCoverageComplete:
+    """Additional tests to achieve 100% coverage"""
+    
+    def test_agent_execution_with_valid_task_and_meeting(self):
+        """Test agent execution when task needs meeting"""
+        from src.core.mission import Condition
+        
+        agent = Agent("agent-cov-1", "Coverage Agent", AgentRole.BUILDER, "dept-1")
+        # Create task with high ambiguity
+        task = Task("task-cov-1", "Coverage Task", "Test task", None, agent.entity_id)
+        task.ambiguity_score = 0.9  # High ambiguity = needs meeting
+        task.preconditions = []  # No preconditions = check passes
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "idle"
+        
+        # Process should set agent to in_meeting
+        AgentExecutionEngine.process_agent(agent)
+        assert agent.status == "in_meeting"
+    
+    def test_agent_execution_scheduled_to_in_review_transition(self):
+        """Test task transition from SCHEDULED to IN_REVIEW"""
+        agent = Agent("agent-cov-2", "Coverage Agent 2", AgentRole.BUILDER, "dept-1")
+        task = Task("task-cov-2", "Coverage Task 2", "Test", None, agent.entity_id)
+        task.state = TaskState.SCHEDULED
+        task.ambiguity_score = 0.0  # No meeting needed
+        task.preconditions = []
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "idle"
+        
+        AgentExecutionEngine.process_agent(agent)
+        assert task.state == TaskState.IN_REVIEW
+        assert agent.status == "working"
+    
+    def test_agent_execution_in_review_to_approval_transition(self):
+        """Test task transition from IN_REVIEW to APPROVAL"""
+        agent = Agent("agent-cov-3", "Coverage Agent 3", AgentRole.BUILDER, "dept-1")
+        task = Task("task-cov-3", "Coverage Task 3", "Test", None, agent.entity_id)
+        task.state = TaskState.IN_REVIEW
+        task.ambiguity_score = 0.0
+        task.preconditions = []
+        task.postconditions = []  # Empty = all satisfied
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "working"
+        
+        AgentExecutionEngine.process_agent(agent)
+        assert task.state == TaskState.APPROVAL
+    
+    def test_manager_approves_ready_task(self):
+        """Test manager approving a ready task"""
+        manager = Manager("manager-cov-1", "Coverage Manager", "dept-cov-1")
+        agent = Agent("agent-cov-4", "Coverage Agent 4", AgentRole.BUILDER, "dept-cov-1")
+        dept = Department("dept-cov-1", "Coverage Dept", "python")
+        task = Task("task-cov-4", "Coverage Task 4", "Test", None, agent.entity_id)
+        task.state = TaskState.APPROVAL
+        task.postconditions = []  # Ready for commit
+        get_registry().register(task)
+        
+        manager.department_id = dept.entity_id
+        manager.managed_agents = [agent.entity_id]
+        agent.current_task_id = task.entity_id
+        
+        ManagerDecisionProtocol.process_manager(manager)
+        assert task.state == TaskState.MERGED
+    
+    def test_floor_simulator_ensures_staffed(self):
+        """Test floor simulator calls ensure_all_staffed"""
+        floor = Floor("floor-cov-1", "Python")
+        dept = Department("dept-cov-floor", "Floor Dept", "python")
+        floor.department = dept
+        
+        # This should call ensure_all_staffed
+        FloorSimulator.process_floor(floor)
+        # No assertion needed, just covering the code path
+    
+    def test_agent_blocked_due_to_preconditions(self):
+        """Test agent gets blocked when preconditions not met"""
+        from src.core.mission import Condition
+        
+        agent = Agent("agent-cov-5", "Coverage Agent 5", AgentRole.BUILDER, "dept-1")
+        task = Task("task-cov-5", "Coverage Task 5", "Test", None, agent.entity_id)
+        # Add a precondition that will fail
+        task.preconditions = [Condition(description="unmet", checker=lambda: False)]
+        task.ambiguity_score = 0.0
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "idle"
+        
+        AgentExecutionEngine.process_agent(agent)
+        assert agent.status == "blocked"
+        assert task.state == TaskState.BLOCKED
+    
+    def test_agent_already_blocked_returns_early(self):
+        """Test that blocked agent returns early"""
+        agent = Agent("agent-block", "Blocked Agent", AgentRole.BUILDER, "dept-1")
+        task = Task("task-block", "Blocked Task", "Test", None, agent.entity_id)
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "blocked"  # Already blocked
+        
+        # Should return without changing anything
+        AgentExecutionEngine.process_agent(agent)
+        assert agent.status == "blocked"
+    
+    def test_agent_in_approval_state(self):
+        """Test agent with task in approval state"""
+        agent = Agent("agent-app", "Approval Agent", AgentRole.BUILDER, "dept-1")
+        task = Task("task-app", "Approval Task", "Test", None, agent.entity_id)
+        task.state = TaskState.APPROVAL
+        task.ambiguity_score = 0.0
+        task.preconditions = []
+        get_registry().register(task)
+        agent.current_task_id = task.entity_id
+        agent.status = "working"
+        
+        # Should execute but not change state (needs manager)
+        AgentExecutionEngine.process_agent(agent)
+        assert task.state == TaskState.APPROVAL
+    
+    def test_manager_with_invalid_agent(self):
+        """Test manager process with non-existent agent"""
+        manager = Manager("manager-inv", "Invalid Manager", "dept-inv")
+        dept = Department("dept-inv", "Invalid Dept", "python")
+        manager.department_id = dept.entity_id
+        manager.managed_agents = ["nonexistent-agent"]
+        
+        # Should continue without error
+        ManagerDecisionProtocol.process_manager(manager)
+    
+    def test_floor_with_multiple_offices(self):
+        """Test floor processor with offices"""
+        floor = Floor("floor-off", "Python")
+        dept = Department("dept-off", "Office Dept", "python")
+        floor.department = dept
+        
+        # Add offices
+        office1 = Office("office-off-1", dept)
+        office2 = Office("office-off-2", dept)
+        floor.add_office(office1)
+        floor.add_office(office2)
+        
+        # Should process all offices
+        FloorSimulator.process_floor(floor)
