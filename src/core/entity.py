@@ -5,7 +5,7 @@ Implements the formal entity types and relationship matrix from the Codex
 from enum import Enum
 from typing import Dict, Set, List, Optional, Any
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 
@@ -53,10 +53,12 @@ class Entity:
         self.entity_type = entity_type
         self.name = name
         self.metadata = metadata or {}
-        self.created_at = datetime.utcnow()
+        self.created_at = datetime.now(timezone.utc)
         self.relationships: List[Relationship] = []
         
-    def declare_relationship(self, target: 'Entity', relation_type: RelationType, metadata: Optional[Dict] = None) -> Relationship:
+    def declare_relationship(
+        self, target: 'Entity', relation_type: RelationType, metadata: Optional[Dict] = None
+    ) -> Relationship:
         """
         Declare a relationship with another entity.
         Required before interaction (Codex 1.2)

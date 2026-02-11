@@ -4,21 +4,20 @@ Implements Simulation API Endpoints (Section II.10)
 """
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit
-from typing import Dict, Optional
-import json
+from typing import Optional
 import os
 from dotenv import load_dotenv
 
-from src.core.world import World, Floor, Office, create_world, get_world
+from src.core.world import Floor, Office, create_world, get_world
 from src.core.simulation import SimulationEngine, create_simulation, SimulationConfig
 from src.core.entity import get_registry
 from src.core.audit import get_audit_log, EventType
-from src.agents.agent import Agent, Manager, AgentRole, CapabilityProfile
+from src.agents.agent import Agent, Manager
 from src.departments.department import Department, get_department_registry
-from src.core.mission import Task, DirectiveLevel, TaskState
+from src.core.mission import Task
 from src.tools.supply_store import get_supply_store, Tool, ToolMetadata, ToolTag
-from src.interfaces.contract import get_elevator_protocol, Contract, APIEndpoint, VersionBoundary
-from src.core.consigliere import get_consigliere, ExplanationType, TranslationType
+from src.interfaces.contract import get_elevator_protocol
+from src.core.consigliere import get_consigliere
 from src.core.head_of_security import get_head_of_security, ThreatLevel
 from src.core.floor_specifications import get_all_floors, get_floor_specification, ProgrammingLanguage
 from src.core.canonical_bundle import get_canonical_bundle

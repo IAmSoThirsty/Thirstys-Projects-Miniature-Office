@@ -5,9 +5,8 @@ The Final Form of Civilization Tier Cognitive IDE
 These axioms are pre-logical. They are not enforced by code; code is derived from them.
 """
 from enum import Enum
-from typing import Dict, List, Optional, Set
+from typing import Dict, List
 from dataclasses import dataclass
-import json
 
 
 class PrimitiveAxiom(Enum):

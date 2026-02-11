@@ -3,7 +3,7 @@ Contract System for Inter-Department Integration
 Implements Codex Section 6 (Cross-Department Integration)
 """
 from enum import Enum
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid

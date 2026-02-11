@@ -16,7 +16,7 @@ No creative action may enter execution without approval.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 from datetime import datetime
 from enum import Enum
 
@@ -666,12 +666,12 @@ class BoundedCreativeAutonomy:
     # Recognition
     recognition_system: RecognitionSystem
     
-    # Track records
-    track_records: Dict[str, PersonalTrackRecord] = field(default_factory=dict)
-    
     # Safety systems
     creative_firewall: CreativeFirewall
     failure_safety: FailureSafetySystem
+    
+    # Track records
+    track_records: Dict[str, PersonalTrackRecord] = field(default_factory=dict)
     
     # State
     is_enabled: bool = True
@@ -701,7 +701,7 @@ class BoundedCreativeAutonomy:
             violations.append(f"{len(self.creative_firewall.violations)} firewall violations")
         
         # Check for ideas executing without approval
-        pending = self.idle_initiative_channel.get_pending_proposals()
+        # (pending count is retrieved for audit purposes but not currently used)
         for proposal in self.idle_initiative_channel.proposals:
             if proposal.converted_to_directive and not proposal.human_decision:
                 violations.append(f"Proposal {proposal.proposal_id} executed without human approval")

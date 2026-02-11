@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import time
 
 from src.core.world import World, Floor, Office, get_world
-from src.core.mission import Task, TaskState, get_meeting_system
+from src.core.mission import Task, TaskState
 from src.core.audit import get_audit_log, EventType
 from src.agents.agent import Agent, Manager, get_consensus_system
 from src.departments.department import get_department_registry
@@ -177,10 +177,11 @@ class OfficeProcessor:
             return
         
         # Get manager's tasks
-        from src.core.entity import get_registry
+        from src.core.entity import get_registry  # noqa: F401
         
-        # Find idle agents
-        idle_agents = [a for a in office.get_agents() if a.status == "idle"]
+        # Find idle agents (for future task assignment)
+        # (currently idle agent list is not used, but will be for smarter assignment)
+        _ = [a for a in office.get_agents() if a.status == "idle"]
         
         # Simple task assignment (would be more sophisticated in real implementation)
         # For now, we just process existing tasks

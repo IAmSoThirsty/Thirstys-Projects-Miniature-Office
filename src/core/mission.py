@@ -3,12 +3,12 @@ Task Lifecycle and Mission Logic System
 Implements Codex Sections 2 (Mission Logic) and 4 (Operational Workflows)
 """
 from enum import Enum
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
-from src.core.entity import Entity, EntityType, RelationType
+from src.core.entity import Entity, EntityType
 from src.core.audit import get_audit_log, EventType
 
 
@@ -42,7 +42,7 @@ class AcceptanceCriteria:
         """Check if criteria is met"""
         if self.validator:
             self.is_met = self.validator()
-        self.checked_at = datetime.utcnow()
+        self.checked_at = datetime.now(timezone.utc)
         return self.is_met
 
 
@@ -172,7 +172,7 @@ class Task(Directive):
             'from_state': old_state.value if old_state else None,
             'to_state': new_state.value,
             'reason': reason,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         }
         self.state_history.append(change_record)
         
@@ -331,3 +331,12 @@ _meeting_system = MeetingSystem()
 def get_meeting_system() -> MeetingSystem:
     """Get the global meeting system"""
     return _meeting_system
+
+
+def get_task_by_id(task_id: str) -> Optional[Task]:
+    """Get a task by ID from the entity registry"""
+    from src.core.entity import get_registry
+    entity = get_registry().get(task_id)
+    if entity and isinstance(entity, Task):
+        return entity
+    return None

@@ -7,7 +7,7 @@
 
 **A Civilization-Tier Cognitive IDE: Where Software Development Becomes Spatial Simulation**
 
-🚀 **PRODUCTION READY** - Fully deployed, tested, and production-hardened
+🚀 **BETA STATUS** - Core pipeline now functional! ([see what's new](LIMITATIONS.md))
 
 💻 **RUNS EVERYWHERE** - Desktop, Mobile, VR, Tablets - Access from any device!
 
@@ -136,6 +136,7 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 
 ## Documentation
 
+- **[LIMITATIONS.md](LIMITATIONS.md)** - ⚠️ **Current implementation status and known limitations**
 - **[INSTALL.md](INSTALL.md)** - 📱 **Complete installation guide** for Desktop, Mobile, VR, and all platforms
 - **[GETTING_STARTED.md](GETTING_STARTED.md)** - 🎯 **Step-by-step visual guide** with decision tree
 - **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - ⚡ **Quick commands** cheat sheet
@@ -159,9 +160,14 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 - **Cognitive Contracts** with enforcement laws
 - **Scarcity Economics** with resource ledgers
 - **Constitutional Mutation** engine with safeguards
+- **🎉 NEW: Functional Code Generation Pipeline!**
+  - Architectural analysis with conflict detection
+  - Template-based code generation (Python, JS, Rust)
+  - Automated code review with style checking
+  - Test generation with coverage estimation
 
 ### Production Features ✅
-- ✅ Comprehensive test suite (22 tests, 32% coverage)
+- ✅ Comprehensive test suite (35 tests, 39% coverage - **up from 32%!**)
 - ✅ Docker containerization with multi-stage builds
 - ✅ CI/CD with GitHub Actions
 - ✅ Health check & Prometheus metrics endpoints
@@ -170,6 +176,21 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 - ✅ Environment-based configuration
 - ✅ Non-root Docker container
 - ✅ Automated security scanning
+
+## Quick Demo
+
+Try the code generation pipeline:
+
+```bash
+python demo_pipeline.py
+```
+
+This demonstrates:
+- Python function generation with docstrings and type hints
+- JavaScript function generation with validation
+- Automated test generation (pytest/chai format)
+- Code review with style enforcement
+- End-to-end pipeline processing
 
 ## API Endpoints
 

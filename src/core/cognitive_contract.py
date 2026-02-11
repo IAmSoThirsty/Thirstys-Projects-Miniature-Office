@@ -5,12 +5,12 @@ Implements Civilization Tier Architecture - Part I (Cognitive Contracts)
 Intent, Design, and Responsibility as First-Class Objects
 """
 from enum import Enum
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
-from src.core.entity import Entity, EntityType, RelationType, get_registry
+from src.core.entity import Entity, EntityType, get_registry
 from src.core.audit import get_audit_log, EventType
 
 
@@ -235,7 +235,7 @@ class CognitiveContract(Entity):
             'from': old_status.value,
             'to': new_status.value,
             'reason': reason,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(timezone.utc).isoformat()
         })
         
         # Special handling
@@ -360,12 +360,12 @@ class CognitiveContract(Entity):
         Enforcement Law I.2.2: No task may mutate scope beyond contract intent
         """
         # Simple keyword matching - could be enhanced with NLP
-        goal_keywords = set(self.intent.goal.lower().split())
+        # (goal_keywords will be used for semantic similarity in future)
         task_keywords = set(task_description.lower().split())
         
         # Check if task is roughly aligned with goals
         # In production, this would use semantic similarity
-        overlap = len(goal_keywords & task_keywords)
+        # (overlap calculation removed as it's not used yet)
         
         # Also check against non-goals
         for non_goal in self.intent.non_goals:

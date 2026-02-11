@@ -3,14 +3,13 @@ World, Floor, and Office Structure
 Implements Formal Codex Schema (World, Floor, Office entities)
 """
 from typing import Dict, List, Optional
-from dataclasses import dataclass, field
-import uuid
+from dataclasses import dataclass
 import json
 
-from src.core.entity import Entity, EntityType, get_registry
+from src.core.entity import get_registry
 from src.core.audit import get_audit_log, EventType
 from src.departments.department import Department
-from src.tools.supply_store import SupplyStore, get_supply_store
+from src.tools.supply_store import get_supply_store
 from src.agents.agent import Agent, Manager
 
 
