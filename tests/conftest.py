@@ -40,6 +40,10 @@ def reset_global_state():
     from src.core import creative_autonomy
     creative_autonomy._bounded_creative_autonomy = None
     
+    # Clear off-duty city
+    from src.core import off_duty_city
+    off_duty_city._off_duty_city_instance = None
+    
     yield
 
 
