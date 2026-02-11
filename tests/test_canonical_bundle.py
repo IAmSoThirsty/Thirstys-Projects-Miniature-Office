@@ -840,6 +840,8 @@ class TestUnsafeCapabilityExceptionRecords:
     
     def test_get_active_exceptions(self):
         """Test getting active exceptions."""
+        from datetime import timedelta
+        
         records = UnsafeCapabilityExceptionRecords(
             records_id="records-001",
             exceptions=[]
@@ -848,14 +850,22 @@ class TestUnsafeCapabilityExceptionRecords:
         records.grant_exception("network", "sec-001", "agent-001", "Reason", 100)
         records.grant_exception("file-write", "sec-001", "agent-002", "Reason", 100)
         
+        # Set future expiry dates so exceptions are active
+        future = datetime.now() + timedelta(hours=1)
+        records.exceptions[0].expires_at = future
+        records.exceptions[1].expires_at = future
+        
         # Mark one as revoked
         records.exceptions[0].revoked = True
         
-        # Note: expires_at check requires future datetime, but placeholder sets it to now
-        # So this will return empty unless we modify the test
+        # Should not include revoked exception
         active = records.get_active_exceptions("agent-001")
-        # Due to expires_at being set to datetime.now(), this might be 0
-        assert isinstance(active, list)
+        assert len(active) == 0  # agent-001's exception is revoked
+        
+        # agent-002's exception should be active
+        active = records.get_active_exceptions("agent-002")
+        assert len(active) == 1
+        assert active[0].capability == "file-write"
 
 
 class TestConsigliereInteractionLogs:
