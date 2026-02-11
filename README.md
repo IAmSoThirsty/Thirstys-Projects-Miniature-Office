@@ -7,7 +7,7 @@
 
 **A Civilization-Tier Cognitive IDE: Where Software Development Becomes Spatial Simulation**
 
-🚀 **PRODUCTION READY** - Fully deployed, tested, and production-hardened
+🚀 **ALPHA STATUS** - Infrastructure production-ready, core pipeline in development ([see limitations](LIMITATIONS.md))
 
 💻 **RUNS EVERYWHERE** - Desktop, Mobile, VR, Tablets - Access from any device!
 
@@ -136,6 +136,7 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 
 ## Documentation
 
+- **[LIMITATIONS.md](LIMITATIONS.md)** - ⚠️ **Current implementation status and known limitations**
 - **[INSTALL.md](INSTALL.md)** - 📱 **Complete installation guide** for Desktop, Mobile, VR, and all platforms
 - **[GETTING_STARTED.md](GETTING_STARTED.md)** - 🎯 **Step-by-step visual guide** with decision tree
 - **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - ⚡ **Quick commands** cheat sheet

@@ -557,8 +557,17 @@ class CodeAuthoringCivilization:
         return output
     
     def _architectural_pass(self, directive: CodeDirective) -> ArchitecturalDecision:
-        """Step 2: Architect interprets intent, declares invariants"""
-        # Mock implementation
+        """
+        Step 2: Architect interprets intent, declares invariants
+        
+        MOCK IMPLEMENTATION: This is a placeholder that returns hardcoded approval.
+        Real implementation would:
+        - Parse user intent from directive.source
+        - Identify structural invariants (type safety, error handling, etc.)
+        - Detect impossible requirements and reject early
+        - Return architectural constraints for implementation
+        """
+        # TODO: Implement real architectural analysis
         return ArchitecturalDecision(
             invariants=["Type safety", "Error handling"],
             approved=True
@@ -569,21 +578,50 @@ class CodeAuthoringCivilization:
         directive: CodeDirective,
         arch: ArchitecturalDecision
     ) -> ImplementationOutput:
-        """Step 3: Implementers write code only"""
-        # Mock implementation
+        """
+        Step 3: Implementers write code only
+        
+        MOCK IMPLEMENTATION: Returns stub comment as code.
+        Real implementation would:
+        - Generate actual working code based on directive and architecture
+        - Apply language-specific idioms and patterns
+        - Respect architectural constraints
+        - Track which files were modified
+        """
+        # TODO: Implement real code generation
         return ImplementationOutput(
             code=f"# {directive.requested_outcome.value} implementation\n# Language: {directive.language.value}\n",
             files_modified=["main.py"]
         )
     
     def _internal_review(self, impl: ImplementationOutput) -> ReviewDecision:
-        """Step 4: Reviewer enforces correctness & idioms"""
-        # Mock implementation
+        """
+        Step 4: Reviewer enforces correctness & idioms
+        
+        MOCK IMPLEMENTATION: Always approves without checking.
+        Real implementation would:
+        - Check language-specific style and idioms
+        - Verify architectural constraints are met
+        - Detect code smells and complexity issues
+        - Return violations and recommendations
+        - May reject entire implementation if seriously flawed
+        """
+        # TODO: Implement real code review logic
         return ReviewDecision(approved=True)
     
     def _testing_mandate(self, impl: ImplementationOutput) -> TestSuite:
-        """Step 5: Tester produces executable tests"""
-        # Mock implementation
+        """
+        Step 5: Tester produces executable tests
+        
+        MOCK IMPLEMENTATION: Returns dummy test that always passes.
+        Real implementation would:
+        - Generate unit tests for all public functions
+        - Create edge case tests
+        - Verify test coverage meets threshold
+        - Actually run tests and report results
+        - No delivery allowed if tests don't pass
+        """
+        # TODO: Implement real test generation and execution
         return TestSuite(
             test_code="# Test suite\ndef test_implementation():\n    assert True",
             test_count=1,
