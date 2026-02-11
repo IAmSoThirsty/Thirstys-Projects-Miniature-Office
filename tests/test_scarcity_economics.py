@@ -269,3 +269,248 @@ class TestGlobalLedger:
         
         # Should return same instance
         assert ledger1 is ledger2
+
+
+class TestResourceAllocationEdgeCases:
+    """Test all resource types in ResourceAllocation"""
+    
+    def test_has_capacity_all_types(self):
+        """Test has_capacity for all resource types"""
+        alloc = ResourceAllocation(
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50
+        )
+        
+        assert alloc.has_capacity(ResourceType.AGENT_TIME, 50) is True
+        assert alloc.has_capacity(ResourceType.MANAGER_ATTENTION, 5) is True
+        assert alloc.has_capacity(ResourceType.CONSENSUS_BANDWIDTH, 10) is True
+        assert alloc.has_capacity(ResourceType.TOOL_SLOTS, 3) is True
+        assert alloc.has_capacity(ResourceType.SIMULATION_BUDGET, 30) is True
+        
+        # Over capacity
+        assert alloc.has_capacity(ResourceType.MANAGER_ATTENTION, 20) is False
+        assert alloc.has_capacity(ResourceType.SIMULATION_BUDGET, 60) is False
+    
+    def test_consume_all_types(self):
+        """Test consume for all resource types"""
+        alloc = ResourceAllocation(
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50
+        )
+        
+        # Consume different types
+        assert alloc.consume(ResourceType.MANAGER_ATTENTION, 3) is True
+        assert alloc.manager_attention == 7
+        
+        assert alloc.consume(ResourceType.CONSENSUS_BANDWIDTH, 5) is True
+        assert alloc.consensus_bandwidth == 15
+        
+        assert alloc.consume(ResourceType.TOOL_SLOTS, 2) is True
+        assert alloc.tool_slots == 3
+        
+        assert alloc.consume(ResourceType.SIMULATION_BUDGET, 20) is True
+        assert alloc.simulation_budget == 30
+        
+        # Try to consume more than available
+        assert alloc.consume(ResourceType.MANAGER_ATTENTION, 10) is False
+
+
+class TestResourceLedgerEntryEdgeCases:
+    """Test ResourceLedgerEntry edge cases"""
+    
+    def test_is_exhausted(self):
+        """Test checking if resources are exhausted"""
+        # Exhausted: agent_time is 0
+        allocated = ResourceAllocation(agent_time=10, manager_attention=5, consensus_bandwidth=10, tool_slots=5, simulation_budget=10)
+        spent = ResourceAllocation(agent_time=10, manager_attention=0, consensus_bandwidth=0, tool_slots=0, simulation_budget=0)
+        
+        entry = ResourceLedgerEntry(
+            entity_id="agent-1",
+            tick=100,
+            allocated=allocated,
+            spent=spent
+        )
+        
+        # Agent time is exhausted (remaining = 0)
+        assert entry.is_exhausted() is True
+        
+        # Not exhausted: all resources have capacity
+        entry2 = ResourceLedgerEntry(
+            entity_id="agent-2",
+            tick=100,
+            allocated=ResourceAllocation(agent_time=100, manager_attention=10, consensus_bandwidth=10, tool_slots=5, simulation_budget=10),
+            spent=ResourceAllocation(agent_time=10, manager_attention=1, consensus_bandwidth=1, tool_slots=1, simulation_budget=1)
+        )
+        assert entry2.is_exhausted() is False
+
+
+class TestResourceLedgerFullCoverage:
+    """Test ResourceLedger methods for full coverage"""
+    
+    def test_spend_resource_all_types(self):
+        """Test spending all resource types"""
+        ledger = ResourceLedger()
+        
+        allocation = ResourceAllocation(
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50
+        )
+        ledger.allocate_resources("agent-1", tick=100, allocation=allocation)
+        
+        # Spend different resource types
+        assert ledger.spend_resource("agent-1", 100, ResourceType.MANAGER_ATTENTION, 3) is True
+        assert ledger.spend_resource("agent-1", 100, ResourceType.CONSENSUS_BANDWIDTH, 5) is True
+        assert ledger.spend_resource("agent-1", 100, ResourceType.TOOL_SLOTS, 2) is True
+        assert ledger.spend_resource("agent-1", 100, ResourceType.SIMULATION_BUDGET, 20) is True
+        
+        entry = ledger.ledger["agent-1"][100]
+        assert entry.spent.manager_attention == 3
+        assert entry.spent.consensus_bandwidth == 5
+        assert entry.spent.tool_slots == 2
+        assert entry.spent.simulation_budget == 20
+    
+    def test_spend_resource_missing_entry(self):
+        """Test spending resource with missing entry"""
+        ledger = ResourceLedger()
+        
+        # Entity/tick doesn't exist
+        result = ledger.spend_resource("nonexistent", 100, ResourceType.AGENT_TIME, 10)
+        assert result is False
+    
+    def test_get_ledger_entry(self):
+        """Test getting ledger entry"""
+        ledger = ResourceLedger()
+        
+        allocation = ResourceAllocation(agent_time=100)
+        ledger.allocate_resources("agent-1", tick=100, allocation=allocation)
+        
+        # Entry exists
+        entry = ledger.get_ledger_entry("agent-1", 100)
+        assert entry is not None
+        assert entry.entity_id == "agent-1"
+        
+        # Entry doesn't exist
+        entry2 = ledger.get_ledger_entry("nonexistent", 100)
+        assert entry2 is None
+        
+        entry3 = ledger.get_ledger_entry("agent-1", 999)
+        assert entry3 is None
+    
+    def test_submit_priority_bid(self):
+        """Test submitting priority bid"""
+        ledger = ResourceLedger()
+        
+        bid = PriorityBid(
+            bid_id="bid-1",
+            task_id="task-1",
+            resource_type=ResourceType.AGENT_TIME,
+            amount_requested=50,
+            priority_offered=10,
+            justification="High priority task",
+            submitted_at_tick=100
+        )
+        
+        bid_id = ledger.submit_priority_bid(bid)
+        assert bid_id == "bid-1"
+        assert "bid-1" in ledger.priority_market
+    
+    def test_resolve_priority_bids(self):
+        """Test resolving priority bids"""
+        ledger = ResourceLedger()
+        
+        # Allocate resources
+        allocation = ResourceAllocation(agent_time=100)
+        ledger.allocate_resources("task-1", tick=100, allocation=allocation)
+        
+        # Submit bids
+        bid1 = PriorityBid(
+            bid_id="bid-1",
+            task_id="task-1",
+            resource_type=ResourceType.AGENT_TIME,
+            amount_requested=50,
+            priority_offered=10,
+            justification="High priority",
+            submitted_at_tick=100
+        )
+        
+        bid2 = PriorityBid(
+            bid_id="bid-2",
+            task_id="task-1",
+            resource_type=ResourceType.AGENT_TIME,
+            amount_requested=200,  # More than available
+            priority_offered=5,
+            justification="Lower priority",
+            submitted_at_tick=100
+        )
+        
+        ledger.submit_priority_bid(bid1)
+        ledger.submit_priority_bid(bid2)
+        
+        # Resolve bids
+        results = ledger.resolve_priority_bids(100)
+        
+        assert results["bid-1"] == "accepted"
+        assert results["bid-2"] == "rejected"
+    
+    def test_get_entity_resources(self):
+        """Test getting entity resources"""
+        ledger = ResourceLedger()
+        
+        allocation = ResourceAllocation(agent_time=100, tool_slots=5)
+        ledger.allocate_resources("agent-1", tick=100, allocation=allocation)
+        
+        # Get resources
+        resources = ledger.get_entity_resources("agent-1", 100)
+        assert resources is not None
+        assert resources.agent_time == 100
+        
+        # Nonexistent entity
+        resources2 = ledger.get_entity_resources("nonexistent", 100)
+        assert resources2 is None
+
+
+class TestTaskCostProfileEdgeCases:
+    """Test all TaskCostProfile scenarios"""
+    
+    def test_calculate_cost_blocked(self):
+        """Test blocked task cost"""
+        cost = TaskCostProfile.calculate_cost(is_blocked=True)
+        assert cost.manager_attention > 1  # Doubled
+    
+    def test_calculate_cost_meta_office(self):
+        """Test meta-office decision cost"""
+        cost = TaskCostProfile.calculate_cost(is_meta_office=True)
+        assert cost.agent_time > 10  # Tripled
+        assert cost.manager_attention > 1  # Tripled
+    
+    def test_calculate_cost_combined(self):
+        """Test combined flags"""
+        cost = TaskCostProfile.calculate_cost(is_high_risk=True, is_rework=True)
+        # 10 * 1.5 * 2.0 = 30
+        assert cost.agent_time == 30
+
+
+
+class TestResourceAllocationUnknownType:
+    """Test unknown resource type fallback"""
+    
+    def test_has_capacity_unknown_type(self):
+        """Test has_capacity with mock unknown resource type"""
+        from enum import Enum
+        
+        class FakeResourceType(Enum):
+            FAKE = "fake_resource"
+        
+        alloc = ResourceAllocation(agent_time=100)
+        # Should return False for unknown type
+        result = alloc.has_capacity(FakeResourceType.FAKE, 10)
+        assert result is False
