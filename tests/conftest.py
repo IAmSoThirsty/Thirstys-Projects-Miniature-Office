@@ -32,6 +32,10 @@ def reset_global_state():
     from src.core import cognitive_contract
     cognitive_contract._contract_registry = cognitive_contract.ContractRegistry()
     
+    # Clear expanded autonomy model
+    from src.core import expanded_autonomy
+    expanded_autonomy._expanded_autonomy_model = None
+    
     yield
 
 
