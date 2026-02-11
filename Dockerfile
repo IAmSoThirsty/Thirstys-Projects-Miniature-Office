@@ -23,13 +23,13 @@ RUN groupadd -r minioffice && useradd -r -g minioffice minioffice
 WORKDIR /app
 
 # Copy Python dependencies from builder
-COPY --from=builder /root/.local /root/.local
+COPY --from=builder /root/.local /home/minioffice/.local
 
 # Make sure scripts in .local are usable
-ENV PATH=/root/.local/bin:$PATH
+ENV PATH=/home/minioffice/.local/bin:$PATH
 
 # Copy application code
-COPY . .
+COPY --chown=minioffice:minioffice . .
 
 # Create log directory
 RUN mkdir -p /var/log/miniature-office && \

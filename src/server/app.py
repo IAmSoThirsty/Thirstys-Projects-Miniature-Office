@@ -7,11 +7,12 @@ from flask_socketio import SocketIO, emit
 from typing import Dict, Optional
 import json
 import os
+from dotenv import load_dotenv
 
 from src.core.world import World, Floor, Office, create_world, get_world
 from src.core.simulation import SimulationEngine, create_simulation, SimulationConfig
 from src.core.entity import get_registry
-from src.core.audit import get_audit_log
+from src.core.audit import get_audit_log, EventType
 from src.agents.agent import Agent, Manager, AgentRole, CapabilityProfile
 from src.departments.department import Department, get_department_registry
 from src.core.mission import Task, DirectiveLevel, TaskState
@@ -21,11 +22,26 @@ from src.core.consigliere import get_consigliere, ExplanationType, TranslationTy
 from src.core.head_of_security import get_head_of_security, ThreatLevel
 from src.core.floor_specifications import get_all_floors, get_floor_specification, ProgrammingLanguage
 from src.core.canonical_bundle import get_canonical_bundle
+from src.server.security import add_security_headers, configure_cors
 
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'miniature-office-secret'
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'miniature-office-secret-change-in-production')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max request size
+
+# Configure CORS
+configure_cors(app)
+
+# Configure SocketIO with CORS
+cors_origins = os.getenv('CORS_ORIGINS', '*')
+socketio = SocketIO(app, cors_allowed_origins=cors_origins)
+
+# Apply security headers to all responses
+@app.after_request
+def apply_security_headers(response):
+    return add_security_headers(response)
 
 # Get client directory path
 CLIENT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'client')
@@ -177,12 +193,18 @@ def metrics():
     metrics_output.append('# TYPE minioffice_agents_total gauge')
     metrics_output.append(f'minioffice_agents_total {agent_count}')
     
-    task_count = len(registry.get_by_type(EntityType.TASK))
-    metrics_output.append('# HELP minioffice_tasks_total Total number of tasks')
-    metrics_output.append('# TYPE minioffice_tasks_total gauge')
-    metrics_output.append(f'minioffice_tasks_total {task_count}')
+    # Count artifacts (tasks are tracked as artifacts or separate system)
+    artifact_count = len(registry.get_by_type(EntityType.ARTIFACT))
+    metrics_output.append('# HELP minioffice_artifacts_total Total number of artifacts')
+    metrics_output.append('# TYPE minioffice_artifacts_total gauge')
+    metrics_output.append(f'minioffice_artifacts_total {artifact_count}')
     
-    event_count = len(audit_log.get_events())
+    # Count all events from audit log by getting all types
+    event_count = sum(len(audit_log.get_events_by_type(et)) for et in [
+        EventType.ENTITY_CREATED, EventType.ENTITY_UPDATED,
+        EventType.RELATIONSHIP_DECLARED, EventType.TASK_STATE_CHANGED,
+        EventType.AGENT_ACTION, EventType.SECURITY_EVENT
+    ])
     metrics_output.append('# HELP minioffice_audit_events_total Total number of audit events')
     metrics_output.append('# TYPE minioffice_audit_events_total counter')
     metrics_output.append(f'minioffice_audit_events_total {event_count}')
@@ -1388,6 +1410,12 @@ def run_server(host='0.0.0.0', port=5000, debug=False):
     print(f"Simulation initialized with world: {simulation.world.name}")
     
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
+
+
+# Initialize simulation at module level for production servers (gunicorn, etc.)
+if os.getenv('FLASK_ENV') == 'production' or os.getenv('GUNICORN_CMD_ARGS'):
+    simulation = init_simulation()
+    print(f"Production mode: Simulation initialized with world: {simulation.world.name if simulation else 'None'}")
 
 
 if __name__ == '__main__':
