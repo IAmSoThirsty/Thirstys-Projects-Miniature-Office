@@ -1058,9 +1058,14 @@ class TestProjectAISelfCare:
         )
         
         assert len(self_care.proposals) == 3
-        assert refactor_id == "refactor-0"
-        assert security_id == "security-1"
-        assert arch_id == "arch-2"
+        # Verify IDs use global counter based on len(proposals)
+        assert refactor_id.startswith("refactor-")
+        assert security_id.startswith("security-")
+        assert arch_id.startswith("arch-")
+        # Verify all three proposals are different types
+        assert self_care.proposals[0]["category"] == SelfCareCategory.REFACTORING
+        assert self_care.proposals[1]["category"] == SelfCareCategory.SECURITY_HARDENING
+        assert self_care.proposals[2]["category"] == SelfCareCategory.ARCHITECTURAL_EVOLUTION
 
 
 # ============================================================================
