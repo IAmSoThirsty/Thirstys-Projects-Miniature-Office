@@ -70,7 +70,8 @@ class TestAgentExecutionEngine:
     def test_process_agent_already_blocked(self):
         """Test processing blocked agent"""
         agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")
-        task = Task("task-1", "Test Task", "Do something", agent.entity_id, None)
+        task = Task("task-1", "Test Task", "Do something", None, agent.entity_id)
+        get_registry().register(task)
         agent.current_task_id = task.entity_id
         agent.status = "blocked"
         
