@@ -136,8 +136,10 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 
 ## Documentation
 
-- **[INSTALL.md](INSTALL.md)** - 📱 Installation for Desktop, Mobile, VR, and all platforms
-- **[QUICKSTART.md](QUICKSTART.md)** - Installation and basic usage
+- **[INSTALL.md](INSTALL.md)** - 📱 **Complete installation guide** for Desktop, Mobile, VR, and all platforms
+- **[GETTING_STARTED.md](GETTING_STARTED.md)** - 🎯 **Step-by-step visual guide** with decision tree
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - ⚡ **Quick commands** cheat sheet
+- **[QUICKSTART.md](QUICKSTART.md)** - Basic usage and API examples
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system design (11 layers)
 
