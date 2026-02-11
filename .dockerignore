@@ -1,8 +1,16 @@
+# Git
+.git
+.gitignore
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+env/
+venv/
+ENV/
 build/
 develop-eggs/
 dist/
@@ -18,24 +26,23 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-venv/
-env/
-ENV/
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-node_modules/
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
-coverage.xml
 .tox/
-bandit-report.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 logs/
@@ -44,6 +51,14 @@ logs/
 # Environment
 .env
 .env.local
+
+# Documentation
+*.md
+LICENSE
+
+# CI/CD
+.github/
+.gitlab-ci.yml
 
 # Docker
 docker-compose.override.yml

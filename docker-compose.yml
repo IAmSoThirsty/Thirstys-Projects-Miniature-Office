@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  miniature-office:
+    build: .
+    container_name: miniature-office
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key}
+      - HOST=0.0.0.0
+      - PORT=5000
+      - WORKERS=4
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/var/log/miniature-office
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - minioffice-network
+
+networks:
+  minioffice-network:
+    driver: bridge

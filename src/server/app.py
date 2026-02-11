@@ -132,6 +132,64 @@ def index():
     return send_from_directory(CLIENT_DIR, 'index.html')
 
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring and load balancers"""
+    if simulation:
+        return jsonify({
+            'status': 'healthy',
+            'service': 'miniature-office',
+            'version': '0.1.0',
+            'simulation': 'running'
+        }), 200
+    else:
+        return jsonify({
+            'status': 'starting',
+            'service': 'miniature-office',
+            'version': '0.1.0',
+            'simulation': 'initializing'
+        }), 503
+
+
+@app.route('/metrics')
+def metrics():
+    """Prometheus-compatible metrics endpoint"""
+    if not simulation:
+        return "# Simulation not ready\n", 503
+    
+    world = get_world()
+    registry = get_registry()
+    audit_log = get_audit_log()
+    
+    # Generate Prometheus format metrics
+    metrics_output = []
+    metrics_output.append('# HELP minioffice_world_time Current simulation time in ticks')
+    metrics_output.append('# TYPE minioffice_world_time counter')
+    metrics_output.append(f'minioffice_world_time {world.time}')
+    
+    metrics_output.append('# HELP minioffice_floors_total Total number of floors')
+    metrics_output.append('# TYPE minioffice_floors_total gauge')
+    metrics_output.append(f'minioffice_floors_total {len(world.floors)}')
+    
+    from src.core.entity import EntityType
+    agent_count = len(registry.get_by_type(EntityType.AGENT))
+    metrics_output.append('# HELP minioffice_agents_total Total number of agents')
+    metrics_output.append('# TYPE minioffice_agents_total gauge')
+    metrics_output.append(f'minioffice_agents_total {agent_count}')
+    
+    task_count = len(registry.get_by_type(EntityType.TASK))
+    metrics_output.append('# HELP minioffice_tasks_total Total number of tasks')
+    metrics_output.append('# TYPE minioffice_tasks_total gauge')
+    metrics_output.append(f'minioffice_tasks_total {task_count}')
+    
+    event_count = len(audit_log.get_events())
+    metrics_output.append('# HELP minioffice_audit_events_total Total number of audit events')
+    metrics_output.append('# TYPE minioffice_audit_events_total counter')
+    metrics_output.append(f'minioffice_audit_events_total {event_count}')
+    
+    return '\n'.join(metrics_output) + '\n', 200, {'Content-Type': 'text/plain; version=0.0.4'}
+
+
 @app.route('/api')
 def api_index():
     """API documentation"""
@@ -141,6 +199,8 @@ def api_index():
         'description': 'A spatialized, agent-orchestrated development environment',
         'endpoints': {
             'GET /': 'Main application interface',
+            'GET /health': 'Health check endpoint',
+            'GET /metrics': 'Prometheus metrics endpoint',
             'GET /api': 'API documentation',
             'GET /api/world/state': 'Get current world state',
             'POST /api/world/step': 'Advance simulation by one tick',
