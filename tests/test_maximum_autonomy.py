@@ -1058,7 +1058,7 @@ class TestProjectAISelfCare:
         )
         
         assert len(self_care.proposals) == 3
-        # Verify IDs use global counter based on len(proposals)
+        # Verify IDs have correct prefixes (counter not tested to avoid test order dependencies)
         assert refactor_id.startswith("refactor-")
         assert security_id.startswith("security-")
         assert arch_id.startswith("arch-")
