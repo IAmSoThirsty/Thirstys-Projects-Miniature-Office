@@ -1,8 +1,38 @@
 """Test fixtures and utilities for the Miniature Office test suite."""
 import pytest
-from src.core.entity import EntityRegistry, EntityType, Entity
+from src.core.entity import EntityRegistry, EntityType, Entity, _registry
 from src.core.world import World
 from src.core.audit import AuditLog
+
+
+@pytest.fixture(autouse=True)
+def reset_global_state():
+    """Reset global state before each test."""
+    # Clear entity registry
+    from src.core import entity
+    entity._registry = EntityRegistry()
+    
+    # Clear audit log
+    from src.core import audit
+    audit._audit_log = AuditLog()
+    
+    # Clear world
+    from src.core import world
+    world._world = None
+    
+    # Clear supply store
+    from src.tools import supply_store
+    supply_store._supply_store = supply_store.SupplyStore()
+    
+    # Clear meeting system
+    from src.core import mission
+    mission._meeting_system = mission.MeetingSystem()
+    
+    # Clear contract registry
+    from src.core import cognitive_contract
+    cognitive_contract._contract_registry = cognitive_contract.ContractRegistry()
+    
+    yield
 
 
 @pytest.fixture
