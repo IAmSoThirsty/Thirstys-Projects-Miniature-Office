@@ -36,6 +36,10 @@ def reset_global_state():
     from src.core import expanded_autonomy
     expanded_autonomy._expanded_autonomy_model = None
     
+    # Clear creative autonomy model
+    from src.core import creative_autonomy
+    creative_autonomy._bounded_creative_autonomy = None
+    
     yield
 
 
