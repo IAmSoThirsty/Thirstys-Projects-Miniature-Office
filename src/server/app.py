@@ -7,11 +7,12 @@ from flask_socketio import SocketIO, emit
 from typing import Dict, Optional
 import json
 import os
+from dotenv import load_dotenv
 
 from src.core.world import World, Floor, Office, create_world, get_world
 from src.core.simulation import SimulationEngine, create_simulation, SimulationConfig
 from src.core.entity import get_registry
-from src.core.audit import get_audit_log
+from src.core.audit import get_audit_log, EventType
 from src.agents.agent import Agent, Manager, AgentRole, CapabilityProfile
 from src.departments.department import Department, get_department_registry
 from src.core.mission import Task, DirectiveLevel, TaskState
@@ -21,11 +22,32 @@ from src.core.consigliere import get_consigliere, ExplanationType, TranslationTy
 from src.core.head_of_security import get_head_of_security, ThreatLevel
 from src.core.floor_specifications import get_all_floors, get_floor_specification, ProgrammingLanguage
 from src.core.canonical_bundle import get_canonical_bundle
+from src.server.security import add_security_headers, configure_cors
 
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'miniature-office-secret'
-socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Security: Require SECRET_KEY in production
+secret_key = os.getenv('SECRET_KEY')
+if os.getenv('FLASK_ENV') == 'production' and not secret_key:
+    raise RuntimeError("SECRET_KEY environment variable must be set in production mode")
+app.config['SECRET_KEY'] = secret_key or 'dev-secret-key-only-for-testing'
+
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max request size
+
+# Configure CORS
+configure_cors(app)
+
+# Configure SocketIO with CORS
+cors_origins = os.getenv('CORS_ORIGINS', '*')
+socketio = SocketIO(app, cors_allowed_origins=cors_origins)
+
+# Apply security headers to all responses
+@app.after_request
+def apply_security_headers(response):
+    return add_security_headers(response)
 
 # Get client directory path
 CLIENT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'client')
@@ -132,6 +154,70 @@ def index():
     return send_from_directory(CLIENT_DIR, 'index.html')
 
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring and load balancers"""
+    if simulation:
+        return jsonify({
+            'status': 'healthy',
+            'service': 'miniature-office',
+            'version': '0.1.0',
+            'simulation': 'running'
+        }), 200
+    else:
+        return jsonify({
+            'status': 'starting',
+            'service': 'miniature-office',
+            'version': '0.1.0',
+            'simulation': 'initializing'
+        }), 503
+
+
+@app.route('/metrics')
+def metrics():
+    """Prometheus-compatible metrics endpoint"""
+    if not simulation:
+        return "# Simulation not ready\n", 503
+    
+    world = get_world()
+    registry = get_registry()
+    audit_log = get_audit_log()
+    
+    # Generate Prometheus format metrics
+    metrics_output = []
+    metrics_output.append('# HELP minioffice_world_time Current simulation time in ticks')
+    metrics_output.append('# TYPE minioffice_world_time counter')
+    metrics_output.append(f'minioffice_world_time {world.time}')
+    
+    metrics_output.append('# HELP minioffice_floors_total Total number of floors')
+    metrics_output.append('# TYPE minioffice_floors_total gauge')
+    metrics_output.append(f'minioffice_floors_total {len(world.floors)}')
+    
+    from src.core.entity import EntityType
+    agent_count = len(registry.get_by_type(EntityType.AGENT))
+    metrics_output.append('# HELP minioffice_agents_total Total number of agents')
+    metrics_output.append('# TYPE minioffice_agents_total gauge')
+    metrics_output.append(f'minioffice_agents_total {agent_count}')
+    
+    # Count artifacts (tasks are tracked as artifacts or separate system)
+    artifact_count = len(registry.get_by_type(EntityType.ARTIFACT))
+    metrics_output.append('# HELP minioffice_artifacts_total Total number of artifacts')
+    metrics_output.append('# TYPE minioffice_artifacts_total gauge')
+    metrics_output.append(f'minioffice_artifacts_total {artifact_count}')
+    
+    # Count all events from audit log by getting all types
+    event_count = sum(len(audit_log.get_events_by_type(et)) for et in [
+        EventType.ENTITY_CREATED, EventType.ENTITY_UPDATED,
+        EventType.RELATIONSHIP_DECLARED, EventType.TASK_STATE_CHANGED,
+        EventType.AGENT_ACTION, EventType.SECURITY_EVENT
+    ])
+    metrics_output.append('# HELP minioffice_audit_events_total Total number of audit events')
+    metrics_output.append('# TYPE minioffice_audit_events_total counter')
+    metrics_output.append(f'minioffice_audit_events_total {event_count}')
+    
+    return '\n'.join(metrics_output) + '\n', 200, {'Content-Type': 'text/plain; version=0.0.4'}
+
+
 @app.route('/api')
 def api_index():
     """API documentation"""
@@ -141,6 +227,8 @@ def api_index():
         'description': 'A spatialized, agent-orchestrated development environment',
         'endpoints': {
             'GET /': 'Main application interface',
+            'GET /health': 'Health check endpoint',
+            'GET /metrics': 'Prometheus metrics endpoint',
             'GET /api': 'API documentation',
             'GET /api/world/state': 'Get current world state',
             'POST /api/world/step': 'Advance simulation by one tick',
@@ -1328,6 +1416,13 @@ def run_server(host='0.0.0.0', port=5000, debug=False):
     print(f"Simulation initialized with world: {simulation.world.name}")
     
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
+
+
+# Initialize simulation at module level for production servers (gunicorn, etc.)
+# Only initialize if explicitly in production mode
+if os.getenv('FLASK_ENV') == 'production':
+    simulation = init_simulation()
+    print(f"Production mode: Simulation initialized with world: {simulation.world.name if simulation else 'None'}")
 
 
 if __name__ == '__main__':
