@@ -19,8 +19,12 @@ def add_security_headers(response):
     return response
 
 
-def validate_request_size(max_size=1024 * 1024):  # 1MB default
-    """Decorator to validate request size"""
+def validate_request_size(max_size=16 * 1024 * 1024):  # 16MB default (matches Flask config)
+    """
+    Decorator to validate request size.
+    Default matches app.config['MAX_CONTENT_LENGTH'].
+    Use smaller limits for specific endpoints if needed.
+    """
     def decorator(f: Callable) -> Callable:
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -46,17 +50,12 @@ def validate_json_request(f: Callable) -> Callable:
     return wrapper
 
 
-def rate_limit_check(request_ip: str, endpoint: str, limit: int, window: int) -> bool:
-    """
-    Check if request should be rate limited.
-    Returns True if request should be allowed, False otherwise.
-    
-    Note: This is a simple in-memory implementation.
-    For production, use Redis or similar.
-    """
-    # Simplified implementation - in production use Redis
-    # This is just a placeholder
-    return True
+# NOTE: rate_limit_check is not currently used.
+# For production rate limiting, integrate Redis with flask-limiter:
+# pip install flask-limiter redis
+# from flask_limiter import Limiter
+# limiter = Limiter(app, key_func=get_remote_address, storage_uri="redis://localhost:6379")
+# @limiter.limit("10 per minute")
 
 
 def configure_cors(app, allowed_origins=None):

@@ -16,6 +16,11 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 # Production stage
 FROM python:3.11-slim
 
+# Install curl for health checks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create non-root user
 RUN groupadd -r minioffice && useradd -r -g minioffice minioffice
 
@@ -41,9 +46,9 @@ USER minioffice
 # Expose port
 EXPOSE 5000
 
-# Health check
+# Health check using curl
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')" || exit 1
+    CMD curl -f http://localhost:5000/health || exit 1
 
 # Run with gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--worker-class", "eventlet", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "src.server.app:app"]

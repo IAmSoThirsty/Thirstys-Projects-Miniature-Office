@@ -28,7 +28,13 @@ from src.server.security import add_security_headers, configure_cors
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'miniature-office-secret-change-in-production')
+
+# Security: Require SECRET_KEY in production
+secret_key = os.getenv('SECRET_KEY')
+if os.getenv('FLASK_ENV') == 'production' and not secret_key:
+    raise RuntimeError("SECRET_KEY environment variable must be set in production mode")
+app.config['SECRET_KEY'] = secret_key or 'dev-secret-key-only-for-testing'
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max request size
 
 # Configure CORS
@@ -1413,7 +1419,8 @@ def run_server(host='0.0.0.0', port=5000, debug=False):
 
 
 # Initialize simulation at module level for production servers (gunicorn, etc.)
-if os.getenv('FLASK_ENV') == 'production' or os.getenv('GUNICORN_CMD_ARGS'):
+# Only initialize if explicitly in production mode
+if os.getenv('FLASK_ENV') == 'production':
     simulation = init_simulation()
     print(f"Production mode: Simulation initialized with world: {simulation.world.name if simulation else 'None'}")
 
