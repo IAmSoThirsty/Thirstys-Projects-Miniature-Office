@@ -16,7 +16,7 @@ No creative action may enter execution without approval.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 from datetime import datetime
 from enum import Enum
 
@@ -666,12 +666,12 @@ class BoundedCreativeAutonomy:
     # Recognition
     recognition_system: RecognitionSystem
     
-    # Track records
-    track_records: Dict[str, PersonalTrackRecord] = field(default_factory=dict)
-    
     # Safety systems
     creative_firewall: CreativeFirewall
     failure_safety: FailureSafetySystem
+    
+    # Track records
+    track_records: Dict[str, PersonalTrackRecord] = field(default_factory=dict)
     
     # State
     is_enabled: bool = True
