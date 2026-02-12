@@ -109,6 +109,24 @@ Each floor has its own subdirectory containing:
 **Domain**: High-performance systems, game engines, real-time processing  
 **Status**: ✅ Implemented
 
+### Floor 24 - Fortran (`fortran/`)
+**Language**: Fortran (2008+)  
+**Domain**: Scientific computation, Numerical analysis, HPC simulations  
+**Status**: ✅ Implemented  
+**Key Features**: Array bounds checking, Numerical precision, Matrix operations, Modern modules
+
+### Floor 25 - MATLAB/Octave (`matlab/`)
+**Language**: MATLAB / GNU Octave  
+**Domain**: Numerical modeling, Matrix operations, Signal processing, Visualization  
+**Status**: ✅ Implemented  
+**Key Features**: Vectorization, Dimension validation, Compatible with MATLAB and Octave
+
+### Floor 26 - CUDA/GPU (`cuda/`)
+**Language**: CUDA C++  
+**Domain**: Parallel compute kernels, GPU acceleration, Massively parallel workloads  
+**Status**: ✅ Implemented  
+**Key Features**: Memory coalescing, Thread safety, Kernel validation, Device memory management
+
 ## Future Floor Implementations
 
 The following floors are specified but not yet implemented:
@@ -116,7 +134,7 @@ The following floors are specified but not yet implemented:
 - **Floor 8 - SQL**: Data definition, query logic
 - **Floor 14 - Objective-C**: Legacy macOS/iOS applications
 - **Floor 17 - Lua**: Embedded scripting, game logic
-- And 15+ more floors as defined in FLOOR_SPECIFICATIONS.md
+- And 12+ more floors as defined in FLOOR_SPECIFICATIONS.md
 
 ## Communication Protocol
 
@@ -214,4 +232,27 @@ echo '{"method": "get_info"}' | ./department_floor
 cd floors/erlang
 rebar3 escriptize
 echo '{"method": "get_info"}' | ./_build/default/bin/department_floor
+```
+
+### Fortran Floor
+```bash
+cd floors/fortran
+make
+echo '{"jsonrpc":"2.0","method":"initialize","id":1}' | ./department_floor
+```
+
+### MATLAB/Octave Floor
+```bash
+cd floors/matlab
+# Using Octave:
+echo '{"jsonrpc":"2.0","method":"initialize","id":1}' | octave --silent --eval "department_floor"
+# Using MATLAB:
+echo '{"jsonrpc":"2.0","method":"initialize","id":1}' | matlab -nodisplay -nosplash -r "department_floor"
+```
+
+### CUDA/GPU Floor
+```bash
+cd floors/cuda
+make
+echo '{"jsonrpc":"2.0","method":"initialize","id":1}' | ./department_floor
 ```
