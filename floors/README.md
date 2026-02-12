@@ -81,6 +81,24 @@ Each floor has its own subdirectory containing:
 **Status**: ✅ Implemented  
 **Key Features**: Idiomatic Ruby, SOLID principles, Duck typing
 
+### Floor 20 - Haskell (`haskell/`)
+**Language**: Haskell (GHC 9.2+)  
+**Domain**: Pure functional programming, Type-safe systems, Compilers  
+**Status**: ✅ Implemented  
+**Key Features**: Type safety, No partial functions, Monadic error handling, Purity
+
+### Floor 22 - Elixir (`elixir/`)
+**Language**: Elixir 1.14+  
+**Domain**: Distributed systems, Fault-tolerant services, Concurrent applications  
+**Status**: ✅ Implemented  
+**Key Features**: OTP design patterns, GenServers, Supervision trees, Let it crash
+
+### Floor 23 - Erlang (`erlang/`)
+**Language**: Erlang/OTP 25+  
+**Domain**: Telecom-grade systems, High-availability services, Real-time processing  
+**Status**: ✅ Implemented  
+**Key Features**: Nine-nines reliability, Process supervision, Hot code loading, Message passing
+
 ### Floor 3 - C (`c/`)
 **Language**: C  
 **Domain**: Low-level systems, embedded, operating systems  
@@ -174,4 +192,26 @@ echo '{"method": "get_info", "id": 1}' | java -jar target/scala-3.3.1/department
 cd floors/swift
 swift build -c release
 echo '{"method": "get_info", "id": 1}' | .build/release/department_floor
+```
+
+### Haskell Floor
+```bash
+cd floors/haskell
+cabal build
+echo '{"method": "get_info"}' | cabal run department-floor
+```
+
+### Elixir Floor
+```bash
+cd floors/elixir
+mix deps.get
+mix escript.build
+echo '{"method": "get_info"}' | ./department_floor
+```
+
+### Erlang Floor
+```bash
+cd floors/erlang
+rebar3 escriptize
+echo '{"method": "get_info"}' | ./_build/default/bin/department_floor
 ```
