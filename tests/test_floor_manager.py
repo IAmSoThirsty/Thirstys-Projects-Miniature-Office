@@ -11,9 +11,22 @@ class TestFloorProcess:
     """Tests for FloorProcess class"""
     
     def test_floor_process_initialization(self):
-        """Test FloorProcess initialization"""
-        # This is a mock test as we can't easily create a subprocess for testing
-        pass
+        """Test FloorProcess initialization with mock process"""
+        from unittest.mock import Mock
+        
+        mock_process = Mock()
+        mock_process.poll.return_value = None  # Process is running
+        
+        floor_process = FloorProcess(
+            floor_number=1,
+            language="python",
+            process=mock_process
+        )
+        
+        assert floor_process.floor_number == 1
+        assert floor_process.language == "python"
+        assert floor_process.process == mock_process
+        assert floor_process.is_running() is True
 
 
 class TestMultiLanguageFloorManager:
