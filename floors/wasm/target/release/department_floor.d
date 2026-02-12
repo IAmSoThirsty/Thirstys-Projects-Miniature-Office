@@ -1,0 +1,1 @@
+/home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office/floors/wasm/target/release/department_floor: /home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office/floors/wasm/src/main.rs

@@ -1,0 +1,15 @@
+{application, department_floor,
+ [{description, "Floor 23 - Erlang Department Floor"},
+  {vsn, "0.1.0"},
+  {registered, [department_floor_sup, agent_service, task_manager, code_analyzer]},
+  {mod, {department_floor_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    jsx
+   ]},
+  {env,[]},
+  {modules, []},
+  {licenses, ["MIT"]},
+  {links, []}
+ ]}.

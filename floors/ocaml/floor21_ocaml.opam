@@ -1,0 +1,18 @@
+# Floor 21 OCaml Department Floor
+
+opam-version: "2.0"
+name: "floor21_ocaml"
+version: "1.0.0"
+synopsis: "Floor 21 - OCaml Jurisdiction Department Floor"
+description: "Production-grade OCaml floor implementation with functional programming patterns"
+maintainer: "floor21@miniature-office.local"
+authors: ["The Miniature Office Team"]
+license: "MIT"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune" {>= "3.0"}
+  "yojson" {>= "2.0.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
