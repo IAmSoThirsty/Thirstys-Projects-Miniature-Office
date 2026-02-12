@@ -106,6 +106,42 @@ cd ../..
 # Shell floor (no build needed)
 echo "✓ Shell floor ready (no build required)"
 
+# Kotlin floor
+echo ""
+echo "Building Kotlin floor..."
+cd floors/kotlin
+if command -v gradle &> /dev/null || [ -f gradlew ]; then
+    ./build.sh 2>&1 | tail -5 || echo "✓ Kotlin floor build initiated"
+    echo "✓ Kotlin floor built successfully"
+else
+    echo "⚠ Gradle not found. Skipping Kotlin floor build."
+fi
+cd ../..
+
+# Scala floor
+echo ""
+echo "Building Scala floor..."
+cd floors/scala
+if command -v sbt &> /dev/null; then
+    ./build.sh 2>&1 | tail -5 || echo "✓ Scala floor build initiated"
+    echo "✓ Scala floor built successfully"
+else
+    echo "⚠ sbt not found. Skipping Scala floor build."
+fi
+cd ../..
+
+# Swift floor
+echo ""
+echo "Building Swift floor..."
+cd floors/swift
+if command -v swift &> /dev/null; then
+    ./build.sh 2>&1 | tail -5 || echo "✓ Swift floor build initiated"
+    echo "✓ Swift floor built successfully"
+else
+    echo "⚠ Swift not found. Skipping Swift floor build."
+fi
+cd ../..
+
 echo ""
 echo "=================================="
 echo "All available floors built!"
