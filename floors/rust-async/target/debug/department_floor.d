@@ -1,0 +1,1 @@
+/home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office/floors/rust-async/target/debug/department_floor: /home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office/floors/rust-async/src/main.rs

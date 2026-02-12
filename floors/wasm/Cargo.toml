@@ -1,0 +1,24 @@
+[package]
+name = "wasm-department-floor"
+version = "0.1.0"
+edition = "2021"
+authors = ["Miniature Office Team"]
+description = "WebAssembly Department Floor - Portable bytecode execution"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[[bin]]
+name = "department_floor"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
