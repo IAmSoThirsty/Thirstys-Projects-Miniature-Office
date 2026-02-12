@@ -107,15 +107,16 @@ module ServiceAgent = struct
     let issues = ref [] in
     
     (* Check for proper module signature *)
-    if String.contains code ':' && not (Str.string_match (Str.regexp ".*module.*:.*sig") code 0) then
+    if String.contains code ':' && 
+       (try ignore (Str.search_forward (Str.regexp "module.*:.*sig") code 0); false with Not_found -> true) then
       issues := "Use module signatures for type abstraction" :: !issues;
     
     (* Check for mutable references *)
-    if Str.string_match (Str.regexp ".*ref\\s+") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "ref\\s+") code 0); true with Not_found -> false) then
       issues := "Prefer immutable data structures over refs" :: !issues;
     
     (* Check for proper naming *)
-    if Str.string_match (Str.regexp ".*let\\s+[A-Z]") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "let\\s+[A-Z]") code 0); true with Not_found -> false) then
       issues := "Use snake_case for function names, not CamelCase" :: !issues;
     
     let valid = List.length !issues = 0 in
@@ -131,16 +132,16 @@ module ServiceAgent = struct
     if String.contains code '|' then
       patterns := "Pattern matching" :: !patterns;
     
-    if Str.string_match (Str.regexp ".*List\\.\\(map\\|fold\\|filter\\)") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "List\\.\\(map\\|fold\\|filter\\)") code 0); true with Not_found -> false) then
       patterns := "Higher-order functions" :: !patterns;
     
-    if Str.string_match (Str.regexp ".*match.*with") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "match.*with") code 0); true with Not_found -> false) then
       patterns := "Algebraic data types" :: !patterns;
     
-    if Str.string_match (Str.regexp ".*let\\s+rec\\s+") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "let\\s+rec\\s+") code 0); true with Not_found -> false) then
       patterns := "Recursive functions" :: !patterns;
     
-    if Str.string_match (Str.regexp ".*fun\\s+") code 0 || Str.string_match (Str.regexp ".*->") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "fun\\s+\\|->") code 0); true with Not_found -> false) then
       patterns := "Anonymous functions" :: !patterns;
     
     `Assoc [
@@ -151,16 +152,16 @@ module ServiceAgent = struct
   let analyze_types code =
     let type_features = ref [] in
     
-    if Str.string_match (Str.regexp ".*type.*=") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "type.*=") code 0); true with Not_found -> false) then
       type_features := "Type definitions" :: !type_features;
     
-    if Str.string_match (Str.regexp ".*type.*'[a-z]") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "type.*'[a-z]") code 0); true with Not_found -> false) then
       type_features := "Polymorphic types" :: !type_features;
     
-    if Str.string_match (Str.regexp ".*module\\s+type") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "module\\s+type") code 0); true with Not_found -> false) then
       type_features := "Module types" :: !type_features;
     
-    if Str.string_match (Str.regexp ".*\\[[^]]*\\]") code 0 || Str.string_match (Str.regexp ".*<[^>]*>") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "\\[[^]]*\\]\\|<[^>]*>") code 0); true with Not_found -> false) then
       type_features := "Type annotations" :: !type_features;
     
     `Assoc [
@@ -340,27 +341,27 @@ module OperationsAgent = struct
     let score = ref 100 in
     
     (* Check for proper module structure *)
-    if not (Str.string_match (Str.regexp ".*open\\|module") code 0) then begin
+    if not ((try ignore (Str.search_forward (Str.regexp "open\\|module") code 0); true with Not_found -> false)) then begin
       issues := "Missing module organization" :: !issues;
       score := !score - 10
     end;
     
     (* Check for type annotations *)
-    if Str.string_match (Str.regexp ".*let\\s+") code 0 && 
-       not (Str.string_match (Str.regexp ".*:\\s*[a-z]") code 0) then begin
+    if (try ignore (Str.search_forward (Str.regexp "let\\s+") code 0); true with Not_found -> false) && 
+       not (try ignore (Str.search_forward (Str.regexp ":\\s*[a-z]") code 0); true with Not_found -> false) then begin
       issues := "Consider adding type annotations for clarity" :: !issues;
       score := !score - 5
     end;
     
     (* Check for pattern matching exhaustiveness markers *)
-    if Str.string_match (Str.regexp ".*match.*with") code 0 && 
-       not (Str.string_match (Str.regexp ".*\\s*_\\s*->") code 0) then begin
+    if (try ignore (Str.search_forward (Str.regexp "match.*with") code 0); true with Not_found -> false) && 
+       not (try ignore (Str.search_forward (Str.regexp "\\s*_\\s*->") code 0); true with Not_found -> false) then begin
       issues := "Ensure pattern matching is exhaustive" :: !issues;
       score := !score - 10
     end;
     
     (* Check for mutation *)
-    if Str.string_match (Str.regexp ".*:=\\|<-") code 0 then begin
+    if (try ignore (Str.search_forward (Str.regexp ":=\\|<-") code 0); true with Not_found -> false) then begin
       issues := "Mutation detected - prefer immutable data structures" :: !issues;
       score := !score - 15
     end;
@@ -467,7 +468,7 @@ module SecurityAgent = struct
     let vulnerabilities = ref [] in
     
     (* Unsafe operations *)
-    if Str.string_match (Str.regexp ".*Obj\\.magic") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "Obj\\.magic") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "CRITICAL");
         ("type", `String "type_safety_bypass");
@@ -475,7 +476,7 @@ module SecurityAgent = struct
       ] :: !vulnerabilities;
     
     (* Unsafe string operations *)
-    if Str.string_match (Str.regexp ".*String\\.\\(get\\|set\\)\\s+.*unsafe") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "String\\.\\(get\\|set\\)\\s+.*unsafe") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "HIGH");
         ("type", `String "unsafe_string_access");
@@ -483,7 +484,8 @@ module SecurityAgent = struct
       ] :: !vulnerabilities;
     
     (* Mutable references in shared state *)
-    if Str.string_match (Str.regexp ".*let\\s+.*ref\\s+") code 0 && Str.string_match (Str.regexp ".*Thread") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "let\\s+.*ref\\s+") code 0); true with Not_found -> false) && 
+       (try ignore (Str.search_forward (Str.regexp "Thread") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "HIGH");
         ("type", `String "race_condition");
@@ -491,8 +493,8 @@ module SecurityAgent = struct
       ] :: !vulnerabilities;
     
     (* Unchecked exceptions *)
-    if Str.string_match (Str.regexp ".*raise\\s+") code 0 && 
-       not (Str.string_match (Str.regexp ".*try.*with") code 0) then
+    if (try ignore (Str.search_forward (Str.regexp "raise\\s+") code 0); true with Not_found -> false) && 
+       not (try ignore (Str.search_forward (Str.regexp "try.*with") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "MEDIUM");
         ("type", `String "unchecked_exception");
@@ -500,7 +502,7 @@ module SecurityAgent = struct
       ] :: !vulnerabilities;
     
     (* External C bindings without validation *)
-    if Str.string_match (Str.regexp ".*external\\s+") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "external\\s+") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "MEDIUM");
         ("type", `String "unsafe_ffi");
@@ -508,7 +510,7 @@ module SecurityAgent = struct
       ] :: !vulnerabilities;
     
     (* Format string issues *)
-    if Str.string_match (Str.regexp ".*Printf\\.\\(sprintf\\|printf\\)\\s+[a-z]") code 0 then
+    if (try ignore (Str.search_forward (Str.regexp "Printf\\.\\(sprintf\\|printf\\)\\s+[a-z]") code 0); true with Not_found -> false) then
       vulnerabilities := `Assoc [
         ("severity", `String "LOW");
         ("type", `String "format_string");

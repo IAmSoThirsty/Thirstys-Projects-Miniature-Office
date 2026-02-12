@@ -231,7 +231,7 @@ static NSString * const ObjectiveCFloorErrorDomain = @"com.floor14.objc";
     if ([code containsString:@"NSNotificationCenter"]) {
         [patterns addObject:@"Notification pattern"];
     }
-    if ([code containsString:@"block"]) {
+    if ([code rangeOfString:@"^" options:NSRegularExpressionSearch].location != NSNotFound) {
         [patterns addObject:@"Block (closure) usage"];
     }
     if ([code containsString:@"@synchronized"]) {
@@ -258,7 +258,10 @@ static NSString * const ObjectiveCFloorErrorDomain = @"com.floor14.objc";
     NSMutableArray<NSString *> *issues = [NSMutableArray array];
     
     // Check for strong reference cycles
-    if ([code containsString:@"self."] && [code containsString:@"^"] && ![code containsString:@"__weak"]) {
+    NSRegularExpression *blockRegex = [NSRegularExpression regularExpressionWithPattern:@"\\^[\\s\\(]" options:0 error:nil];
+    BOOL hasBlocks = [blockRegex numberOfMatchesInString:code options:0 range:NSMakeRange(0, code.length)] > 0;
+    
+    if ([code containsString:@"self."] && hasBlocks && ![code containsString:@"__weak"]) {
         [issues addObject:@"Potential retain cycle: use __weak self in blocks"];
     }
     

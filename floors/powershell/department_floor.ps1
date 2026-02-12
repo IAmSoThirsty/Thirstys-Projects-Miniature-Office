@@ -156,8 +156,8 @@ class ServiceAgent {
         }
         
         # Check for approved verbs
-        if ($code -match 'function\s+Get-|Set-|New-|Remove-|Test-|Invoke-') {
-            # Good - using approved verbs
+        if ($code -match 'function\s+[A-Z][a-z]+-[A-Z][a-z]+') {
+            # Good - using approved verbs with proper Verb-Noun
         } elseif ($code -match 'function\s+[A-Z]') {
             $issues.Add('Use approved PowerShell verbs (Get, Set, New, Remove, etc.)')
         }
