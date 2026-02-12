@@ -143,6 +143,7 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
 - **[QUICKSTART.md](QUICKSTART.md)** - Basic usage and API examples
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system design (11 layers)
+- **[MULTI_LANGUAGE_FLOORS.md](MULTI_LANGUAGE_FLOORS.md)** - 🌐 **Multi-language floor implementations** - Transparent diversity
 
 ## Features
 
@@ -165,6 +166,11 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive production deployment g
   - Template-based code generation (Python, JS, Rust)
   - Automated code review with style checking
   - Test generation with coverage estimation
+- **🌐 NEW: Multi-Language Department Floors!**
+  - Each floor implemented in its native language
+  - Python, Rust, JavaScript, Go, Shell implementations
+  - JSON-RPC communication protocol
+  - Transparent diversity and language sovereignty
 
 ### Production Features ✅
 - ✅ Comprehensive test suite (1288 tests, **99% coverage** - **Phase 1 Complete!** 🎉)
@@ -191,6 +197,21 @@ This demonstrates:
 - Automated test generation (pytest/chai format)
 - Code review with style enforcement
 - End-to-end pipeline processing
+
+**NEW: Try the multi-language floor system:**
+
+```bash
+python3 src/core/floor_manager.py
+```
+
+This demonstrates:
+- Starting department floors in Python, JavaScript, and Go
+- Each floor running in its native language
+- Unified JSON-RPC communication
+- Code analysis in each language
+- Transparent diversity and language sovereignty
+
+See **[MULTI_LANGUAGE_FLOORS.md](MULTI_LANGUAGE_FLOORS.md)** for details.
 
 ## API Endpoints
 
