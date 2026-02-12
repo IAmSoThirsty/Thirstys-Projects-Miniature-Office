@@ -2,19 +2,20 @@
 
 # Compiler and flags
 CC = clang
-OBJC_FLAGS = -fobjc-arc -fblocks -Wall -Wextra
+OBJC_FLAGS = -fblocks -Wall -Wextra
 
 # Detect platform
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
-    # macOS - use Foundation framework
+    # macOS - use Foundation framework and ARC
     LDFLAGS = -framework Foundation
-    OBJC_FLAGS += -framework Foundation
+    OBJC_FLAGS += -framework Foundation -fobjc-arc
 else ifeq ($(UNAME_S),Linux)
-    # Linux - use GNUstep
+    # Linux - use GNUstep (no ARC support on legacy runtime)
     OBJC_FLAGS += $(shell gnustep-config --objc-flags 2>/dev/null || echo "")
     LDFLAGS = $(shell gnustep-config --base-libs 2>/dev/null || echo "-lgnustep-base -lobjc") -ldispatch
+    # Note: GNUstep uses legacy runtime, ARC not supported
 endif
 
 # Source files
@@ -59,5 +60,6 @@ help:
 	@echo "  help             - Show this help message"
 	@echo ""
 	@echo "Platform: $(UNAME_S)"
+	@echo "Note: ARC is only supported on macOS. Linux/GNUstep uses manual reference counting."
 
 .PHONY: all run test clean install-deps-linux help

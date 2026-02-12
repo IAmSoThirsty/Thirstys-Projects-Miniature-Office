@@ -133,12 +133,13 @@ class ServiceAgent {
     }
 
     [hashtable] ExecuteService([string]$serviceName, [hashtable]$params) {
-        switch ($serviceName) {
-            'validate_style' { return $this.ValidateStyle($params) }
-            'check_cmdlets' { return $this.CheckCmdlets($params) }
-            'analyze_security' { return $this.AnalyzeSecurity($params) }
+        $result = switch ($serviceName) {
+            'validate_style' { $this.ValidateStyle($params) }
+            'check_cmdlets' { $this.CheckCmdlets($params) }
+            'analyze_security' { $this.AnalyzeSecurity($params) }
             default { throw "Unknown service: $serviceName" }
         }
+        return $result
     }
 
     hidden [hashtable] ValidateStyle([hashtable]$params) {
@@ -261,12 +262,13 @@ class DataModelAgent {
     }
 
     [hashtable] ProcessData([string]$operation, [object]$data) {
-        switch ($operation) {
-            'validate' { return $this.ValidateData($data) }
-            'transform' { return $this.TransformData($data) }
-            'infer_type' { return $this.InferType($data) }
+        $result = switch ($operation) {
+            'validate' { $this.ValidateData($data) }
+            'transform' { $this.TransformData($data) }
+            'infer_type' { $this.InferType($data) }
             default { throw "Unknown operation: $operation" }
         }
+        return $result
     }
 
     hidden [hashtable] ValidateData([object]$data) {
@@ -733,42 +735,43 @@ class PowerShellDepartmentFloor {
 
     [hashtable] ProcessCode([string]$code, [string]$operation) {
         try {
-            switch ($operation) {
+            $result = switch ($operation) {
                 'analyze' {
                     $analysis = $this.OperationsAgent.AnalyzeCode($code)
-                    return @{
+                    @{
                         status = 'success'
                         analysis = $analysis.ToHashtable()
                     }
                 }
                 'quality' {
                     $quality = $this.OperationsAgent.CheckQuality($code)
-                    return @{
+                    @{
                         status = 'success'
                         quality = $quality
                     }
                 }
                 'security' {
                     $security = $this.SecurityAgent.ScanSecurity($code)
-                    return @{
+                    @{
                         status = 'success'
                         security = $security
                     }
                 }
                 'test_analysis' {
                     $testAnalysis = $this.TestAgent.AnalyzeTests($code)
-                    return @{
+                    @{
                         status = 'success'
                         testAnalysis = $testAnalysis
                     }
                 }
                 default {
-                    return @{
+                    @{
                         status = 'error'
                         message = "Unknown operation: $operation"
                     }
                 }
             }
+            return $result
         }
         catch {
             return @{
@@ -783,12 +786,12 @@ class PowerShellDepartmentFloor {
             $method = $request['method']
             $params = if ($request.ContainsKey('params')) { $request['params'] } else { @{} }
             
-            switch ($method) {
+            $result = switch ($method) {
                 'get_info' {
-                    return $this.GetFloorInfo()
+                    $this.GetFloorInfo()
                 }
                 'add_agent' {
-                    return $this.AddAgent(
+                    $this.AddAgent(
                         $params['agentId'],
                         $params['name'],
                         $params['role'],
@@ -797,28 +800,29 @@ class PowerShellDepartmentFloor {
                     )
                 }
                 'create_task' {
-                    return $this.CreateTask(
+                    $this.CreateTask(
                         $params['taskId'],
                         $params['title'],
                         $params['assignedTo']
                     )
                 }
                 'process_code' {
-                    return $this.ProcessCode($params['code'], $params['operation'])
+                    $this.ProcessCode($params['code'], $params['operation'])
                 }
                 'execute_service' {
-                    return $this.ServiceAgent.ExecuteService($params['serviceName'], $params)
+                    $this.ServiceAgent.ExecuteService($params['serviceName'], $params)
                 }
                 'process_data' {
-                    return $this.DataModelAgent.ProcessData($params['operation'], $params['data'])
+                    $this.DataModelAgent.ProcessData($params['operation'], $params['data'])
                 }
                 default {
-                    return @{
+                    @{
                         status = 'error'
                         message = "Unknown method: $method"
                     }
                 }
             }
+            return $result
         }
         catch {
             return @{
