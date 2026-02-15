@@ -327,6 +327,11 @@ class MyClass:
             def __init__(self):
                 self.function_count = 0
                 self.class_count = 0
+                self.module_count = 0
+
+            def visit_module(self, node: ASTNode):
+                self.module_count += 1
+                return super().visit_module(node)
 
             def visit_function_def(self, node: ASTNode):
                 self.function_count += 1
@@ -341,6 +346,7 @@ class MyClass:
 
         assert visitor.function_count == 2
         assert visitor.class_count == 1
+        assert visitor.module_count == 1
 
     def test_empty_source_handling(self):
         """Test handling of empty source code"""
@@ -351,6 +357,25 @@ class MyClass:
         assert error is None
         assert root is not None
         assert root.node_type == ASTNodeType.MODULE
+
+    def test_ast_node_repr(self):
+        """Test ASTNode __repr__ method"""
+        from src.analysis.ast_analyzer import ASTNode, ASTNodeType
+
+        node = ASTNode(
+            node_type=ASTNodeType.FUNCTION_DEF,
+            name="test_func",
+            line_start=10,
+            line_end=20,
+            col_start=0,
+            col_end=10,
+            scope_id="test",
+        )
+
+        repr_str = repr(node)
+        assert "ASTNode" in repr_str
+        assert "function" in repr_str.lower() or "test_func" in repr_str
+        assert "10" in repr_str
 
     def test_bindings_and_references(self):
         """Test tracking of variable bindings and references"""
@@ -415,6 +440,161 @@ class TestSemanticAnalyzer:
         assert analyzer.root_table is None
         assert analyzer.issues == []
 
+    def test_symbol_table_lookup_in_scope(self):
+        """Test symbol lookup in current scope"""
+        from src.analysis.semantic_analyzer import (
+            SymbolTable,
+            Symbol,
+            SymbolKind,
+        )
+
+        table = SymbolTable(scope_id="test")
+        symbol = Symbol(
+            name="x",
+            kind=SymbolKind.VARIABLE,
+            definition_line=1,
+            definition_col=0,
+            scope_id="test",
+        )
+        table.symbols["x"] = symbol
+
+        result = table.lookup("x")
+        assert result is symbol
+        assert result.name == "x"
+
+    def test_symbol_table_lookup_in_parent(self):
+        """Test symbol lookup in parent scope"""
+        from src.analysis.semantic_analyzer import (
+            SymbolTable,
+            Symbol,
+            SymbolKind,
+        )
+
+        parent_table = SymbolTable(scope_id="parent")
+        child_table = SymbolTable(scope_id="child", parent=parent_table)
+
+        parent_symbol = Symbol(
+            name="y",
+            kind=SymbolKind.VARIABLE,
+            definition_line=1,
+            definition_col=0,
+            scope_id="parent",
+        )
+        parent_table.symbols["y"] = parent_symbol
+
+        result = child_table.lookup("y")
+        assert result is parent_symbol
+
+    def test_symbol_table_lookup_not_found(self):
+        """Test symbol lookup returns None when not found"""
+        from src.analysis.semantic_analyzer import SymbolTable
+
+        table = SymbolTable(scope_id="test")
+        result = table.lookup("nonexistent")
+        assert result is None
+
+    def test_type_inference_none(self):
+        """Test type inference for None"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type(None) == "None"
+
+    def test_type_inference_bool(self):
+        """Test type inference for bool"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type(True) == "bool"
+        assert infer.infer_literal_type(False) == "bool"
+
+    def test_type_inference_int(self):
+        """Test type inference for int"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type(42) == "int"
+
+    def test_type_inference_float(self):
+        """Test type inference for float"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type(3.14) == "float"
+
+    def test_type_inference_str(self):
+        """Test type inference for str"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type("hello") == "str"
+
+    def test_type_inference_list(self):
+        """Test type inference for list"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type([1, 2, 3]) == "list"
+
+    def test_type_inference_tuple(self):
+        """Test type inference for tuple"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type((1, 2, 3)) == "tuple"
+
+    def test_type_inference_dict(self):
+        """Test type inference for dict"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type({"a": 1}) == "dict"
+
+    def test_type_inference_set(self):
+        """Test type inference for set"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+        assert infer.infer_literal_type({1, 2, 3}) == "set"
+
+    def test_type_inference_unknown(self):
+        """Test type inference for unknown types"""
+        from src.analysis.semantic_analyzer import TypeInference
+
+        infer = TypeInference()
+
+        class CustomClass:
+            pass
+
+        assert infer.infer_literal_type(CustomClass()) == "unknown"
+
+    def test_semantic_analyzer_analyze(self):
+        """Test semantic analyzer analyze method"""
+        from src.analysis.semantic_analyzer import SemanticAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        # Parse simple source
+        source = "x = 1"
+        ast_analyzer = ASTAnalyzer()
+        root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        # Analyze semantics
+        semantic_analyzer = SemanticAnalyzer()
+        symbol_table = semantic_analyzer.analyze(root)
+
+        assert symbol_table is not None
+        assert symbol_table.scope_id == "module"
+        assert semantic_analyzer.root_table is symbol_table
+
+    def test_semantic_analyzer_get_issues(self):
+        """Test getting semantic issues"""
+        from src.analysis.semantic_analyzer import SemanticAnalyzer
+
+        analyzer = SemanticAnalyzer()
+        issues = analyzer.get_issues()
+        assert issues == []
+
 
 class TestMetricsCalculator:
     """Test suite for metrics calculator"""
@@ -425,6 +605,38 @@ class TestMetricsCalculator:
 
         calc = MetricsCalculator()
         assert calc is not None
+
+    def test_calculate_complexity(self):
+        """Test complexity calculation"""
+        from src.analysis.metrics_calculator import MetricsCalculator
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "def foo(): return 1"
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+        assert error is None
+
+        calc = MetricsCalculator()
+        metrics = calc.calculate_complexity(root)
+        assert metrics.cyclomatic_complexity >= 1
+        assert metrics.cognitive_complexity >= 0
+        assert metrics.halstead_volume >= 0.0
+        assert metrics.halstead_difficulty >= 0.0
+
+    def test_calculate_maintainability(self):
+        """Test maintainability index calculation"""
+        from src.analysis.metrics_calculator import MetricsCalculator
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "x = 1"
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+        assert error is None
+
+        calc = MetricsCalculator()
+        index = calc.calculate_maintainability(root)
+        assert 0.0 <= index.index <= 100.0
+        assert index.grade in ["A", "B", "C", "D", "F"]
 
 
 class TestPatternDetector:
@@ -437,6 +649,34 @@ class TestPatternDetector:
         detector = PatternDetector()
         assert detector is not None
 
+    def test_detect_patterns(self):
+        """Test pattern detection"""
+        from src.analysis.pattern_detector import PatternDetector
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "class Singleton: pass"
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+        assert error is None
+
+        detector = PatternDetector()
+        patterns = detector.detect_patterns(root)
+        assert isinstance(patterns, list)
+
+    def test_detect_antipatterns(self):
+        """Test anti-pattern detection"""
+        from src.analysis.pattern_detector import PatternDetector
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "def foo(): pass"
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+        assert error is None
+
+        detector = PatternDetector()
+        antipatterns = detector.detect_antipatterns(root)
+        assert isinstance(antipatterns, list)
+
 
 class TestDependencyAnalyzer:
     """Test suite for dependency analyzer"""
@@ -447,6 +687,88 @@ class TestDependencyAnalyzer:
 
         analyzer = DependencyAnalyzer()
         assert analyzer is not None
+
+    def test_analyze_dependencies(self):
+        """Test dependency analysis"""
+        from src.analysis.dependency_analyzer import DependencyAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "import os\nimport sys"
+        ast_analyzer = ASTAnalyzer()
+        root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        analyzer = DependencyAnalyzer()
+        graph = analyzer.analyze_dependencies(root)
+        assert graph is not None
+        assert isinstance(graph.nodes, set)
+        assert isinstance(graph.edges, list)
+
+    def test_dependency_graph_detect_cycles(self):
+        """Test cycle detection in dependency graph"""
+        from src.analysis.dependency_analyzer import DependencyGraph
+
+        graph = DependencyGraph()
+        cycles = graph.detect_cycles()
+        assert isinstance(cycles, list)
+
+    def test_dependency_graph_get_transitive_dependencies(self):
+        """Test transitive dependency calculation"""
+        from src.analysis.dependency_analyzer import DependencyGraph
+
+        graph = DependencyGraph()
+        deps = graph.get_transitive_dependencies("test_module")
+        assert isinstance(deps, set)
+
+    def test_analyze_project_dependencies(self):
+        """Test project-wide dependency analysis"""
+        from src.analysis.dependency_analyzer import DependencyAnalyzer
+        import tempfile
+        import os
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            analyzer = DependencyAnalyzer()
+            graph = analyzer.analyze_project_dependencies(tmpdir)
+            assert graph is not None
+            assert isinstance(graph.nodes, set)
+            assert isinstance(graph.edges, list)
+
+
+class TestFlowAnalyzer:
+    """Test suite for flow analyzer"""
+
+    def test_analyze_control_flow(self):
+        """Test control flow analysis"""
+        from src.analysis.flow_analyzer import FlowAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "if x > 0:\n    y = 1\nelse:\n    y = 2"
+        ast_analyzer = ASTAnalyzer()
+        root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        analyzer = FlowAnalyzer()
+        cfg = analyzer.analyze_control_flow(root)
+        assert cfg is not None
+        assert cfg.entry_node == "start"
+        assert isinstance(cfg.exit_nodes, set)
+        assert isinstance(cfg.edges, dict)
+
+    def test_analyze_data_flow(self):
+        """Test data flow analysis"""
+        from src.analysis.flow_analyzer import FlowAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = "x = 1\ny = x + 2"
+        ast_analyzer = ASTAnalyzer()
+        root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        analyzer = FlowAnalyzer()
+        dfg = analyzer.analyze_data_flow(root)
+        assert dfg is not None
+        assert isinstance(dfg.definitions, dict)
+        assert isinstance(dfg.uses, dict)
 
 
 class TestCodeCivilizationIntegration:
