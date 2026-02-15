@@ -361,21 +361,28 @@ class MyClass:
     def test_ast_node_repr(self):
         """Test ASTNode __repr__ method"""
         from src.analysis.ast_analyzer import ASTNode, ASTNodeType
+        import ast
+
+        # Create a simple function node to get a raw_node
+        source = "def test_func(): pass"
+        raw_ast = ast.parse(source)
+        raw_func = raw_ast.body[0]
 
         node = ASTNode(
             node_type=ASTNodeType.FUNCTION_DEF,
+            raw_node=raw_func,
             name="test_func",
-            line_start=10,
-            line_end=20,
+            line_start=1,
+            line_end=1,
             col_start=0,
-            col_end=10,
+            col_end=20,
             scope_id="test",
         )
 
         repr_str = repr(node)
         assert "ASTNode" in repr_str
         assert "function" in repr_str.lower() or "test_func" in repr_str
-        assert "10" in repr_str
+        assert "1" in repr_str
 
     def test_bindings_and_references(self):
         """Test tracking of variable bindings and references"""
@@ -426,6 +433,95 @@ def greet():
 
         assert error is None
         assert root is not None
+
+    def test_file_not_found_error(self, tmp_path):
+        """Test handling of missing file"""
+        analyzer = ASTAnalyzer()
+        nonexistent = tmp_path / "nonexistent.py"
+        root, error = analyzer.parse_file(nonexistent)
+
+        assert root is None
+        assert error is not None
+        assert "File not found" in error
+
+    def test_file_encoding_errors(self, tmp_path):
+        """Test handling of file encoding errors"""
+        # Create file with invalid UTF-8 bytes
+        test_file = tmp_path / "bad_encoding.py"
+        test_file.write_bytes(b"def test():\n    # Invalid UTF-8: \xFF\xFE\n    pass")
+
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_file(test_file)
+
+        # Should either parse successfully with latin-1 fallback or report encoding error
+        # The important thing is that it doesn't crash
+        assert root is not None or (error is not None and "error" in error.lower())
+
+    def test_function_with_varargs_and_kwargs(self):
+        """Test function with *args and **kwargs"""
+        source = """
+def flexible(*args, **kwargs):
+    pass
+
+def typed(*args: int, **kwargs: str):
+    pass
+"""
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+
+        assert error is None
+        functions = analyzer.extract_functions(root)
+        assert len(functions) == 2
+
+        # Check first function has *args and **kwargs
+        func1 = functions[0]
+        arg_names = [name for name, _ in func1.arguments]
+        assert any("*args" in name for name in arg_names)
+        assert any("**kwargs" in name for name in arg_names)
+
+    def test_decorator_unpacking_error_handling(self):
+        """Test decorator unpacking with complex decorators"""
+        source = """
+@my_decorator
+@another_decorator()
+def decorated():
+    pass
+"""
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+
+        assert error is None
+        functions = analyzer.extract_functions(root)
+        assert len(functions) == 1
+        # Decorators should be extracted even if some fail to unparse
+        assert len(functions[0].decorators) >= 1
+
+    def test_annotated_assignment(self):
+        """Test annotated assignment (type hints)"""
+        source = """
+x: int = 5
+y: str = "hello"
+z: list[int]
+"""
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+
+        assert error is None
+        assert root is not None
+
+    def test_recursion_depth_handling(self):
+        """Test handling of deeply nested structures"""
+        # Create very deeply nested code (though not enough to trigger recursion error in practice)
+        # This test documents the behavior rather than triggering the actual error
+        nesting_depth = 50
+        source = "(" * nesting_depth + "1" + ")" * nesting_depth
+        source = f"x = {source}"
+
+        analyzer = ASTAnalyzer()
+        root, error = analyzer.parse_source(source)
+
+        # Should parse successfully for reasonable nesting
+        assert error is None or "Recursion" in error
 
 
 class TestSemanticAnalyzer:
