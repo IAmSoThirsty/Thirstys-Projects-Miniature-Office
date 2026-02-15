@@ -1059,11 +1059,30 @@ class DesignAnalyzer:
         # Look for plugin patterns, abstract base classes, hooks
         for node in ast.walk(ast_root) if isinstance(ast_root, ast.AST) else []:
             if isinstance(node, ast.ClassDef):
-                # Check if it's an abstract base class
-                for decorator in node.decorator_list:
-                    if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
-                        self.result.extension_points.append(f"{node.name} (abstract base)")
-                        self.result.plugin_architecture = True
+                # Check if it inherits from ABC or has abstract methods
+                is_abstract = False
+                has_abstract_methods = False
+
+                # Check inheritance from ABC
+                for base in node.bases:
+                    if isinstance(base, ast.Name) and base.id in ['ABC', 'ABCMeta']:
+                        is_abstract = True
+                        break
+
+                # Check for abstract methods
+                for item in node.body:
+                    if isinstance(item, ast.FunctionDef):
+                        for decorator in item.decorator_list:
+                            if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
+                                has_abstract_methods = True
+                                break
+                            elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
+                                has_abstract_methods = True
+                                break
+
+                if is_abstract or has_abstract_methods:
+                    self.result.extension_points.append(f"{node.name} (abstract base class)")
+                    self.result.plugin_architecture = True
 
     def _calculate_summary_statistics(self) -> None:
         """Calculate summary statistics (derived, not filtered)"""
