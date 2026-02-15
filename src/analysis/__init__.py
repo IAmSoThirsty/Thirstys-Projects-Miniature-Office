@@ -12,6 +12,7 @@ This module provides comprehensive code analysis capabilities including:
 - Pattern detection (design patterns, anti-patterns)
 - Dependency analysis (module-level, package-level)
 - Cross-reference analysis (call graphs, usage graphs)
+- MAXIMUM ALLOWED DESIGN analysis (architecture, SOLID, quality metrics)
 
 All analysis operates in NON-AFFECT MODE:
 - No emotional language
@@ -28,6 +29,7 @@ from .flow_analyzer import FlowAnalyzer, ControlFlowGraph, DataFlowGraph
 from .metrics_calculator import MetricsCalculator, ComplexityMetrics, MaintainabilityIndex
 from .pattern_detector import PatternDetector, DesignPattern, AntiPattern
 from .dependency_analyzer import DependencyAnalyzer, DependencyGraph, ModuleRelation
+from .design_analyzer import DesignAnalyzer, DesignAnalysisResult
 
 __all__ = [
     'ASTAnalyzer', 'ASTNode', 'ASTVisitor',
@@ -36,4 +38,5 @@ __all__ = [
     'MetricsCalculator', 'ComplexityMetrics', 'MaintainabilityIndex',
     'PatternDetector', 'DesignPattern', 'AntiPattern',
     'DependencyAnalyzer', 'DependencyGraph', 'ModuleRelation',
+    'DesignAnalyzer', 'DesignAnalysisResult',
 ]

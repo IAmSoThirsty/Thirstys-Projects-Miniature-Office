@@ -17,6 +17,7 @@ try:
     from ..analysis.metrics_calculator import MetricsCalculator
     from ..analysis.pattern_detector import PatternDetector
     from ..analysis.dependency_analyzer import DependencyAnalyzer
+    from ..analysis.design_analyzer import DesignAnalyzer
     ANALYSIS_AVAILABLE = True
 except ImportError:
     ANALYSIS_AVAILABLE = False
@@ -252,6 +253,7 @@ class ArchitecturalDecision:
     - Code quality metrics (complexity, maintainability)
     - Pattern detection (design patterns, anti-patterns)
     - Dependency analysis (module relationships, cycles)
+    - MAXIMUM ALLOWED DESIGN analysis (all layers, components, SOLID, architecture)
 
     All analysis is performed with no summarization or compression.
     """
@@ -265,6 +267,7 @@ class ArchitecturalDecision:
     complexity_metrics: Optional[Dict] = None  # Full complexity analysis
     detected_patterns: Optional[List[Dict]] = None  # All patterns found
     dependency_graph: Optional[Dict] = None  # Complete dependency structure
+    design_analysis: Optional[Dict] = None  # MAXIMUM ALLOWED DESIGN analysis
 
     def to_dict(self) -> Dict:
         result = {
@@ -284,6 +287,8 @@ class ArchitecturalDecision:
             result['detected_patterns'] = self.detected_patterns
         if self.dependency_graph:
             result['dependency_graph'] = self.dependency_graph
+        if self.design_analysis:
+            result['design_analysis'] = self.design_analysis
 
         return result
 
@@ -629,6 +634,7 @@ class CodeAuthoringCivilization:
         complexity_metrics = None
         detected_patterns = None
         dependency_graph = None
+        design_analysis = None
 
         # AGGRESSIVE ANALYSIS: If analyzing existing code, extract maximum detail
         if (ANALYSIS_AVAILABLE and
@@ -744,6 +750,15 @@ class CodeAuthoringCivilization:
                 except Exception as e:
                     dependency_graph = {'error': str(e)}
 
+                # MAXIMUM ALLOWED DESIGN ANALYSIS
+                # Perform comprehensive design analysis with no summarization
+                design_analyzer = DesignAnalyzer()
+                try:
+                    design_result = design_analyzer.analyze(ast_root, directive.source)
+                    design_analysis = design_analyzer.generate_report()
+                except Exception as e:
+                    design_analysis = {'error': str(e)}
+
             else:
                 # Parse error occurred
                 ast_analysis = {
@@ -803,6 +818,7 @@ class CodeAuthoringCivilization:
             complexity_metrics=complexity_metrics,
             detected_patterns=detected_patterns,
             dependency_graph=dependency_graph,
+            design_analysis=design_analysis,
         )
     
     def _implementation_sprint(

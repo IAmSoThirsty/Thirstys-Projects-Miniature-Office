@@ -957,5 +957,405 @@ def calculate(x, y):
         assert arch_decision.ast_analysis is None
 
 
+class TestDesignAnalyzer:
+    """Test suite for MAXIMUM ALLOWED DESIGN MODE analyzer"""
+
+    def test_design_analyzer_initialization(self):
+        """Test design analyzer can be instantiated"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+
+        analyzer = DesignAnalyzer()
+        assert analyzer is not None
+        assert analyzer.result is not None
+
+    def test_analyze_simple_class(self):
+        """Test design analysis of simple class"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class Calculator:
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        return a - b
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        assert result is not None
+        assert result.total_components >= 1
+        assert 'Calculator' in result.components
+
+    def test_detect_singleton_pattern(self):
+        """Test singleton pattern detection"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class DatabaseConnection:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect singleton pattern
+        assert len(result.detected_patterns) > 0
+
+    def test_detect_god_class_smell(self):
+        """Test god class design smell detection"""
+        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        # Create a large class with many methods
+        methods = '\n'.join([f"    def method_{i}(self): pass" for i in range(25)])
+        source = f"""
+class GodClass:
+{methods}
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect god class smell
+        god_class_smells = [s for s in result.design_smells if s[0] == DesignSmell.GOD_CLASS]
+        assert len(god_class_smells) > 0
+
+    def test_solid_single_responsibility_violation(self):
+        """Test SOLID single responsibility principle violation detection"""
+        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class UserService:
+    '''
+    Manages users
+    Handles authentication
+    Sends emails
+    Logs activities
+    Generates reports
+    '''
+    def create_user(self): pass
+    def authenticate(self): pass
+    def send_email(self): pass
+    def log_activity(self): pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect SRP violation (multiple responsibilities)
+        srp_violations = [v for v in result.solid_violations
+                         if v.principle == SOLIDPrinciple.SINGLE_RESPONSIBILITY]
+        assert len(srp_violations) > 0
+
+    def test_solid_interface_segregation_violation(self):
+        """Test SOLID interface segregation principle violation detection"""
+        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        # Create interface with too many methods
+        methods = '\n'.join([f"    def method_{i}(self): pass" for i in range(15)])
+        source = f"""
+class LargeInterface:
+{methods}
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect ISP violation (too many methods in interface)
+        isp_violations = [v for v in result.solid_violations
+                         if v.principle == SOLIDPrinciple.INTERFACE_SEGREGATION]
+        assert len(isp_violations) > 0
+
+    def test_quality_metrics_calculation(self):
+        """Test design quality metrics calculation"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class ServiceA:
+    def process(self): pass
+
+class ServiceB:
+    def handle(self): pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        assert result.quality_metrics is not None
+        assert 0.0 <= result.quality_metrics.cohesion <= 1.0
+        assert 0.0 <= result.quality_metrics.coupling <= 1.0
+        assert 0.0 <= result.quality_metrics.maintainability_index <= 100.0
+
+    def test_architectural_style_detection(self):
+        """Test architectural style classification"""
+        from src.analysis.design_analyzer import DesignAnalyzer, ArchitecturalStyle
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        # Layered architecture example
+        source = """
+class UserView:
+    def display(self): pass
+
+class UserService:
+    def create_user(self): pass
+
+class UserRepository:
+    def save(self): pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect layered architecture
+        assert result.architectural_style == ArchitecturalStyle.LAYERED
+
+    def test_component_interaction_analysis(self):
+        """Test component interaction analysis"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class ServiceA:
+    pass
+
+class ServiceB(ServiceA):
+    pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect inheritance interaction
+        assert len(result.interactions) > 0
+
+    def test_circular_dependency_detection(self):
+        """Test circular dependency detection"""
+        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        # Note: Hard to create true circular dependency in simple code
+        # But the detection mechanism should be tested
+        source = """
+class A:
+    pass
+
+class B:
+    pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Result should have circular_dependencies field (may be empty)
+        assert isinstance(result.circular_dependencies, list)
+
+    def test_cross_cutting_concerns_identification(self):
+        """Test identification of cross-cutting concerns"""
+        from src.analysis.design_analyzer import DesignAnalyzer, CrossCuttingConcern
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+import logging
+
+class Service:
+    def process(self):
+        logging.info("Processing")
+        result = self.do_work()
+        logging.debug("Done")
+        return result
+
+    def do_work(self):
+        return True
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect logging as cross-cutting concern
+        assert CrossCuttingConcern.LOGGING in result.cross_cutting_concerns
+
+    def test_failure_mode_analysis(self):
+        """Test failure mode analysis"""
+        from src.analysis.design_analyzer import DesignAnalyzer, ComponentType
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class DatabaseRepository:
+    def save(self, data):
+        pass
+
+class ApiClient:
+    def fetch(self, url):
+        pass
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should identify failure modes for data access and integration components
+        assert len(result.failure_modes) > 0
+
+    def test_generate_comprehensive_report(self):
+        """Test comprehensive design report generation"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class Calculator:
+    def add(self, a, b):
+        return a + b
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+        report = design_analyzer.generate_report()
+
+        # Report should contain all sections
+        assert 'patterns' in report
+        assert 'architecture' in report
+        assert 'quality_metrics' in report
+        assert 'solid_violations' in report
+        assert 'design_smells' in report
+        assert 'cross_cutting_concerns' in report
+        assert 'invariants' in report
+        assert 'edge_cases' in report
+        assert 'failure_modes' in report
+        assert 'extensibility' in report
+        assert 'governance' in report
+        assert 'summary' in report
+
+    def test_design_analysis_integration_with_code_civilization(self):
+        """Test design analysis integration into code civilization pipeline"""
+        from src.core.code_civilization import (
+            CodeAuthoringCivilization,
+            CodeDirective,
+            ProgrammingLanguage,
+            RequestedOutcome,
+            InputType,
+        )
+
+        civilization = CodeAuthoringCivilization()
+
+        source = """
+class UserService:
+    def create_user(self, name):
+        return {"name": name}
+"""
+
+        directive = CodeDirective(
+            directive_id="design-test-001",
+            language=ProgrammingLanguage.PYTHON,
+            source=source,
+            requested_outcome=RequestedOutcome.AUDIT,
+            input_type=InputType.EXISTING_CODE,
+            constraints=[],
+        )
+
+        civilization.submit_directive(directive)
+        arch_decision = civilization._architectural_pass(directive)
+
+        # Design analysis should be included
+        assert arch_decision.approved
+        assert arch_decision.design_analysis is not None
+        assert isinstance(arch_decision.design_analysis, dict)
+
+    def test_edge_cases_identification(self):
+        """Test edge case identification"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+class DataProcessor:
+    def process(self, data):
+        if data is None:
+            return []
+        return data
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should identify edge cases
+        assert len(result.edge_cases) > 0
+
+    def test_extensibility_assessment(self):
+        """Test extensibility assessment"""
+        from src.analysis.design_analyzer import DesignAnalyzer
+        from src.analysis.ast_analyzer import ASTAnalyzer
+
+        source = """
+from abc import ABC, abstractmethod
+
+class AbstractService(ABC):
+    @abstractmethod
+    def execute(self):
+        pass
+
+class ConcreteService(AbstractService):
+    def execute(self):
+        return "done"
+"""
+        ast_analyzer = ASTAnalyzer()
+        ast_root, error = ast_analyzer.parse_source(source)
+        assert error is None
+
+        design_analyzer = DesignAnalyzer()
+        result = design_analyzer.analyze(ast_root, source)
+
+        # Should detect extension points
+        assert len(result.extension_points) > 0 or result.plugin_architecture
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
