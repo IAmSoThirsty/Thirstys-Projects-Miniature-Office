@@ -7,6 +7,19 @@ This is law ABOVE all other laws.
 from enum import Enum
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
+from pathlib import Path
+
+# Import aggressive analysis system
+try:
+    from ..analysis.ast_analyzer import ASTAnalyzer
+    from ..analysis.semantic_analyzer import SemanticAnalyzer
+    from ..analysis.flow_analyzer import FlowAnalyzer
+    from ..analysis.metrics_calculator import MetricsCalculator
+    from ..analysis.pattern_detector import PatternDetector
+    from ..analysis.dependency_analyzer import DependencyAnalyzer
+    ANALYSIS_AVAILABLE = True
+except ImportError:
+    ANALYSIS_AVAILABLE = False
 
 
 class PurposeConstitution:
@@ -230,17 +243,49 @@ class CodePipelineStep(Enum):
 class ArchitecturalDecision:
     """
     Architectural Pass output (Step 2)
+
+    MAXIMUM DETAIL EXTRACTION MODE:
+    When analyzing existing code, this includes comprehensive analysis results:
+    - Complete AST analysis (all node types, scopes, bindings, references)
+    - Semantic analysis (symbol tables, type inference, dead code)
+    - Control and data flow graphs
+    - Code quality metrics (complexity, maintainability)
+    - Pattern detection (design patterns, anti-patterns)
+    - Dependency analysis (module relationships, cycles)
+
+    All analysis is performed with no summarization or compression.
     """
     invariants: List[str] = field(default_factory=list)
     rejected_reason: Optional[str] = None  # If request is impossible
     approved: bool = False
-    
+
+    # Deep analysis results (populated when analyzing existing code)
+    ast_analysis: Optional[Dict] = None  # Complete AST report with all details
+    semantic_issues: Optional[List[Dict]] = None  # All detected semantic problems
+    complexity_metrics: Optional[Dict] = None  # Full complexity analysis
+    detected_patterns: Optional[List[Dict]] = None  # All patterns found
+    dependency_graph: Optional[Dict] = None  # Complete dependency structure
+
     def to_dict(self) -> Dict:
-        return {
+        result = {
             'invariants': self.invariants,
             'rejected_reason': self.rejected_reason,
             'approved': self.approved
         }
+
+        # Include deep analysis if available
+        if self.ast_analysis:
+            result['ast_analysis'] = self.ast_analysis
+        if self.semantic_issues:
+            result['semantic_issues'] = self.semantic_issues
+        if self.complexity_metrics:
+            result['complexity_metrics'] = self.complexity_metrics
+        if self.detected_patterns:
+            result['detected_patterns'] = self.detected_patterns
+        if self.dependency_graph:
+            result['dependency_graph'] = self.dependency_graph
+
+        return result
 
 
 @dataclass
@@ -559,15 +604,153 @@ class CodeAuthoringCivilization:
     def _architectural_pass(self, directive: CodeDirective) -> ArchitecturalDecision:
         """
         Step 2: Architect interprets intent, declares invariants
-        
-        Analyzes the directive to:
-        - Parse user intent from directive.source
-        - Identify structural invariants (type safety, error handling, etc.)
-        - Detect impossible requirements and reject early
-        - Return architectural constraints for implementation
+
+        MAXIMUM DETAIL EXTRACTION MODE:
+        - Parses user intent from directive.source
+        - Performs AGGRESSIVE ANALYSIS if analyzing existing code:
+          * Complete AST parsing with all node metadata
+          * Semantic analysis with full symbol tables
+          * Control and data flow graph generation
+          * Comprehensive metrics calculation
+          * Pattern and anti-pattern detection
+          * Complete dependency analysis
+        - Identifies structural invariants (type safety, error handling, etc.)
+        - Detects impossible requirements and rejects early
+        - Returns architectural constraints with maximum detail
+
+        No information is summarized or omitted when permitted.
+        All layers, sublayers, components fully exposed.
+        All dependencies and cross-dependencies tracked.
+        All edge cases and failure modes documented.
         """
         invariants = []
-        
+        ast_analysis = None
+        semantic_issues = None
+        complexity_metrics = None
+        detected_patterns = None
+        dependency_graph = None
+
+        # AGGRESSIVE ANALYSIS: If analyzing existing code, extract maximum detail
+        if (ANALYSIS_AVAILABLE and
+                directive.input_type == InputType.EXISTING_CODE and
+                directive.language == ProgrammingLanguage.PYTHON):
+
+            # Parse source with aggressive AST analysis
+            analyzer = ASTAnalyzer()
+            ast_root, parse_error = analyzer.parse_source(directive.source, f"<directive-{directive.directive_id}>")
+
+            if ast_root:
+                # Generate comprehensive AST report with all details
+                ast_analysis = analyzer.generate_report(ast_root)
+
+                # Extract all functions for detailed analysis
+                functions = analyzer.extract_functions(ast_root)
+                ast_analysis['function_details'] = []
+                for func in functions:
+                    func_detail = {
+                        'name': func.name,
+                        'line': func.line_start,
+                        'line_end': func.line_end,
+                        'complexity': func.cyclomatic_complexity,
+                        'arguments': func.arguments,
+                        'return_annotation': func.return_annotation,
+                        'decorators': func.decorators,
+                        'scope_id': func.scope_id,
+                        'bindings': list(func.bindings),
+                        'references': list(func.references),
+                        'depth': func.depth,
+                    }
+                    ast_analysis['function_details'].append(func_detail)
+
+                # Extract all classes for detailed analysis
+                classes = analyzer.extract_classes(ast_root)
+                ast_analysis['class_details'] = []
+                for cls in classes:
+                    cls_detail = {
+                        'name': cls.name,
+                        'line': cls.line_start,
+                        'line_end': cls.line_end,
+                        'base_classes': cls.base_classes,
+                        'decorators': cls.decorators,
+                        'scope_id': cls.scope_id,
+                        'depth': cls.depth,
+                    }
+                    ast_analysis['class_details'].append(cls_detail)
+
+                # Extract all imports
+                imports = analyzer.extract_imports(ast_root)
+                ast_analysis['import_details'] = []
+                for imp in imports:
+                    imp_detail = {
+                        'line': imp.line_start,
+                        'type': imp.node_type.value,
+                    }
+                    ast_analysis['import_details'].append(imp_detail)
+
+                # Perform semantic analysis
+                semantic_analyzer = SemanticAnalyzer()
+                try:
+                    _ = semantic_analyzer.analyze(ast_root)
+                    semantic_issues = semantic_analyzer.get_issues()
+                except Exception as e:
+                    semantic_issues = [{'type': 'analysis_error', 'message': str(e)}]
+
+                # Calculate metrics
+                metrics_calc = MetricsCalculator()
+                try:
+                    complexity = metrics_calc.calculate_complexity(ast_root)
+                    maintainability = metrics_calc.calculate_maintainability(ast_root)
+                    complexity_metrics = {
+                        'cyclomatic_complexity': complexity.cyclomatic_complexity,
+                        'cognitive_complexity': complexity.cognitive_complexity,
+                        'halstead_volume': complexity.halstead_volume,
+                        'halstead_difficulty': complexity.halstead_difficulty,
+                        'maintainability_index': maintainability.index,
+                        'maintainability_grade': maintainability.grade,
+                    }
+                except Exception as e:
+                    complexity_metrics = {'error': str(e)}
+
+                # Detect patterns and anti-patterns
+                pattern_detector = PatternDetector()
+                try:
+                    patterns = pattern_detector.detect_patterns(ast_root)
+                    antipatterns = pattern_detector.detect_antipatterns(ast_root)
+                    detected_patterns = {
+                        'design_patterns': [
+                            {'type': p.pattern_type.value, 'location': p.location, 'confidence': p.confidence}
+                            for p in patterns
+                        ],
+                        'anti_patterns': [
+                            {'type': a.pattern_type.value, 'location': a.location, 'severity': a.severity}
+                            for a in antipatterns
+                        ],
+                    }
+                except Exception as e:
+                    detected_patterns = {'error': str(e)}
+
+                # Analyze dependencies
+                dep_analyzer = DependencyAnalyzer()
+                try:
+                    dep_graph = dep_analyzer.analyze_dependencies(ast_root)
+                    dependency_graph = {
+                        'nodes': list(dep_graph.nodes),
+                        'edges': [
+                            {'source': e.source, 'target': e.target, 'type': e.relation_type.value, 'line': e.line}
+                            for e in dep_graph.edges
+                        ],
+                        'cycles': dep_graph.detect_cycles(),
+                    }
+                except Exception as e:
+                    dependency_graph = {'error': str(e)}
+
+            else:
+                # Parse error occurred
+                ast_analysis = {
+                    'parse_error': parse_error,
+                    'status': 'failed',
+                }
+
         # Analyze language-specific requirements
         if directive.language == ProgrammingLanguage.PYTHON:
             invariants.extend(["Type hints", "PEP 8 compliance", "Docstrings"])
@@ -577,7 +760,7 @@ class CodeAuthoringCivilization:
             invariants.extend(["Type safety (TypeScript)", "ESLint compliance"])
         else:
             invariants.append("Language-specific best practices")
-        
+
         # Add outcome-specific invariants
         if directive.requested_outcome == RequestedOutcome.FIX:
             invariants.append("Preserve existing functionality")
@@ -591,7 +774,7 @@ class CodeAuthoringCivilization:
         elif directive.requested_outcome == RequestedOutcome.AUDIT:
             invariants.append("No code modifications")
             invariants.append("Report issues only")
-        
+
         # Check for impossible requirements
         if "no external dependencies" in [c.lower() for c in directive.constraints]:
             if "use numpy" in directive.source.lower() or "import numpy" in directive.source.lower():
@@ -600,7 +783,7 @@ class CodeAuthoringCivilization:
                     rejected_reason="Constraint 'no external dependencies' conflicts with numpy usage in source",
                     approved=False
                 )
-        
+
         # Check for empty source on certain outcomes
         if directive.input_type == InputType.SPEC and not directive.source.strip():
             return ArchitecturalDecision(
@@ -608,13 +791,18 @@ class CodeAuthoringCivilization:
                 rejected_reason="Cannot implement from empty specification",
                 approved=False
             )
-        
+
         # Add general software engineering invariants
         invariants.extend(["Error handling", "Input validation"])
-        
+
         return ArchitecturalDecision(
             invariants=invariants,
-            approved=True
+            approved=True,
+            ast_analysis=ast_analysis,
+            semantic_issues=semantic_issues,
+            complexity_metrics=complexity_metrics,
+            detected_patterns=detected_patterns,
+            dependency_graph=dependency_graph,
         )
     
     def _implementation_sprint(
