@@ -728,7 +728,8 @@ class TestConsigliereGlobal:
     def test_consigliere_persists_state(self):
         """Test Consigliere state persists across get calls"""
         c1 = get_consigliere()
-        c1.explain_what_options("test situation")
-        
+        initial_count = len(c1.explanation_history)
+        c1.explain_what_options("test situation unique")
+
         c2 = get_consigliere()
-        assert len(c2.explanation_history) == 1
+        assert len(c2.explanation_history) == initial_count + 1
