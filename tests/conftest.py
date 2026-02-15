@@ -43,7 +43,11 @@ def reset_global_state():
     # Clear off-duty city
     from src.core import off_duty_city
     off_duty_city._off_duty_city_instance = None
-    
+
+    # Clear global registry
+    from src.core import global_registry
+    global_registry._global_registry = None
+
     yield
 
 
