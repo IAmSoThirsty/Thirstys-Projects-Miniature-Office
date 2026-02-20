@@ -12,26 +12,20 @@ Tests cover:
 - Statistics and reporting
 - Singleton pattern
 """
-import pytest
-import time
-import uuid
-from unittest.mock import Mock, patch, MagicMock
+
 from datetime import datetime
 
+import pytest
+
+from src.core.global_registry import FloorRegistration, FloorStatus, GlobalRegistry, ServiceType
 from src.core.universal_dispatcher import (
-    RoutingStrategy,
-    DispatchStatus,
     DispatchRequest,
     DispatchResponse,
+    DispatchStatus,
+    RoutingStrategy,
     UniversalDispatcher,
+    _global_dispatcher,
     get_universal_dispatcher,
-    _global_dispatcher
-)
-from src.core.global_registry import (
-    GlobalRegistry,
-    FloorStatus,
-    ServiceType,
-    FloorRegistration
 )
 
 
@@ -48,13 +42,7 @@ class TestRoutingStrategy:
 
     def test_routing_strategy_count(self):
         """Test that all expected routing strategies are defined"""
-        expected_strategies = [
-            "round_robin",
-            "least_loaded",
-            "random",
-            "first_available",
-            "language_specific"
-        ]
+        expected_strategies = ["round_robin", "least_loaded", "random", "first_available", "language_specific"]
         actual_strategies = [strategy.value for strategy in RoutingStrategy]
         assert len(actual_strategies) == len(expected_strategies)
         for strategy in expected_strategies:
@@ -75,14 +63,7 @@ class TestDispatchStatus:
 
     def test_dispatch_status_count(self):
         """Test that all expected statuses are defined"""
-        expected_statuses = [
-            "pending",
-            "routing",
-            "executing",
-            "completed",
-            "failed",
-            "timeout"
-        ]
+        expected_statuses = ["pending", "routing", "executing", "completed", "failed", "timeout"]
         actual_statuses = [status.value for status in DispatchStatus]
         assert len(actual_statuses) == len(expected_statuses)
         for status in expected_statuses:
@@ -95,10 +76,7 @@ class TestDispatchRequest:
     def test_request_creation_minimal(self):
         """Test basic dispatch request creation with minimal parameters"""
         request = DispatchRequest(
-            request_id="req-001",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={"file": "test.py"}
+            request_id="req-001", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={"file": "test.py"}
         )
 
         assert request.request_id == "req-001"
@@ -123,7 +101,7 @@ class TestDispatchRequest:
             routing_strategy=RoutingStrategy.ROUND_ROBIN,
             preferred_language="python",
             timeout=60.0,
-            metadata=metadata
+            metadata=metadata,
         )
 
         assert request.request_id == "req-002"
@@ -136,24 +114,14 @@ class TestDispatchRequest:
 
     def test_request_timestamp_format(self):
         """Test that created_at timestamp is valid ISO format"""
-        request = DispatchRequest(
-            request_id="req-003",
-            service_type=ServiceType.BUILD,
-            method="build",
-            params={}
-        )
+        request = DispatchRequest(request_id="req-003", service_type=ServiceType.BUILD, method="build", params={})
 
         # Should be able to parse the timestamp
         datetime.fromisoformat(request.created_at)
 
     def test_request_empty_params(self):
         """Test request with empty params"""
-        request = DispatchRequest(
-            request_id="req-004",
-            service_type=ServiceType.CODE_TESTING,
-            method="test",
-            params={}
-        )
+        request = DispatchRequest(request_id="req-004", service_type=ServiceType.CODE_TESTING, method="test", params={})
 
         assert request.params == {}
 
@@ -163,10 +131,7 @@ class TestDispatchResponse:
 
     def test_response_creation_minimal(self):
         """Test basic dispatch response creation"""
-        response = DispatchResponse(
-            request_id="req-001",
-            status=DispatchStatus.COMPLETED
-        )
+        response = DispatchResponse(request_id="req-001", status=DispatchStatus.COMPLETED)
 
         assert response.request_id == "req-001"
         assert response.status == DispatchStatus.COMPLETED
@@ -185,7 +150,7 @@ class TestDispatchResponse:
             floor_id="floor-001",
             result=result_data,
             error=None,
-            execution_time=1.234
+            execution_time=1.234,
         )
 
         assert response.request_id == "req-002"
@@ -198,10 +163,7 @@ class TestDispatchResponse:
     def test_response_with_error(self):
         """Test dispatch response with error"""
         response = DispatchResponse(
-            request_id="req-003",
-            status=DispatchStatus.FAILED,
-            error="Connection timeout",
-            execution_time=30.0
+            request_id="req-003", status=DispatchStatus.FAILED, error="Connection timeout", execution_time=30.0
         )
 
         assert response.status == DispatchStatus.FAILED
@@ -216,25 +178,22 @@ class TestDispatchResponse:
             status=DispatchStatus.COMPLETED,
             floor_id="floor-002",
             result=result_data,
-            execution_time=2.5
+            execution_time=2.5,
         )
 
         result_dict = response.to_dict()
 
-        assert result_dict['request_id'] == "req-004"
-        assert result_dict['status'] == "completed"  # Converted to string
-        assert result_dict['floor_id'] == "floor-002"
-        assert result_dict['result'] == result_data
-        assert result_dict['error'] is None
-        assert result_dict['execution_time'] == 2.5
-        assert 'completed_at' in result_dict
+        assert result_dict["request_id"] == "req-004"
+        assert result_dict["status"] == "completed"  # Converted to string
+        assert result_dict["floor_id"] == "floor-002"
+        assert result_dict["result"] == result_data
+        assert result_dict["error"] is None
+        assert result_dict["execution_time"] == 2.5
+        assert "completed_at" in result_dict
 
     def test_response_timestamp_format(self):
         """Test that completed_at timestamp is valid ISO format"""
-        response = DispatchResponse(
-            request_id="req-005",
-            status=DispatchStatus.COMPLETED
-        )
+        response = DispatchResponse(request_id="req-005", status=DispatchStatus.COMPLETED)
 
         # Should be able to parse the timestamp
         datetime.fromisoformat(response.completed_at)
@@ -271,6 +230,7 @@ class TestUniversalDispatcher:
 
     def test_register_floor_handler(self, dispatcher):
         """Test registering a floor handler"""
+
         def mock_handler(method, params):
             return {"status": "success"}
 
@@ -281,6 +241,7 @@ class TestUniversalDispatcher:
 
     def test_register_multiple_floor_handlers(self, dispatcher):
         """Test registering multiple floor handlers"""
+
         def handler1(method, params):
             return {"handler": 1}
 
@@ -297,10 +258,7 @@ class TestUniversalDispatcher:
     def test_dispatch_no_available_floors(self, dispatcher):
         """Test dispatch when no floors are available"""
         request = DispatchRequest(
-            request_id="req-001",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-001", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         response = dispatcher.dispatch(request)
@@ -320,7 +278,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -329,10 +287,7 @@ class TestUniversalDispatcher:
         dispatcher._select_floor = lambda candidates, strategy: None
 
         request = DispatchRequest(
-            request_id="req-001b",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-001b", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         response = dispatcher.dispatch(request)
@@ -354,7 +309,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -366,10 +321,7 @@ class TestUniversalDispatcher:
 
         # Dispatch request
         request = DispatchRequest(
-            request_id="req-002",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={"file": "test.py"}
+            request_id="req-002", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={"file": "test.py"}
         )
 
         response = dispatcher.dispatch(request)
@@ -389,7 +341,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-python", FloorStatus.READY)
 
@@ -399,7 +351,7 @@ class TestUniversalDispatcher:
             floor_number=2,
             language="rust",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-rust", FloorStatus.READY)
 
@@ -413,7 +365,7 @@ class TestUniversalDispatcher:
             service_type=ServiceType.CODE_ANALYSIS,
             method="analyze",
             params={},
-            preferred_language="python"
+            preferred_language="python",
         )
 
         response = dispatcher.dispatch(request)
@@ -430,7 +382,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-python", FloorStatus.READY)
 
@@ -440,7 +392,7 @@ class TestUniversalDispatcher:
             service_type=ServiceType.CODE_ANALYSIS,
             method="analyze",
             params={},
-            preferred_language="rust"
+            preferred_language="rust",
         )
 
         response = dispatcher.dispatch(request)
@@ -456,15 +408,12 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
         request = DispatchRequest(
-            request_id="req-005",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-005", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         response = dispatcher.dispatch(request)
@@ -479,7 +428,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -490,10 +439,7 @@ class TestUniversalDispatcher:
         dispatcher.register_floor_handler("floor-001", failing_handler)
 
         request = DispatchRequest(
-            request_id="req-006",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-006", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         response = dispatcher.dispatch(request)
@@ -509,7 +455,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -520,10 +466,7 @@ class TestUniversalDispatcher:
         dispatcher.register_floor_handler("floor-001", timeout_handler)
 
         request = DispatchRequest(
-            request_id="req-007",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-007", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         response = dispatcher.dispatch(request)
@@ -539,7 +482,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -548,15 +491,12 @@ class TestUniversalDispatcher:
             floor_number=2,
             language="rust",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-002", FloorStatus.READY)
 
         request = DispatchRequest(
-            request_id="req-008",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={}
+            request_id="req-008", service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={}
         )
 
         candidates = dispatcher._find_candidate_floors(request)
@@ -573,7 +513,7 @@ class TestUniversalDispatcher:
             floor_number=1,
             language="python",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-python", FloorStatus.READY)
 
@@ -582,7 +522,7 @@ class TestUniversalDispatcher:
             floor_number=2,
             language="rust",
             domain="analysis",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-rust", FloorStatus.READY)
 
@@ -591,7 +531,7 @@ class TestUniversalDispatcher:
             service_type=ServiceType.CODE_ANALYSIS,
             method="analyze",
             params={},
-            preferred_language="python"
+            preferred_language="python",
         )
 
         candidates = dispatcher._find_candidate_floors(request)
@@ -607,7 +547,7 @@ class TestUniversalDispatcher:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         floor2 = FloorRegistration(
             floor_id="floor-002",
@@ -615,7 +555,7 @@ class TestUniversalDispatcher:
             language="rust",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
 
         candidates = [floor1, floor2]
@@ -631,7 +571,7 @@ class TestUniversalDispatcher:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         floor2 = FloorRegistration(
             floor_id="floor-002",
@@ -639,7 +579,7 @@ class TestUniversalDispatcher:
             language="rust",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
 
         candidates = [floor1, floor2]
@@ -664,7 +604,7 @@ class TestUniversalDispatcher:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[]
+            services=[],
         )
 
         candidates = [floor]
@@ -681,7 +621,7 @@ class TestUniversalDispatcher:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         floor2 = FloorRegistration(
             floor_id="floor-002",
@@ -689,7 +629,7 @@ class TestUniversalDispatcher:
             language="rust",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
 
         candidates = [floor1, floor2]
@@ -707,7 +647,7 @@ class TestUniversalDispatcher:
             domain="test",
             status=FloorStatus.READY,
             services=[ServiceType.CODE_ANALYSIS],
-            agents=["agent-1", "agent-2", "agent-3"]  # More loaded
+            agents=["agent-1", "agent-2", "agent-3"],  # More loaded
         )
         floor2 = FloorRegistration(
             floor_id="floor-002",
@@ -716,7 +656,7 @@ class TestUniversalDispatcher:
             domain="test",
             status=FloorStatus.READY,
             services=[ServiceType.CODE_ANALYSIS],
-            agents=["agent-4"]  # Less loaded
+            agents=["agent-4"],  # Less loaded
         )
 
         candidates = [floor1, floor2]
@@ -735,11 +675,7 @@ class TestUniversalDispatcher:
     def test_execute_on_floor_success(self, dispatcher, registry):
         """Test successful execution on floor"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -748,12 +684,7 @@ class TestUniversalDispatcher:
 
         dispatcher.register_floor_handler("floor-001", handler)
 
-        result = dispatcher._execute_on_floor(
-            "floor-001",
-            "analyze",
-            {"file": "test.py"},
-            30.0
-        )
+        result = dispatcher._execute_on_floor("floor-001", "analyze", {"file": "test.py"}, 30.0)
 
         assert result == {"result": "success"}
 
@@ -764,29 +695,16 @@ class TestUniversalDispatcher:
     def test_execute_on_floor_no_handler(self, dispatcher, registry):
         """Test execution when no handler is registered"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
 
         with pytest.raises(ValueError, match="No handler registered"):
-            dispatcher._execute_on_floor(
-                "floor-001",
-                "analyze",
-                {},
-                30.0
-            )
+            dispatcher._execute_on_floor("floor-001", "analyze", {}, 30.0)
 
     def test_execute_on_floor_handler_error(self, dispatcher, registry):
         """Test execution when handler raises error"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -796,12 +714,7 @@ class TestUniversalDispatcher:
         dispatcher.register_floor_handler("floor-001", failing_handler)
 
         with pytest.raises(RuntimeError, match="Execution failed"):
-            dispatcher._execute_on_floor(
-                "floor-001",
-                "analyze",
-                {},
-                30.0
-            )
+            dispatcher._execute_on_floor("floor-001", "analyze", {}, 30.0)
 
         # Floor should be marked as ERROR
         floor = registry.get_floor("floor-001")
@@ -809,14 +722,8 @@ class TestUniversalDispatcher:
 
     def test_add_to_history(self, dispatcher):
         """Test adding responses to request history"""
-        response1 = DispatchResponse(
-            request_id="req-001",
-            status=DispatchStatus.COMPLETED
-        )
-        response2 = DispatchResponse(
-            request_id="req-002",
-            status=DispatchStatus.COMPLETED
-        )
+        response1 = DispatchResponse(request_id="req-001", status=DispatchStatus.COMPLETED)
+        response2 = DispatchResponse(request_id="req-002", status=DispatchStatus.COMPLETED)
 
         dispatcher._add_to_history(response1)
         dispatcher._add_to_history(response2)
@@ -832,10 +739,7 @@ class TestUniversalDispatcher:
 
         # Add more than max
         for i in range(15):
-            response = DispatchResponse(
-                request_id=f"req-{i}",
-                status=DispatchStatus.COMPLETED
-            )
+            response = DispatchResponse(request_id=f"req-{i}", status=DispatchStatus.COMPLETED)
             dispatcher._add_to_history(response)
 
         # Should be trimmed to max
@@ -848,20 +752,14 @@ class TestUniversalDispatcher:
     def test_dispatch_sync(self, dispatcher, registry):
         """Test simplified synchronous dispatch"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
         dispatcher.register_floor_handler("floor-001", lambda m, p: {"status": "ok"})
 
         response = dispatcher.dispatch_sync(
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="analyze",
-            params={"file": "test.py"}
+            service_type=ServiceType.CODE_ANALYSIS, method="analyze", params={"file": "test.py"}
         )
 
         assert response.status == DispatchStatus.COMPLETED
@@ -872,11 +770,7 @@ class TestUniversalDispatcher:
     def test_dispatch_sync_with_all_params(self, dispatcher, registry):
         """Test dispatch_sync with all optional parameters"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.BUILD]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.BUILD]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -888,7 +782,7 @@ class TestUniversalDispatcher:
             params={"target": "release"},
             preferred_language="python",
             routing_strategy=RoutingStrategy.LEAST_LOADED,
-            timeout=60.0
+            timeout=60.0,
         )
 
         assert response.status == DispatchStatus.COMPLETED
@@ -898,125 +792,105 @@ class TestUniversalDispatcher:
         """Test statistics with empty history"""
         stats = dispatcher.get_statistics()
 
-        assert stats['total_requests'] == 0
-        assert stats['successful_requests'] == 0
-        assert stats['failed_requests'] == 0
-        assert stats['average_execution_time'] == 0.0
-        assert stats['requests_by_status'] == {}
+        assert stats["total_requests"] == 0
+        assert stats["successful_requests"] == 0
+        assert stats["failed_requests"] == 0
+        assert stats["average_execution_time"] == 0.0
+        assert stats["requests_by_status"] == {}
 
     def test_get_statistics_with_data(self, dispatcher):
         """Test statistics with request history"""
         # Add various responses
-        dispatcher._add_to_history(DispatchResponse(
-            request_id="req-001",
-            status=DispatchStatus.COMPLETED,
-            floor_id="floor-001",
-            execution_time=1.0
-        ))
-        dispatcher._add_to_history(DispatchResponse(
-            request_id="req-002",
-            status=DispatchStatus.COMPLETED,
-            floor_id="floor-001",
-            execution_time=2.0
-        ))
-        dispatcher._add_to_history(DispatchResponse(
-            request_id="req-003",
-            status=DispatchStatus.FAILED,
-            floor_id="floor-002",
-            execution_time=0.5
-        ))
-        dispatcher._add_to_history(DispatchResponse(
-            request_id="req-004",
-            status=DispatchStatus.TIMEOUT,
-            execution_time=30.0
-        ))
+        dispatcher._add_to_history(
+            DispatchResponse(
+                request_id="req-001", status=DispatchStatus.COMPLETED, floor_id="floor-001", execution_time=1.0
+            )
+        )
+        dispatcher._add_to_history(
+            DispatchResponse(
+                request_id="req-002", status=DispatchStatus.COMPLETED, floor_id="floor-001", execution_time=2.0
+            )
+        )
+        dispatcher._add_to_history(
+            DispatchResponse(
+                request_id="req-003", status=DispatchStatus.FAILED, floor_id="floor-002", execution_time=0.5
+            )
+        )
+        dispatcher._add_to_history(
+            DispatchResponse(request_id="req-004", status=DispatchStatus.TIMEOUT, execution_time=30.0)
+        )
 
         stats = dispatcher.get_statistics()
 
-        assert stats['total_requests'] == 4
-        assert stats['successful_requests'] == 2
-        assert stats['failed_requests'] == 1
-        assert stats['success_rate'] == 0.5  # 2/4
-        assert stats['average_execution_time'] == (1.0 + 2.0 + 0.5 + 30.0) / 4
+        assert stats["total_requests"] == 4
+        assert stats["successful_requests"] == 2
+        assert stats["failed_requests"] == 1
+        assert stats["success_rate"] == 0.5  # 2/4
+        assert stats["average_execution_time"] == (1.0 + 2.0 + 0.5 + 30.0) / 4
 
         # Check status counts
-        assert stats['requests_by_status']['completed'] == 2
-        assert stats['requests_by_status']['failed'] == 1
-        assert stats['requests_by_status']['timeout'] == 1
+        assert stats["requests_by_status"]["completed"] == 2
+        assert stats["requests_by_status"]["failed"] == 1
+        assert stats["requests_by_status"]["timeout"] == 1
 
         # Check floor usage
-        assert stats['requests_by_floor']['floor-001'] == 2
-        assert stats['requests_by_floor']['floor-002'] == 1
+        assert stats["requests_by_floor"]["floor-001"] == 2
+        assert stats["requests_by_floor"]["floor-002"] == 1
 
     def test_get_recent_requests(self, dispatcher):
         """Test getting recent requests"""
         # Add some requests
         for i in range(5):
-            dispatcher._add_to_history(DispatchResponse(
-                request_id=f"req-{i}",
-                status=DispatchStatus.COMPLETED,
-                execution_time=float(i)
-            ))
+            dispatcher._add_to_history(
+                DispatchResponse(request_id=f"req-{i}", status=DispatchStatus.COMPLETED, execution_time=float(i))
+            )
 
         recent = dispatcher.get_recent_requests(limit=3)
 
         # Should be in reverse order (most recent first)
         assert len(recent) == 3
-        assert recent[0]['request_id'] == "req-4"
-        assert recent[1]['request_id'] == "req-3"
-        assert recent[2]['request_id'] == "req-2"
+        assert recent[0]["request_id"] == "req-4"
+        assert recent[1]["request_id"] == "req-3"
+        assert recent[2]["request_id"] == "req-2"
 
         # Each should be a dict
         assert isinstance(recent[0], dict)
-        assert 'status' in recent[0]
-        assert 'execution_time' in recent[0]
+        assert "status" in recent[0]
+        assert "execution_time" in recent[0]
 
     def test_get_recent_requests_fewer_than_limit(self, dispatcher):
         """Test getting recent requests when fewer than limit exist"""
-        dispatcher._add_to_history(DispatchResponse(
-            request_id="req-001",
-            status=DispatchStatus.COMPLETED
-        ))
+        dispatcher._add_to_history(DispatchResponse(request_id="req-001", status=DispatchStatus.COMPLETED))
 
         recent = dispatcher.get_recent_requests(limit=10)
 
         assert len(recent) == 1
-        assert recent[0]['request_id'] == "req-001"
+        assert recent[0]["request_id"] == "req-001"
 
     def test_get_recent_requests_default_limit(self, dispatcher):
         """Test getting recent requests with default limit"""
         # Add more than default limit
         for i in range(15):
-            dispatcher._add_to_history(DispatchResponse(
-                request_id=f"req-{i}",
-                status=DispatchStatus.COMPLETED
-            ))
+            dispatcher._add_to_history(DispatchResponse(request_id=f"req-{i}", status=DispatchStatus.COMPLETED))
 
         recent = dispatcher.get_recent_requests()
 
         # Default limit is 10
         assert len(recent) == 10
-        assert recent[0]['request_id'] == "req-14"
-        assert recent[-1]['request_id'] == "req-5"
+        assert recent[0]["request_id"] == "req-14"
+        assert recent[-1]["request_id"] == "req-5"
 
     def test_request_history_added_on_success(self, dispatcher, registry):
         """Test that successful requests are added to history"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
         dispatcher.register_floor_handler("floor-001", lambda m, p: {"ok": True})
 
         request = DispatchRequest(
-            request_id="req-001",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="test",
-            params={}
+            request_id="req-001", service_type=ServiceType.CODE_ANALYSIS, method="test", params={}
         )
 
         dispatcher.dispatch(request)
@@ -1029,11 +903,7 @@ class TestUniversalDispatcher:
         """Test that failed requests are added to history"""
         # Register a floor and handler that will fail during execution
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -1043,10 +913,7 @@ class TestUniversalDispatcher:
         dispatcher.register_floor_handler("floor-001", failing_handler)
 
         request = DispatchRequest(
-            request_id="req-002",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="test",
-            params={}
+            request_id="req-002", service_type=ServiceType.CODE_ANALYSIS, method="test", params={}
         )
 
         dispatcher.dispatch(request)
@@ -1058,11 +925,7 @@ class TestUniversalDispatcher:
     def test_request_history_added_on_timeout(self, dispatcher, registry):
         """Test that timeout requests are added to history"""
         registry.register_floor(
-            floor_id="floor-001",
-            floor_number=1,
-            language="python",
-            domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_ANALYSIS]
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -1072,10 +935,7 @@ class TestUniversalDispatcher:
         dispatcher.register_floor_handler("floor-001", timeout_handler)
 
         request = DispatchRequest(
-            request_id="req-003",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="test",
-            params={}
+            request_id="req-003", service_type=ServiceType.CODE_ANALYSIS, method="test", params={}
         )
 
         dispatcher.dispatch(request)
@@ -1125,11 +985,7 @@ class TestEdgeCases:
     def test_dispatch_with_empty_metadata(self, dispatcher):
         """Test dispatch request with empty metadata"""
         request = DispatchRequest(
-            request_id="req-001",
-            service_type=ServiceType.CODE_ANALYSIS,
-            method="test",
-            params={},
-            metadata={}
+            request_id="req-001", service_type=ServiceType.CODE_ANALYSIS, method="test", params={}, metadata={}
         )
 
         response = dispatcher.dispatch(request)
@@ -1145,7 +1001,7 @@ class TestEdgeCases:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
 
         candidates = [floor]
@@ -1165,7 +1021,7 @@ class TestEdgeCases:
             floor_number=1,
             language="Python",  # Capital P
             domain="test",
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
@@ -1174,7 +1030,7 @@ class TestEdgeCases:
             service_type=ServiceType.CODE_ANALYSIS,
             method="test",
             params={},
-            preferred_language="python"  # lowercase
+            preferred_language="python",  # lowercase
         )
 
         candidates = dispatcher._find_candidate_floors(request)
@@ -1185,27 +1041,23 @@ class TestEdgeCases:
     def test_response_to_dict_with_none_values(self):
         """Test response serialization with None values"""
         response = DispatchResponse(
-            request_id="req-001",
-            status=DispatchStatus.FAILED,
-            floor_id=None,
-            result=None,
-            error=None
+            request_id="req-001", status=DispatchStatus.FAILED, floor_id=None, result=None, error=None
         )
 
         result_dict = response.to_dict()
 
-        assert result_dict['floor_id'] is None
-        assert result_dict['result'] is None
-        assert result_dict['error'] is None
+        assert result_dict["floor_id"] is None
+        assert result_dict["result"] is None
+        assert result_dict["error"] is None
 
     def test_statistics_with_zero_division(self, dispatcher):
         """Test statistics calculation doesn't cause zero division"""
         stats = dispatcher.get_statistics()
 
         # With no requests, should handle gracefully
-        assert stats['total_requests'] == 0
+        assert stats["total_requests"] == 0
         # Note: success_rate is not returned when there are no requests
-        assert 'success_rate' not in stats
+        assert "success_rate" not in stats
 
     def test_round_robin_counter_persistence(self, dispatcher):
         """Test that round robin counters persist across calls"""
@@ -1215,7 +1067,7 @@ class TestEdgeCases:
             language="python",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
         floor2 = FloorRegistration(
             floor_id="floor-002",
@@ -1223,7 +1075,7 @@ class TestEdgeCases:
             language="rust",
             domain="test",
             status=FloorStatus.READY,
-            services=[ServiceType.CODE_ANALYSIS]
+            services=[ServiceType.CODE_ANALYSIS],
         )
 
         candidates = [floor1, floor2]
@@ -1250,22 +1102,13 @@ class TestEdgeCases:
             floor_number=1,
             language="python",
             domain="full-stack",
-            services=[
-                ServiceType.CODE_ANALYSIS,
-                ServiceType.CODE_GENERATION,
-                ServiceType.CODE_TESTING
-            ]
+            services=[ServiceType.CODE_ANALYSIS, ServiceType.CODE_GENERATION, ServiceType.CODE_TESTING],
         )
         registry.update_floor_status("floor-multi", FloorStatus.READY)
 
         # Should be available for any of its services
         for service in [ServiceType.CODE_ANALYSIS, ServiceType.CODE_GENERATION, ServiceType.CODE_TESTING]:
-            request = DispatchRequest(
-                request_id=f"req-{service.value}",
-                service_type=service,
-                method="test",
-                params={}
-            )
+            request = DispatchRequest(request_id=f"req-{service.value}", service_type=service, method="test", params={})
 
             candidates = dispatcher._find_candidate_floors(request)
             assert len(candidates) == 1

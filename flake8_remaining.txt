@@ -1,0 +1,235 @@
+demo_maximum_design.py:18:1: F401 'json' imported but unused
+demo_maximum_design.py:281:11: F541 f-string is missing placeholders
+demo_pipeline.py:7:1: F401 'src.core.code_civilization.CodeAuthoringCivilization' imported but unused
+demo_pipeline.py:94:121: E501 line too long (121 > 120 characters)
+run.py:13:1: E402 module level import not at top of file
+src/analysis\ast_analyzer.py:27:1: F401 'typing.Union' imported but unused
+src/analysis\ast_analyzer.py:256:9: F841 local variable 'e' is assigned to but never used
+src/analysis\ast_analyzer.py:435:9: E722 do not use bare 'except'
+src/analysis\dependency_analyzer.py:5:1: F401 'typing.Dict' imported but unused
+src/analysis\design_analyzer.py:899:121: E501 line too long (132 > 120 characters)
+src/core\code_civilization.py:10:1: F401 'pathlib.Path' imported but unused
+src/core\code_civilization.py:18:5: F401 '..analysis.flow_analyzer.FlowAnalyzer' imported but unused
+src/core\code_civilization.py:750:21: F841 local variable 'design_result' is assigned to but never used
+src/core\code_civilization.py:863:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:865:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:866:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:867:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:868:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:869:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:870:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:871:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:872:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:873:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:874:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:875:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:877:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:878:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:883:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:885:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:886:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:887:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:888:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:889:35: F541 f-string is missing placeholders
+src/core\code_civilization.py:893:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:895:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:896:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:897:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:898:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:899:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:900:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:901:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:902:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:903:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:904:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:908:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:909:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:910:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:911:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:912:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:913:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:914:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:915:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:916:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:917:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:918:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:919:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:920:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:921:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:922:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:923:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:924:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:925:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:926:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:927:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:928:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:929:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:930:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:931:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:932:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:933:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:934:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:938:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:940:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:941:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:942:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:943:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:944:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:945:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:950:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:951:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:952:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:953:31: F541 f-string is missing placeholders
+src/core\code_civilization.py:1129:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1130:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1131:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1132:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1134:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1135:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1136:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1137:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1143:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1144:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1146:44: F541 f-string is missing placeholders
+src/core\code_civilization.py:1155:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1156:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1179:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1181:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1182:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1183:40: F541 f-string is missing placeholders
+src/core\code_civilization.py:1205:33: E741 ambiguous variable name 'l'
+src/core\code_civilization.py:1206:33: E741 ambiguous variable name 'l'
+src/core\creative_autonomy.py:168:31: F541 f-string is missing placeholders
+src/core\density_codex.py:478:63: E741 ambiguous variable name 'l'
+src/core\expanded_autonomy.py:919:121: E501 line too long (185 > 120 characters)
+src/core\floor_manager.py:9:1: F401 'os' imported but unused
+src/core\floor_specifications.py:161:121: E501 line too long (123 > 120 characters)
+src/core\global_registry.py:12:1: F401 'json' imported but unused
+src/core\head_of_security.py:552:30: F541 f-string is missing placeholders
+src/core\head_of_security.py:654:44: E741 ambiguous variable name 'l'
+src/core\off_duty_city.py:17:27: W291 trailing whitespace
+src/core\universal_dispatcher.py:14:1: F401 'json' imported but unused
+src/core\universal_dispatcher.py:253:9: F841 local variable 'e' is assigned to but never used
+src/core\universal_dispatcher.py:264:77: E203 whitespace before ':'
+tests/conftest.py:6:1: F401 'src.core.entity.Entity' imported but unused
+tests/conftest.py:6:1: F401 'src.core.entity.EntityType' imported but unused
+tests/conftest.py:6:1: F401 'src.core.entity._registry' imported but unused
+tests/conftest.py:7:1: F401 'src.core.world.World' imported but unused
+tests/conftest.py:83:5: F401 'src.core.world.Floor' imported but unused
+tests/conftest.py:83:5: F811 redefinition of unused 'World' from line 7
+tests/test_agent.py:7:1: F401 'pytest' imported but unused
+tests/test_agent.py:20:1: F401 'src.core.entity.EntityType' imported but unused
+tests/test_aggressive_analysis.py:15:1: F401 'ast' imported but unused
+tests/test_aggressive_analysis.py:16:1: F401 'pathlib.Path' imported but unused
+tests/test_aggressive_analysis.py:365:9: F811 redefinition of unused 'ast' from line 15
+tests/test_aggressive_analysis.py:826:9: F401 'os' imported but unused
+tests/test_aggressive_analysis.py:908:9: F841 local variable 'directive_id' is assigned to but never used
+tests/test_aggressive_analysis.py:1174:9: F401 'src.analysis.design_analyzer.DesignSmell' imported but unused
+tests/test_aggressive_analysis.py:1226:9: F401 'src.analysis.design_analyzer.ComponentType' imported but unused
+tests/test_aggressive_analysis.py:1262:9: F841 local variable 'result' is assigned to but never used
+tests/test_api.py:10:1: F401 'src.core.world.World' imported but unused
+tests/test_api.py:932:9: F401 'os' imported but unused
+tests/test_api.py:968:9: F401 'flask_socketio.SocketIOTestClient' imported but unused
+tests/test_api.py:986:9: F401 'flask_socketio.SocketIOTestClient' imported but unused
+tests/test_api.py:994:9: F841 local variable 'received' is assigned to but never used
+tests/test_audit.py:5:1: F401 'src.core.audit.AuditEvent' imported but unused
+tests/test_audit.py:5:1: F401 'src.core.audit.AuditLog' imported but unused
+tests/test_audit.py:93:9: F811 redefinition of unused 'AuditEvent' from line 5
+tests/test_audit.py:104:9: F811 redefinition of unused 'AuditEvent' from line 5
+tests/test_audit.py:190:9: F841 local variable 'child' is assigned to but never used
+tests/test_audit.py:198:1: F811 redefinition of unused 'TestAuditLog' from line 8
+tests/test_canonical_bundle.py:5:1: F401 'pytest' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.AuthorityGrant' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.BoardResolution' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ComplianceReport' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ConsigliereInteraction' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ConstitutionalAmendment' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ContractDriftReport' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.CrossFloorContract' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.DirectivePrecedent' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.FormalInvariant' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.MetaOfficeRuling' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.NonDesignCanonicalBundle' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.Override' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.RejectedProposal' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ReproducibilityPacket' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.SecurityDecision' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.SimulationTrace' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.ToolProvenanceRecord' imported but unused
+tests/test_canonical_bundle.py:7:1: F401 'src.core.canonical_bundle.UnsafeCapabilityException' imported but unused
+tests/test_canonical_bundle.py:7:121: E501 line too long (393 > 120 characters)
+tests/test_code_civilization.py:7:1: F401 'src.core.code_civilization.CodeAuthoringCivilization' imported but unused
+tests/test_code_civilization.py:159:1: W293 blank line contains whitespace
+tests/test_code_civilization.py:162:1: W293 blank line contains whitespace
+tests/test_code_civilization.py:315:13: F841 local variable 'output' is assigned to but never used
+tests/test_cognitive_contract.py:3:1: F401 'pytest' imported but unused
+tests/test_consigliere.py:6:1: F401 'pytest' imported but unused
+tests/test_consigliere.py:244:9: F841 local variable 'manager' is assigned to but never used
+tests/test_consigliere.py:275:9: F841 local variable 'agent' is assigned to but never used
+tests/test_constitutional_mutation.py:10:1: F401 'src.core.constitutional_mutation.RiskAssessment' imported but unused
+tests/test_contract.py:8:1: F401 'pytest' imported but unused
+tests/test_contract.py:10:1: F401 'src.core.audit.EventType' imported but unused
+tests/test_contract.py:493:9: F841 local variable 'record' is assigned to but never used
+tests/test_creative_autonomy.py:5:1: F401 'pytest' imported but unused
+tests/test_creative_autonomy.py:7:1: F401 'src.core.creative_autonomy._bounded_creative_autonomy' imported but unused
+tests/test_density_codex.py:6:1: F401 'pytest' imported but unused
+tests/test_density_codex.py:157:1: F811 redefinition of unused 'TestAuthorityRelation' from line 145
+tests/test_department.py:5:1: F401 'pytest' imported but unused
+tests/test_department.py:7:1: F401 'src.agents.agent.CapabilityProfile' imported but unused
+tests/test_department.py:8:1: F401 'src.core.audit.EventType' imported but unused
+tests/test_department.py:8:1: F401 'src.core.audit.get_audit_log' imported but unused
+tests/test_entity.py:5:1: F401 'src.core.entity.EntityRegistry' imported but unused
+tests/test_entity.py:5:1: F401 'src.core.entity.Relationship' imported but unused
+tests/test_expanded_autonomy.py:5:1: F401 'pytest' imported but unused
+tests/test_expanded_autonomy.py:320:9: F841 local variable 'id2' is assigned to but never used
+tests/test_floor_manager.py:18:1: F401 'time' imported but unused
+tests/test_floor_manager.py:19:1: F401 'io.BytesIO' imported but unused
+tests/test_floor_manager.py:21:1: F401 'unittest.mock.MagicMock' imported but unused
+tests/test_floor_manager.py:21:1: F401 'unittest.mock.call' imported but unused
+tests/test_floor_manager.py:1018:9: F841 local variable 'calls' is assigned to but never used
+tests/test_floor_manager.py:1018:30: F811 redefinition of unused 'call' from line 21
+tests/test_floor_specifications.py:5:1: F401 'pytest' imported but unused
+tests/test_global_registry.py:16:1: F401 'unittest.mock.patch' imported but unused
+tests/test_global_registry.py:20:1: F401 'src.core.global_registry._global_registry' imported but unused
+tests/test_global_registry.py:390:9: F841 local variable 'agent1' is assigned to but never used
+tests/test_global_registry.py:394:9: F841 local variable 'agent2' is assigned to but never used
+tests/test_head_of_security.py:7:1: F401 'unittest.mock.MagicMock' imported but unused
+tests/test_head_of_security.py:11:1: F401 'src.core.head_of_security.SecurityAction' imported but unused
+tests/test_head_of_security.py:775:9: F841 local variable 'perm1' is assigned to but never used
+tests/test_maximum_autonomy.py:3:1: F401 'datetime.datetime' imported but unused
+tests/test_maximum_autonomy.py:872:9: F841 local variable 'faction_1' is assigned to but never used
+tests/test_maximum_autonomy.py:874:9: F841 local variable 'faction_2' is assigned to but never used
+tests/test_maximum_autonomy.py:1148:9: F841 local variable 'effect_id' is assigned to but never used
+tests/test_mission.py:3:1: F401 'pytest' imported but unused
+tests/test_off_duty_city.py:3:1: F401 'datetime.datetime' imported but unused
+tests/test_off_duty_city.py:1128:9: F841 local variable 'emb3' is assigned to but never used
+tests/test_off_duty_city.py:1332:9: F841 local variable 'conv_id' is assigned to but never used
+tests/test_scarcity_economics.py:6:1: F401 'pytest' imported but unused
+tests/test_security.py:6:1: F401 'unittest.mock.MagicMock' imported but unused
+tests/test_security.py:8:1: F401 'pytest' imported but unused
+tests/test_security.py:9:1: F401 'flask.request' imported but unused
+tests/test_security.py:223:17: F841 local variable 'response' is assigned to but never used
+tests/test_security.py:256:17: F841 local variable 'response' is assigned to but never used
+tests/test_security.py:410:9: F401 'os' imported but unused
+tests/test_simulation.py:6:1: F401 'time' imported but unused
+tests/test_simulation.py:10:1: F401 'src.agents.agent.get_consensus_system' imported but unused
+tests/test_simulation.py:11:1: F401 'src.core.audit.EventType' imported but unused
+tests/test_simulation.py:23:1: F401 'src.core.world.get_world' imported but unused
+tests/test_simulation.py:24:1: F401 'src.departments.department.get_department_registry' imported but unused
+tests/test_simulation.py:622:9: F401 'src.core.mission.Condition' imported but unused
+tests/test_supply_store.py:3:1: F401 'pytest' imported but unused
+tests/test_supply_store.py:104:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:120:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:140:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:158:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:182:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:197:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:245:9: F841 local variable 'agent' is assigned to but never used
+tests/test_supply_store.py:279:9: F841 local variable 'agent' is assigned to but never used
+tests/test_universal_dispatcher.py:16:1: F401 'time' imported but unused
+tests/test_universal_dispatcher.py:17:1: F401 'uuid' imported but unused
+tests/test_universal_dispatcher.py:19:1: F401 'unittest.mock.MagicMock' imported but unused
+tests/test_universal_dispatcher.py:19:1: F401 'unittest.mock.Mock' imported but unused
+tests/test_universal_dispatcher.py:19:1: F401 'unittest.mock.patch' imported but unused
+tests/test_universal_dispatcher.py:24:1: F401 'src.core.universal_dispatcher._global_dispatcher' imported but unused
+tests/test_world.py:5:1: F401 'pytest' imported but unused

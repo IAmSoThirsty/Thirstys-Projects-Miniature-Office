@@ -17,12 +17,13 @@ All semantic properties are tracked without compression.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
 from enum import Enum
+from typing import Dict, List, Optional, Set
 
 
 class SymbolKind(Enum):
     """Symbol classification with maximum granularity"""
+
     VARIABLE = "variable"
     PARAMETER = "parameter"
     FUNCTION = "function"
@@ -47,6 +48,7 @@ class Symbol:
     - Scope information
     - Mutation tracking
     """
+
     name: str
     kind: SymbolKind
     definition_line: int
@@ -71,9 +73,10 @@ class SymbolTable:
     - Import tracking
     - Export tracking
     """
+
     scope_id: str
-    parent: Optional['SymbolTable'] = None
-    children: List['SymbolTable'] = field(default_factory=list)
+    parent: Optional["SymbolTable"] = None
+    children: List["SymbolTable"] = field(default_factory=list)
     symbols: Dict[str, Symbol] = field(default_factory=dict)
     imports: Set[str] = field(default_factory=set)
     exports: Set[str] = field(default_factory=set)

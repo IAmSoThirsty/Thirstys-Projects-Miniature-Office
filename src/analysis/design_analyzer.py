@@ -27,15 +27,15 @@ All design properties are tracked without compression or summarization.
 No permitted detail is intentionally omitted.
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Tuple, Any
-from enum import Enum
 import ast
-
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 # ============================================================================
 # ENUMERATIONS
 # ============================================================================
+
 
 class DesignPattern(Enum):
     """
@@ -44,6 +44,7 @@ class DesignPattern(Enum):
     Creational Patterns (5):
     - Object creation mechanisms
     """
+
     # Creational
     SINGLETON = "singleton"
     FACTORY_METHOD = "factory_method"
@@ -84,6 +85,7 @@ class DesignPattern(Enum):
 
 class ArchitecturalStyle(Enum):
     """Architectural style classification"""
+
     LAYERED = "layered"
     MICROSERVICES = "microservices"
     EVENT_DRIVEN = "event_driven"
@@ -100,6 +102,7 @@ class ArchitecturalStyle(Enum):
 
 class DesignSmell(Enum):
     """Design anti-patterns and smells"""
+
     GOD_CLASS = "god_class"
     GOD_METHOD = "god_method"
     DATA_CLASS = "data_class"
@@ -121,6 +124,7 @@ class DesignSmell(Enum):
 
 class SOLIDPrinciple(Enum):
     """SOLID principles for OO design"""
+
     SINGLE_RESPONSIBILITY = "single_responsibility"
     OPEN_CLOSED = "open_closed"
     LISKOV_SUBSTITUTION = "liskov_substitution"
@@ -130,6 +134,7 @@ class SOLIDPrinciple(Enum):
 
 class ComponentType(Enum):
     """Component classification in architecture"""
+
     PRESENTATION = "presentation"
     BUSINESS_LOGIC = "business_logic"
     DATA_ACCESS = "data_access"
@@ -142,6 +147,7 @@ class ComponentType(Enum):
 
 class InteractionType(Enum):
     """Types of component interactions"""
+
     SYNCHRONOUS_CALL = "synchronous_call"
     ASYNCHRONOUS_MESSAGE = "asynchronous_message"
     EVENT_SUBSCRIPTION = "event_subscription"
@@ -155,6 +161,7 @@ class InteractionType(Enum):
 
 class CrossCuttingConcern(Enum):
     """Aspects that cut across multiple components"""
+
     LOGGING = "logging"
     SECURITY = "security"
     TRANSACTION = "transaction"
@@ -171,6 +178,7 @@ class CrossCuttingConcern(Enum):
 # DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class PatternInstance:
     """
@@ -185,6 +193,7 @@ class PatternInstance:
     - Source location
     - Context and rationale
     """
+
     pattern: DesignPattern
     confidence: float  # 0.0 to 1.0
     participants: Dict[str, str]  # role -> class/function name
@@ -208,6 +217,7 @@ class ArchitecturalComponent:
     - Quality metrics
     - Violations and issues
     """
+
     name: str
     component_type: ComponentType
     responsibilities: List[str] = field(default_factory=list)
@@ -235,6 +245,7 @@ class ComponentInteraction:
     - Failure modes
     - Performance characteristics
     """
+
     source: str
     target: str
     interaction_type: InteractionType
@@ -260,6 +271,7 @@ class SOLIDViolation:
     - Suggested fix
     - Impact of not fixing
     """
+
     principle: SOLIDPrinciple
     severity: str  # "critical", "major", "minor"
     location: Tuple[int, int]
@@ -284,6 +296,7 @@ class DesignQualityMetrics:
     - Extensibility (how easy to extend)
     - Understandability (how clear)
     """
+
     cohesion: float = 0.0  # 0.0 (low) to 1.0 (high)
     coupling: float = 0.0  # 0.0 (low) to 1.0 (high) - lower is better
     complexity: float = 0.0  # Normalized complexity score
@@ -308,6 +321,7 @@ class InterfaceDesignAnalysis:
     - Version compatibility
     - Documentation
     """
+
     interface_name: str
     is_explicit: bool
     is_well_documented: bool
@@ -332,6 +346,7 @@ class ArchitecturalLayer:
     - Dependencies on other layers
     - Violations (skipped layers, etc.)
     """
+
     name: str
     level: int  # 0 = lowest (data), increasing upward
     components: Set[str] = field(default_factory=set)
@@ -351,6 +366,7 @@ class DesignInvariant:
     - How it's enforced
     - What happens if violated
     """
+
     invariant_type: str  # "precondition", "postcondition", "class_invariant", etc.
     description: str
     scope: str  # Component or system
@@ -371,6 +387,7 @@ class FailureMode:
     - Recovery path
     - Mitigation strategy
     """
+
     failure_type: str
     component: str
     description: str
@@ -401,6 +418,7 @@ class DesignAnalysisResult:
     No information is summarized or compressed.
     Every permitted detail is included.
     """
+
     # Pattern Detection (complete)
     detected_patterns: List[PatternInstance] = field(default_factory=list)
 
@@ -457,6 +475,7 @@ class DesignAnalysisResult:
 # DESIGN ANALYZER
 # ============================================================================
 
+
 class DesignAnalyzer:
     """
     MAXIMUM ALLOWED DESIGN MODE Analyzer
@@ -501,7 +520,7 @@ class DesignAnalyzer:
 
         # Extract raw AST if ast_root is ASTNode
         raw_ast = ast_root
-        if hasattr(ast_root, 'raw_node'):
+        if hasattr(ast_root, "raw_node"):
             raw_ast = ast_root.raw_node
 
         # Phase 1: Structural Analysis
@@ -564,7 +583,7 @@ class DesignAnalyzer:
                 self.result.components[component.name] = component
             elif isinstance(node, ast.FunctionDef):
                 # Top-level functions are also components
-                if not hasattr(node, 'parent_class'):
+                if not hasattr(node, "parent_class"):
                     component = self._analyze_function_component(node)
                     self.result.components[component.name] = component
 
@@ -584,13 +603,13 @@ class DesignAnalyzer:
         component = ArchitecturalComponent(
             name=class_node.name,
             component_type=self._classify_component_type(class_node),
-            lines_of_code=getattr(class_node, 'end_lineno', 0) - class_node.lineno
+            lines_of_code=getattr(class_node, "end_lineno", 0) - class_node.lineno,
         )
 
         # Extract all methods
         for node in class_node.body:
             if isinstance(node, ast.FunctionDef):
-                if not node.name.startswith('_'):
+                if not node.name.startswith("_"):
                     component.public_methods.append(node.name)
 
         # Extract dependencies (imports, base classes)
@@ -601,9 +620,7 @@ class DesignAnalyzer:
 
         # Extract responsibilities from docstring
         if ast.get_docstring(class_node):
-            component.responsibilities = self._extract_responsibilities(
-                ast.get_docstring(class_node)
-            )
+            component.responsibilities = self._extract_responsibilities(ast.get_docstring(class_node))
 
         return component
 
@@ -612,7 +629,7 @@ class DesignAnalyzer:
         component = ArchitecturalComponent(
             name=func_node.name,
             component_type=ComponentType.UTILITY,
-            lines_of_code=getattr(func_node, 'end_lineno', 0) - func_node.lineno
+            lines_of_code=getattr(func_node, "end_lineno", 0) - func_node.lineno,
         )
         component.public_methods = [func_node.name]
         return component
@@ -621,17 +638,17 @@ class DesignAnalyzer:
         """Classify component type based on naming and structure"""
         name_lower = class_node.name.lower()
 
-        if any(x in name_lower for x in ['view', 'ui', 'widget', 'screen']):
+        if any(x in name_lower for x in ["view", "ui", "widget", "screen"]):
             return ComponentType.PRESENTATION
-        elif any(x in name_lower for x in ['service', 'manager', 'controller', 'handler']):
+        elif any(x in name_lower for x in ["service", "manager", "controller", "handler"]):
             return ComponentType.BUSINESS_LOGIC
-        elif any(x in name_lower for x in ['repository', 'dao', 'database', 'store']):
+        elif any(x in name_lower for x in ["repository", "dao", "database", "store"]):
             return ComponentType.DATA_ACCESS
-        elif any(x in name_lower for x in ['adapter', 'client', 'gateway', 'connector']):
+        elif any(x in name_lower for x in ["adapter", "client", "gateway", "connector"]):
             return ComponentType.INTEGRATION
-        elif any(x in name_lower for x in ['util', 'helper', 'tool']):
+        elif any(x in name_lower for x in ["util", "helper", "tool"]):
             return ComponentType.UTILITY
-        elif any(x in name_lower for x in ['model', 'entity', 'domain']):
+        elif any(x in name_lower for x in ["model", "entity", "domain"]):
             return ComponentType.DOMAIN
         else:
             return ComponentType.APPLICATION
@@ -668,10 +685,10 @@ class DesignAnalyzer:
         """Extract responsibilities from docstring"""
         # Parse docstring for responsibility statements
         responsibilities = []
-        lines = docstring.split('\n')
+        lines = docstring.split("\n")
         for line in lines:
             line = line.strip()
-            if line and not line.startswith(('Args:', 'Returns:', 'Raises:')):
+            if line and not line.startswith(("Args:", "Returns:", "Raises:")):
                 responsibilities.append(line)
         return responsibilities[:5]  # Top 5 responsibilities
 
@@ -697,22 +714,22 @@ class DesignAnalyzer:
         """Extract architectural layers"""
         # Define standard layers
         layers = {
-            'presentation': ArchitecturalLayer(name='Presentation', level=3),
-            'business': ArchitecturalLayer(name='Business Logic', level=2),
-            'data': ArchitecturalLayer(name='Data Access', level=1),
-            'domain': ArchitecturalLayer(name='Domain', level=0),
+            "presentation": ArchitecturalLayer(name="Presentation", level=3),
+            "business": ArchitecturalLayer(name="Business Logic", level=2),
+            "data": ArchitecturalLayer(name="Data Access", level=1),
+            "domain": ArchitecturalLayer(name="Domain", level=0),
         }
 
         # Assign components to layers
         for name, component in self.result.components.items():
             if component.component_type == ComponentType.PRESENTATION:
-                layers['presentation'].components.add(name)
+                layers["presentation"].components.add(name)
             elif component.component_type == ComponentType.BUSINESS_LOGIC:
-                layers['business'].components.add(name)
+                layers["business"].components.add(name)
             elif component.component_type == ComponentType.DATA_ACCESS:
-                layers['data'].components.add(name)
+                layers["data"].components.add(name)
             elif component.component_type == ComponentType.DOMAIN:
-                layers['domain'].components.add(name)
+                layers["domain"].components.add(name)
 
         self.result.layers = layers
 
@@ -746,9 +763,8 @@ class DesignAnalyzer:
             if isinstance(node, ast.ClassDef):
                 # Check for __new__ override or _instance class variable
                 has_instance_var = any(
-                    isinstance(n, ast.Assign) and
-                    any(isinstance(t, ast.Name) and t.id.startswith('_instance')
-                        for t in n.targets)
+                    isinstance(n, ast.Assign)
+                    and any(isinstance(t, ast.Name) and t.id.startswith("_instance") for t in n.targets)
                     for n in node.body
                 )
 
@@ -756,10 +772,10 @@ class DesignAnalyzer:
                     pattern = PatternInstance(
                         pattern=DesignPattern.SINGLETON,
                         confidence=0.8,
-                        participants={'singleton': node.name},
-                        location=(node.lineno, getattr(node, 'end_lineno', node.lineno)),
+                        participants={"singleton": node.name},
+                        location=(node.lineno, getattr(node, "end_lineno", node.lineno)),
                         quality_score=0.75,
-                        evidence=['Class variable _instance found', 'Private constructor pattern']
+                        evidence=["Class variable _instance found", "Private constructor pattern"],
                     )
                     self.result.detected_patterns.append(pattern)
 
@@ -768,14 +784,14 @@ class DesignAnalyzer:
         # Look for classes with 'Factory' in name or create methods
         for node in ast.walk(ast_root) if isinstance(ast_root, ast.AST) else []:
             if isinstance(node, ast.ClassDef):
-                if 'Factory' in node.name or 'Builder' in node.name:
+                if "Factory" in node.name or "Builder" in node.name:
                     pattern = PatternInstance(
                         pattern=DesignPattern.FACTORY_METHOD,
                         confidence=0.7,
-                        participants={'factory': node.name},
-                        location=(node.lineno, getattr(node, 'end_lineno', node.lineno)),
+                        participants={"factory": node.name},
+                        location=(node.lineno, getattr(node, "end_lineno", node.lineno)),
                         quality_score=0.7,
-                        evidence=['Factory naming convention']
+                        evidence=["Factory naming convention"],
                     )
                     self.result.detected_patterns.append(pattern)
 
@@ -800,7 +816,9 @@ class DesignAnalyzer:
 
         # Average cohesion across all components
         if self.result.components:
-            metrics.cohesion = sum(c.cohesion_score for c in self.result.components.values()) / len(self.result.components)
+            metrics.cohesion = sum(c.cohesion_score for c in self.result.components.values()) / len(
+                self.result.components
+            )
 
         # Calculate coupling (total dependencies / possible dependencies)
         total_deps = sum(len(c.dependencies) for c in self.result.components.values())
@@ -842,7 +860,7 @@ class DesignAnalyzer:
                     component=name,
                     description=f"Component has {len(component.responsibilities)} responsibilities (should be 1)",
                     suggestion="Split into multiple focused components",
-                    impact="Harder to maintain, test, and understand"
+                    impact="Harder to maintain, test, and understand",
                 )
                 self.result.solid_violations.append(violation)
 
@@ -863,7 +881,7 @@ class DesignAnalyzer:
                     component=name,
                     description=f"Interface has {len(component.public_methods)} methods (consider splitting)",
                     suggestion="Create smaller, focused interfaces",
-                    impact="Clients forced to depend on methods they don't use"
+                    impact="Clients forced to depend on methods they don't use",
                 )
                 self.result.solid_violations.append(violation)
 
@@ -875,36 +893,40 @@ class DesignAnalyzer:
         for name, component in self.result.components.items():
             # God Class detection
             if component.lines_of_code > 500 or len(component.public_methods) > 20:
-                self.result.design_smells.append((
-                    DesignSmell.GOD_CLASS,
-                    f"Component '{name}' is too large ({component.lines_of_code} LOC, {len(component.public_methods)} methods)",
-                    (0, component.lines_of_code)
-                ))
+                self.result.design_smells.append(
+                    (
+                        DesignSmell.GOD_CLASS,
+                        f"Component '{name}' is too large ({component.lines_of_code} LOC, {len(component.public_methods)} methods)",  # noqa: E501
+                        (0, component.lines_of_code),
+                    )
+                )
 
             # Data Class detection (no behavior)
             if len(component.public_methods) < 3 and component.lines_of_code > 50:
-                self.result.design_smells.append((
-                    DesignSmell.DATA_CLASS,
-                    f"Component '{name}' appears to be a data container with little behavior",
-                    (0, component.lines_of_code)
-                ))
+                self.result.design_smells.append(
+                    (
+                        DesignSmell.DATA_CLASS,
+                        f"Component '{name}' appears to be a data container with little behavior",
+                        (0, component.lines_of_code),
+                    )
+                )
 
             # Lazy Class detection (too small)
             if component.lines_of_code < 20 and len(component.public_methods) < 2:
-                self.result.design_smells.append((
-                    DesignSmell.LAZY_CLASS,
-                    f"Component '{name}' does too little to justify existence",
-                    (0, component.lines_of_code)
-                ))
+                self.result.design_smells.append(
+                    (
+                        DesignSmell.LAZY_CLASS,
+                        f"Component '{name}' does too little to justify existence",
+                        (0, component.lines_of_code),
+                    )
+                )
 
         # Detect circular dependencies
         cycles = self._detect_circular_dependencies()
         for cycle in cycles:
-            self.result.design_smells.append((
-                DesignSmell.CIRCULAR_DEPENDENCY,
-                f"Circular dependency detected: {' -> '.join(cycle)}",
-                (0, 0)
-            ))
+            self.result.design_smells.append(
+                (DesignSmell.CIRCULAR_DEPENDENCY, f"Circular dependency detected: {' -> '.join(cycle)}", (0, 0))
+            )
 
     def _detect_circular_dependencies(self) -> List[List[str]]:
         """Detect circular dependencies using DFS"""
@@ -950,7 +972,7 @@ class DesignAnalyzer:
                         protocol="direct_call",
                         is_synchronous=True,
                         can_fail=True,
-                        failure_modes=["ImportError", "AttributeError"]
+                        failure_modes=["ImportError", "AttributeError"],
                     )
                     self.result.interactions.append(interaction)
 
@@ -963,9 +985,9 @@ class DesignAnalyzer:
         for node in ast.walk(ast_root) if isinstance(ast_root, ast.AST) else []:
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Attribute):
-                    if node.func.attr in ['log', 'info', 'debug', 'warning', 'error']:
+                    if node.func.attr in ["log", "info", "debug", "warning", "error"]:
                         logging_components.append("logging")
-                    elif node.func.attr in ['authenticate', 'authorize', 'check_permission']:
+                    elif node.func.attr in ["authenticate", "authorize", "check_permission"]:
                         security_components.append("security")
 
         if logging_components:
@@ -983,7 +1005,7 @@ class DesignAnalyzer:
                     description="Runtime assertion",
                     scope="method",
                     enforcement_mechanism="assert statement",
-                    violation_consequence="AssertionError raised"
+                    violation_consequence="AssertionError raised",
                 )
                 self.result.invariants.append(invariant)
 
@@ -998,7 +1020,7 @@ class DesignAnalyzer:
             "Resource exhaustion",
             "Concurrent access",
             "Network failure",
-            "Timeout conditions"
+            "Timeout conditions",
         ]
         self.result.edge_cases = edge_cases
 
@@ -1016,7 +1038,7 @@ class DesignAnalyzer:
                     impact="major",
                     detection="Exception handling or timeout",
                     recovery_path="Retry with exponential backoff",
-                    mitigation="Circuit breaker pattern"
+                    mitigation="Circuit breaker pattern",
                 )
                 self.result.failure_modes.append(failure)
 
@@ -1030,27 +1052,27 @@ class DesignAnalyzer:
                     impact="critical",
                     detection="Database exception",
                     recovery_path="Reconnect and retry transaction",
-                    mitigation="Connection pooling and health checks"
+                    mitigation="Connection pooling and health checks",
                 )
                 self.result.failure_modes.append(failure)
 
     def _analyze_governance_structure(self, ast_root: Any) -> None:
         """Analyze complete governance structure"""
         governance = {
-            'component_ownership': {},
-            'decision_authority': {},
-            'change_control': {},
-            'review_requirements': {}
+            "component_ownership": {},
+            "decision_authority": {},
+            "change_control": {},
+            "review_requirements": {},
         }
 
         # Assign ownership based on component type
         for name, component in self.result.components.items():
             if component.component_type == ComponentType.DOMAIN:
-                governance['component_ownership'][name] = 'Domain Team'
+                governance["component_ownership"][name] = "Domain Team"
             elif component.component_type == ComponentType.DATA_ACCESS:
-                governance['component_ownership'][name] = 'Data Team'
+                governance["component_ownership"][name] = "Data Team"
             else:
-                governance['component_ownership'][name] = 'Platform Team'
+                governance["component_ownership"][name] = "Platform Team"
 
         self.result.governance_structure = governance
 
@@ -1065,7 +1087,7 @@ class DesignAnalyzer:
 
                 # Check inheritance from ABC
                 for base in node.bases:
-                    if isinstance(base, ast.Name) and base.id in ['ABC', 'ABCMeta']:
+                    if isinstance(base, ast.Name) and base.id in ["ABC", "ABCMeta"]:
                         is_abstract = True
                         break
 
@@ -1073,10 +1095,10 @@ class DesignAnalyzer:
                 for item in node.body:
                     if isinstance(item, ast.FunctionDef):
                         for decorator in item.decorator_list:
-                            if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
+                            if isinstance(decorator, ast.Name) and decorator.id == "abstractmethod":
                                 has_abstract_methods = True
                                 break
-                            elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
+                            elif isinstance(decorator, ast.Attribute) and decorator.attr == "abstractmethod":
                                 has_abstract_methods = True
                                 break
 
@@ -1098,7 +1120,7 @@ class DesignAnalyzer:
                 1.0 - self.result.quality_metrics.coupling,
                 self.result.quality_metrics.maintainability_index / 100.0,
                 self.result.quality_metrics.testability_score,
-                1.0 - (self.result.total_violations / max(self.result.total_components, 1)) / 10.0
+                1.0 - (self.result.total_violations / max(self.result.total_components, 1)) / 10.0,
             ]
             self.result.overall_design_score = sum(score_components) / len(score_components)
 
@@ -1110,124 +1132,125 @@ class DesignAnalyzer:
         No summarization. No filtering. All details included.
         """
         return {
-            'patterns': [
+            "patterns": [
                 {
-                    'pattern': p.pattern.value,
-                    'confidence': p.confidence,
-                    'participants': p.participants,
-                    'location': p.location,
-                    'quality_score': p.quality_score,
-                    'violations': p.violations,
-                    'evidence': p.evidence
+                    "pattern": p.pattern.value,
+                    "confidence": p.confidence,
+                    "participants": p.participants,
+                    "location": p.location,
+                    "quality_score": p.quality_score,
+                    "violations": p.violations,
+                    "evidence": p.evidence,
                 }
                 for p in self.result.detected_patterns
             ],
-            'architecture': {
-                'style': self.result.architectural_style.value,
-                'components': {
+            "architecture": {
+                "style": self.result.architectural_style.value,
+                "components": {
                     name: {
-                        'type': c.component_type.value,
-                        'responsibilities': c.responsibilities,
-                        'dependencies': list(c.dependencies),
-                        'dependents': list(c.dependents),
-                        'cohesion': c.cohesion_score,
-                        'coupling': c.coupling_count,
-                        'complexity': c.complexity,
-                        'lines_of_code': c.lines_of_code,
-                        'public_methods': c.public_methods,
-                        'violations': c.violations
+                        "type": c.component_type.value,
+                        "responsibilities": c.responsibilities,
+                        "dependencies": list(c.dependencies),
+                        "dependents": list(c.dependents),
+                        "cohesion": c.cohesion_score,
+                        "coupling": c.coupling_count,
+                        "complexity": c.complexity,
+                        "lines_of_code": c.lines_of_code,
+                        "public_methods": c.public_methods,
+                        "violations": c.violations,
                     }
                     for name, c in self.result.components.items()
                 },
-                'layers': {
+                "layers": {
                     name: {
-                        'level': layer.level,
-                        'components': list(layer.components),
-                        'responsibilities': layer.responsibilities,
-                        'depends_on': list(layer.depends_on_layers),
-                        'violations': layer.violated_dependencies
+                        "level": layer.level,
+                        "components": list(layer.components),
+                        "responsibilities": layer.responsibilities,
+                        "depends_on": list(layer.depends_on_layers),
+                        "violations": layer.violated_dependencies,
                     }
                     for name, layer in self.result.layers.items()
                 },
-                'interactions': [
+                "interactions": [
                     {
-                        'source': i.source,
-                        'target': i.target,
-                        'type': i.interaction_type.value,
-                        'protocol': i.protocol,
-                        'is_synchronous': i.is_synchronous,
-                        'failure_modes': i.failure_modes
+                        "source": i.source,
+                        "target": i.target,
+                        "type": i.interaction_type.value,
+                        "protocol": i.protocol,
+                        "is_synchronous": i.is_synchronous,
+                        "failure_modes": i.failure_modes,
                     }
                     for i in self.result.interactions
-                ]
+                ],
             },
-            'quality_metrics': {
-                'cohesion': self.result.quality_metrics.cohesion if self.result.quality_metrics else 0.0,
-                'coupling': self.result.quality_metrics.coupling if self.result.quality_metrics else 0.0,
-                'complexity': self.result.quality_metrics.complexity if self.result.quality_metrics else 0.0,
-                'maintainability_index': self.result.quality_metrics.maintainability_index if self.result.quality_metrics else 0.0,
-                'testability': self.result.quality_metrics.testability_score if self.result.quality_metrics else 0.0,
-                'extensibility': self.result.quality_metrics.extensibility_score if self.result.quality_metrics else 0.0,
-                'understandability': self.result.quality_metrics.understandability_score if self.result.quality_metrics else 0.0
+            "quality_metrics": {
+                "cohesion": self.result.quality_metrics.cohesion if self.result.quality_metrics else 0.0,
+                "coupling": self.result.quality_metrics.coupling if self.result.quality_metrics else 0.0,
+                "complexity": self.result.quality_metrics.complexity if self.result.quality_metrics else 0.0,
+                "maintainability_index": (
+                    self.result.quality_metrics.maintainability_index if self.result.quality_metrics else 0.0
+                ),
+                "testability": self.result.quality_metrics.testability_score if self.result.quality_metrics else 0.0,
+                "extensibility": (
+                    self.result.quality_metrics.extensibility_score if self.result.quality_metrics else 0.0
+                ),
+                "understandability": (
+                    self.result.quality_metrics.understandability_score if self.result.quality_metrics else 0.0
+                ),
             },
-            'solid_violations': [
+            "solid_violations": [
                 {
-                    'principle': v.principle.value,
-                    'severity': v.severity,
-                    'component': v.component,
-                    'description': v.description,
-                    'suggestion': v.suggestion,
-                    'impact': v.impact
+                    "principle": v.principle.value,
+                    "severity": v.severity,
+                    "component": v.component,
+                    "description": v.description,
+                    "suggestion": v.suggestion,
+                    "impact": v.impact,
                 }
                 for v in self.result.solid_violations
             ],
-            'design_smells': [
-                {
-                    'smell': smell.value,
-                    'description': desc,
-                    'location': loc
-                }
+            "design_smells": [
+                {"smell": smell.value, "description": desc, "location": loc}
                 for smell, desc, loc in self.result.design_smells
             ],
-            'cross_cutting_concerns': {
-                concern.value: components
-                for concern, components in self.result.cross_cutting_concerns.items()
+            "cross_cutting_concerns": {
+                concern.value: components for concern, components in self.result.cross_cutting_concerns.items()
             },
-            'invariants': [
+            "invariants": [
                 {
-                    'type': inv.invariant_type,
-                    'description': inv.description,
-                    'scope': inv.scope,
-                    'enforcement': inv.enforcement_mechanism,
-                    'violation_consequence': inv.violation_consequence
+                    "type": inv.invariant_type,
+                    "description": inv.description,
+                    "scope": inv.scope,
+                    "enforcement": inv.enforcement_mechanism,
+                    "violation_consequence": inv.violation_consequence,
                 }
                 for inv in self.result.invariants
             ],
-            'edge_cases': self.result.edge_cases,
-            'failure_modes': [
+            "edge_cases": self.result.edge_cases,
+            "failure_modes": [
                 {
-                    'type': fm.failure_type,
-                    'component': fm.component,
-                    'description': fm.description,
-                    'probability': fm.probability,
-                    'impact': fm.impact,
-                    'detection': fm.detection,
-                    'recovery': fm.recovery_path,
-                    'mitigation': fm.mitigation
+                    "type": fm.failure_type,
+                    "component": fm.component,
+                    "description": fm.description,
+                    "probability": fm.probability,
+                    "impact": fm.impact,
+                    "detection": fm.detection,
+                    "recovery": fm.recovery_path,
+                    "mitigation": fm.mitigation,
                 }
                 for fm in self.result.failure_modes
             ],
-            'extensibility': {
-                'extension_points': self.result.extension_points,
-                'plugin_architecture': self.result.plugin_architecture,
-                'circular_dependencies': self.result.circular_dependencies
+            "extensibility": {
+                "extension_points": self.result.extension_points,
+                "plugin_architecture": self.result.plugin_architecture,
+                "circular_dependencies": self.result.circular_dependencies,
             },
-            'governance': self.result.governance_structure,
-            'summary': {
-                'total_patterns': self.result.total_patterns,
-                'total_components': self.result.total_components,
-                'total_interactions': self.result.total_interactions,
-                'total_violations': self.result.total_violations,
-                'overall_design_score': self.result.overall_design_score
-            }
+            "governance": self.result.governance_structure,
+            "summary": {
+                "total_patterns": self.result.total_patterns,
+                "total_components": self.result.total_components,
+                "total_interactions": self.result.total_interactions,
+                "total_violations": self.result.total_violations,
+                "overall_design_score": self.result.overall_design_score,
+            },
         }

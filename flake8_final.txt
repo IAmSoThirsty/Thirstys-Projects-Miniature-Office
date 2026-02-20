@@ -1,0 +1,21 @@
+demo_pipeline.py:7:5: E999 IndentationError: unexpected indent
+src/analysis\ast_analyzer.py:435:14: E999 SyntaxError: invalid syntax
+src/core\code_civilization.py:1203:27: F821 undefined name 'l'
+src/core\code_civilization.py:1203:61: F821 undefined name 'l'
+src/core\code_civilization.py:1203:79: F821 undefined name 'l'
+src/core\code_civilization.py:1204:27: F821 undefined name 'l'
+src/core\code_civilization.py:1204:66: F821 undefined name 'l'
+src/core\code_civilization.py:1204:84: F821 undefined name 'l'
+src/core\density_codex.py:478:34: F821 undefined name 'l'
+src/core\density_codex.py:478:51: F821 undefined name 'l'
+src/core\head_of_security.py:654:38: F821 undefined name 'l'
+src/core\head_of_security.py:654:79: F821 undefined name 'l'
+tests/test_aggressive_analysis.py:366:19: F821 undefined name 'ast'
+tests/test_audit.py:190:9: F841 local variable 'child' is assigned to but never used
+tests/test_code_civilization.py:7:5: E999 IndentationError: unexpected indent
+tests/test_constitutional_mutation.py:10:5: E999 IndentationError: unexpected indent
+tests/test_creative_autonomy.py:6:5: E999 IndentationError: unexpected indent
+tests/test_global_registry.py:19:5: E999 IndentationError: unexpected indent
+tests/test_head_of_security.py:11:5: E999 IndentationError: unexpected indent
+tests/test_off_duty_city.py:1330:9: F841 local variable 'conv_id' is assigned to but never used
+tests/test_universal_dispatcher.py:21:5: E999 IndentationError: unexpected indent

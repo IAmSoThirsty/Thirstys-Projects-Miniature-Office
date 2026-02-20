@@ -1,0 +1,26 @@
+{
+    "include": [
+        "src",
+        "tests",
+        "run.py",
+        "demo_maximum_design.py",
+        "demo_pipeline.py"
+    ],
+    "pythonVersion": "3.12",
+    "pythonPlatform": "Windows",
+    "pythonInterpreterPath": "C:/Users/Quencher/AppData/Local/Programs/Python/Python312/python.exe",
+    "extraPaths": [
+        "."
+    ],
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "extraPaths": [
+                "."
+            ]
+        }
+    ],
+    "typeCheckingMode": "basic",
+    "reportMissingImports": true,
+    "reportMissingModuleSource": false
+}

@@ -1,12 +1,9 @@
 """
 Comprehensive tests for floor_specifications.py - 100% coverage
 """
-import pytest
+
 from src.core.floor_specifications import (
-    ProgrammingLanguage,
-    SecurityFocus,
-    TestingDoctrine,
-    FloorSpecification,
+    ALL_FLOORS,
     FLOOR_1_PYTHON,
     FLOOR_2_RUST,
     FLOOR_3_C,
@@ -35,17 +32,20 @@ from src.core.floor_specifications import (
     FLOOR_26_CUDA_GPU,
     FLOOR_27_WEBASSEMBLY,
     FLOOR_28_RUST_ASYNC,
-    ALL_FLOORS,
-    get_floor_specification,
-    validate_floor_uniformity,
+    FloorSpecification,
+    ProgrammingLanguage,
+    SecurityFocus,
+    TestingDoctrine,
     get_all_floors,
+    get_floor_specification,
     route_directive_to_floor,
+    validate_floor_uniformity,
 )
 
 
 class TestProgrammingLanguage:
     """Test ProgrammingLanguage enum"""
-    
+
     def test_all_language_values(self):
         """Test all 28 programming language enum values"""
         assert ProgrammingLanguage.PYTHON.value == "python"
@@ -80,74 +80,53 @@ class TestProgrammingLanguage:
 
 class TestSecurityFocus:
     """Test SecurityFocus dataclass"""
-    
+
     def test_security_focus_creation(self):
         """Test creating SecurityFocus with data"""
-        sf = SecurityFocus(
-            primary_risks=["risk1", "risk2"],
-            required_checks=["check1", "check2"]
-        )
+        sf = SecurityFocus(primary_risks=["risk1", "risk2"], required_checks=["check1", "check2"])
         assert sf.primary_risks == ["risk1", "risk2"]
         assert sf.required_checks == ["check1", "check2"]
-    
+
     def test_security_focus_defaults(self):
         """Test SecurityFocus with default empty lists"""
         sf = SecurityFocus()
         assert sf.primary_risks == []
         assert sf.required_checks == []
-    
+
     def test_security_focus_to_dict(self):
         """Test SecurityFocus to_dict method"""
-        sf = SecurityFocus(
-            primary_risks=["risk1"],
-            required_checks=["check1"]
-        )
+        sf = SecurityFocus(primary_risks=["risk1"], required_checks=["check1"])
         result = sf.to_dict()
-        assert result == {
-            'primary_risks': ["risk1"],
-            'required_checks': ["check1"]
-        }
+        assert result == {"primary_risks": ["risk1"], "required_checks": ["check1"]}
 
 
 class TestTestingDoctrine:
     """Test TestingDoctrine dataclass"""
-    
+
     def test_testing_doctrine_creation(self):
         """Test creating TestingDoctrine with data"""
-        td = TestingDoctrine(
-            mandatory_tests=["test1"],
-            optional_tests=["test2"],
-            special_emphasis=["emphasis1"]
-        )
+        td = TestingDoctrine(mandatory_tests=["test1"], optional_tests=["test2"], special_emphasis=["emphasis1"])
         assert td.mandatory_tests == ["test1"]
         assert td.optional_tests == ["test2"]
         assert td.special_emphasis == ["emphasis1"]
-    
+
     def test_testing_doctrine_defaults(self):
         """Test TestingDoctrine with default empty lists"""
         td = TestingDoctrine()
         assert td.mandatory_tests == []
         assert td.optional_tests == []
         assert td.special_emphasis == []
-    
+
     def test_testing_doctrine_to_dict(self):
         """Test TestingDoctrine to_dict method"""
-        td = TestingDoctrine(
-            mandatory_tests=["test1"],
-            optional_tests=["test2"],
-            special_emphasis=["emphasis1"]
-        )
+        td = TestingDoctrine(mandatory_tests=["test1"], optional_tests=["test2"], special_emphasis=["emphasis1"])
         result = td.to_dict()
-        assert result == {
-            'mandatory_tests': ["test1"],
-            'optional_tests': ["test2"],
-            'special_emphasis': ["emphasis1"]
-        }
+        assert result == {"mandatory_tests": ["test1"], "optional_tests": ["test2"], "special_emphasis": ["emphasis1"]}
 
 
 class TestFloorSpecification:
     """Test FloorSpecification dataclass"""
-    
+
     def test_floor_specification_post_init(self):
         """Test __post_init__ sets jurisdiction correctly"""
         floor = FloorSpecification(
@@ -156,9 +135,9 @@ class TestFloorSpecification:
             domain=["test"],
             architectural_constraints=["constraint1"],
             security_focus=SecurityFocus(),
-            testing_doctrine=TestingDoctrine()
+            testing_doctrine=TestingDoctrine(),
         )
-        
+
         # Should only emit in own language
         assert floor.can_emit_languages == {ProgrammingLanguage.PYTHON}
         # Should only reason about own language
@@ -167,105 +146,105 @@ class TestFloorSpecification:
         assert ProgrammingLanguage.PYTHON not in floor.requires_contracts_for
         assert ProgrammingLanguage.RUST in floor.requires_contracts_for
         assert len(floor.requires_contracts_for) == 27  # 28 total - 1 (own language)
-    
+
     def test_can_author_in_own_language(self):
         """Test can_author_in returns True for own language"""
         floor = FLOOR_1_PYTHON
         assert floor.can_author_in(ProgrammingLanguage.PYTHON) is True
-    
+
     def test_can_author_in_other_language(self):
         """Test can_author_in returns False for other language"""
         floor = FLOOR_1_PYTHON
         assert floor.can_author_in(ProgrammingLanguage.RUST) is False
-    
+
     def test_can_interpret_own_language(self):
         """Test can_interpret returns True for own language"""
         floor = FLOOR_1_PYTHON
         assert floor.can_interpret(ProgrammingLanguage.PYTHON) is True
-    
+
     def test_can_interpret_other_language(self):
         """Test can_interpret returns False for other language"""
         floor = FLOOR_1_PYTHON
         assert floor.can_interpret(ProgrammingLanguage.JAVASCRIPT) is False
-    
+
     def test_requires_contract_own_language(self):
         """Test requires_contract returns False for own language"""
         floor = FLOOR_1_PYTHON
         assert floor.requires_contract(ProgrammingLanguage.PYTHON) is False
-    
+
     def test_requires_contract_other_language(self):
         """Test requires_contract returns True for other language"""
         floor = FLOOR_1_PYTHON
         assert floor.requires_contract(ProgrammingLanguage.GO) is True
-    
+
     def test_validate_jurisdiction_author_allowed(self):
         """Test validate_jurisdiction for author action on own language"""
         floor = FLOOR_1_PYTHON
         is_legal, reason = floor.validate_jurisdiction("author", ProgrammingLanguage.PYTHON)
         assert is_legal is True
         assert reason is None
-    
+
     def test_validate_jurisdiction_author_denied(self):
         """Test validate_jurisdiction for author action on other language"""
         floor = FLOOR_1_PYTHON
         is_legal, reason = floor.validate_jurisdiction("author", ProgrammingLanguage.RUST)
         assert is_legal is False
         assert "cannot author code in rust" in reason
-    
+
     def test_validate_jurisdiction_interpret_allowed(self):
         """Test validate_jurisdiction for interpret action on own language"""
         floor = FLOOR_2_RUST
         is_legal, reason = floor.validate_jurisdiction("interpret", ProgrammingLanguage.RUST)
         assert is_legal is True
         assert reason is None
-    
+
     def test_validate_jurisdiction_interpret_denied(self):
         """Test validate_jurisdiction for interpret action on other language"""
         floor = FLOOR_2_RUST
         is_legal, reason = floor.validate_jurisdiction("interpret", ProgrammingLanguage.PYTHON)
         assert is_legal is False
         assert "cannot interpret semantics of python" in reason
-    
+
     def test_validate_jurisdiction_cross_language_own(self):
         """Test validate_jurisdiction for cross_language on own language"""
         floor = FLOOR_1_PYTHON
         is_legal, reason = floor.validate_jurisdiction("cross_language", ProgrammingLanguage.PYTHON)
         assert is_legal is True
         assert reason is None
-    
+
     def test_validate_jurisdiction_cross_language_other(self):
         """Test validate_jurisdiction for cross_language on other language"""
         floor = FLOOR_1_PYTHON
         is_legal, reason = floor.validate_jurisdiction("cross_language", ProgrammingLanguage.TYPESCRIPT)
         assert is_legal is False
         assert "requires explicit contract" in reason
-    
+
     def test_validate_jurisdiction_unknown_action(self):
         """Test validate_jurisdiction for unknown action"""
         floor = FLOOR_1_PYTHON
         is_legal, reason = floor.validate_jurisdiction("unknown_action", ProgrammingLanguage.PYTHON)
         assert is_legal is True
         assert reason is None
-    
+
     def test_floor_to_dict(self):
         """Test FloorSpecification to_dict method"""
         floor = FLOOR_1_PYTHON
         result = floor.to_dict()
-        
-        assert result['language'] == 'python'
-        assert result['floor_number'] == 1
-        assert isinstance(result['domain'], list)
-        assert isinstance(result['architectural_constraints'], list)
-        assert isinstance(result['security_focus'], dict)
-        assert isinstance(result['testing_doctrine'], dict)
-        assert isinstance(result['can_emit_languages'], list)
-        assert isinstance(result['can_reason_about'], list)
-        assert isinstance(result['requires_contracts_for'], list)
+
+        assert result["language"] == "python"
+        assert result["floor_number"] == 1
+        assert isinstance(result["domain"], list)
+        assert isinstance(result["architectural_constraints"], list)
+        assert isinstance(result["security_focus"], dict)
+        assert isinstance(result["testing_doctrine"], dict)
+        assert isinstance(result["can_emit_languages"], list)
+        assert isinstance(result["can_reason_about"], list)
+        assert isinstance(result["requires_contracts_for"], list)
 
 
 class TestAllFloorSpecifications:
     """Test all 28 floor specifications exist and are valid"""
-    
+
     def test_floor_1_python(self):
         """Test FLOOR_1_PYTHON configuration"""
         floor = FLOOR_1_PYTHON
@@ -275,189 +254,189 @@ class TestAllFloorSpecifications:
         assert len(floor.architectural_constraints) > 0
         assert len(floor.security_focus.primary_risks) > 0
         assert len(floor.testing_doctrine.mandatory_tests) > 0
-    
+
     def test_floor_2_rust(self):
         """Test FLOOR_2_RUST configuration"""
         floor = FLOOR_2_RUST
         assert floor.language == ProgrammingLanguage.RUST
         assert floor.floor_number == 2
         assert len(floor.domain) > 0
-    
+
     def test_floor_3_c(self):
         """Test FLOOR_3_C configuration"""
         floor = FLOOR_3_C
         assert floor.language == ProgrammingLanguage.C
         assert floor.floor_number == 3
         assert len(floor.domain) > 0
-    
+
     def test_floor_4_cpp(self):
         """Test FLOOR_4_CPP configuration"""
         floor = FLOOR_4_CPP
         assert floor.language == ProgrammingLanguage.CPP
         assert floor.floor_number == 4
         assert len(floor.domain) > 0
-    
+
     def test_floor_5_javascript(self):
         """Test FLOOR_5_JAVASCRIPT configuration"""
         floor = FLOOR_5_JAVASCRIPT
         assert floor.language == ProgrammingLanguage.JAVASCRIPT
         assert floor.floor_number == 5
         assert len(floor.domain) > 0
-    
+
     def test_floor_6_typescript(self):
         """Test FLOOR_6_TYPESCRIPT configuration"""
         floor = FLOOR_6_TYPESCRIPT
         assert floor.language == ProgrammingLanguage.TYPESCRIPT
         assert floor.floor_number == 6
         assert len(floor.domain) > 0
-    
+
     def test_floor_7_go(self):
         """Test FLOOR_7_GO configuration"""
         floor = FLOOR_7_GO
         assert floor.language == ProgrammingLanguage.GO
         assert floor.floor_number == 7
         assert len(floor.domain) > 0
-    
+
     def test_floor_8_sql(self):
         """Test FLOOR_8_SQL configuration"""
         floor = FLOOR_8_SQL
         assert floor.language == ProgrammingLanguage.SQL
         assert floor.floor_number == 8
         assert len(floor.domain) > 0
-    
+
     def test_floor_9_shell(self):
         """Test FLOOR_9_SHELL configuration"""
         floor = FLOOR_9_SHELL
         assert floor.language == ProgrammingLanguage.SHELL
         assert floor.floor_number == 9
         assert len(floor.domain) > 0
-    
+
     def test_floor_10_java(self):
         """Test FLOOR_10_JAVA configuration"""
         floor = FLOOR_10_JAVA
         assert floor.language == ProgrammingLanguage.JAVA
         assert floor.floor_number == 10
         assert len(floor.domain) > 0
-    
+
     def test_floor_11_kotlin(self):
         """Test FLOOR_11_KOTLIN configuration"""
         floor = FLOOR_11_KOTLIN
         assert floor.language == ProgrammingLanguage.KOTLIN
         assert floor.floor_number == 11
         assert len(floor.domain) > 0
-    
+
     def test_floor_12_scala(self):
         """Test FLOOR_12_SCALA configuration"""
         floor = FLOOR_12_SCALA
         assert floor.language == ProgrammingLanguage.SCALA
         assert floor.floor_number == 12
         assert len(floor.domain) > 0
-    
+
     def test_floor_13_swift(self):
         """Test FLOOR_13_SWIFT configuration"""
         floor = FLOOR_13_SWIFT
         assert floor.language == ProgrammingLanguage.SWIFT
         assert floor.floor_number == 13
         assert len(floor.domain) > 0
-    
+
     def test_floor_14_objective_c(self):
         """Test FLOOR_14_OBJECTIVE_C configuration"""
         floor = FLOOR_14_OBJECTIVE_C
         assert floor.language == ProgrammingLanguage.OBJECTIVE_C
         assert floor.floor_number == 14
         assert len(floor.domain) > 0
-    
+
     def test_floor_15_php(self):
         """Test FLOOR_15_PHP configuration"""
         floor = FLOOR_15_PHP
         assert floor.language == ProgrammingLanguage.PHP
         assert floor.floor_number == 15
         assert len(floor.domain) > 0
-    
+
     def test_floor_16_ruby(self):
         """Test FLOOR_16_RUBY configuration"""
         floor = FLOOR_16_RUBY
         assert floor.language == ProgrammingLanguage.RUBY
         assert floor.floor_number == 16
         assert len(floor.domain) > 0
-    
+
     def test_floor_17_perl(self):
         """Test FLOOR_17_PERL configuration"""
         floor = FLOOR_17_PERL
         assert floor.language == ProgrammingLanguage.PERL
         assert floor.floor_number == 17
         assert len(floor.domain) > 0
-    
+
     def test_floor_18_powershell(self):
         """Test FLOOR_18_POWERSHELL configuration"""
         floor = FLOOR_18_POWERSHELL
         assert floor.language == ProgrammingLanguage.POWERSHELL
         assert floor.floor_number == 18
         assert len(floor.domain) > 0
-    
+
     def test_floor_19_nosql(self):
         """Test FLOOR_19_NOSQL configuration"""
         floor = FLOOR_19_NOSQL
         assert floor.language == ProgrammingLanguage.NOSQL
         assert floor.floor_number == 19
         assert len(floor.domain) > 0
-    
+
     def test_floor_20_haskell(self):
         """Test FLOOR_20_HASKELL configuration"""
         floor = FLOOR_20_HASKELL
         assert floor.language == ProgrammingLanguage.HASKELL
         assert floor.floor_number == 20
         assert len(floor.domain) > 0
-    
+
     def test_floor_21_ocaml(self):
         """Test FLOOR_21_OCAML configuration"""
         floor = FLOOR_21_OCAML
         assert floor.language == ProgrammingLanguage.OCAML
         assert floor.floor_number == 21
         assert len(floor.domain) > 0
-    
+
     def test_floor_22_elixir(self):
         """Test FLOOR_22_ELIXIR configuration"""
         floor = FLOOR_22_ELIXIR
         assert floor.language == ProgrammingLanguage.ELIXIR
         assert floor.floor_number == 22
         assert len(floor.domain) > 0
-    
+
     def test_floor_23_erlang(self):
         """Test FLOOR_23_ERLANG configuration"""
         floor = FLOOR_23_ERLANG
         assert floor.language == ProgrammingLanguage.ERLANG
         assert floor.floor_number == 23
         assert len(floor.domain) > 0
-    
+
     def test_floor_24_fortran(self):
         """Test FLOOR_24_FORTRAN configuration"""
         floor = FLOOR_24_FORTRAN
         assert floor.language == ProgrammingLanguage.FORTRAN
         assert floor.floor_number == 24
         assert len(floor.domain) > 0
-    
+
     def test_floor_25_matlab_octave(self):
         """Test FLOOR_25_MATLAB_OCTAVE configuration"""
         floor = FLOOR_25_MATLAB_OCTAVE
         assert floor.language == ProgrammingLanguage.MATLAB_OCTAVE
         assert floor.floor_number == 25
         assert len(floor.domain) > 0
-    
+
     def test_floor_26_cuda_gpu(self):
         """Test FLOOR_26_CUDA_GPU configuration"""
         floor = FLOOR_26_CUDA_GPU
         assert floor.language == ProgrammingLanguage.CUDA_GPU
         assert floor.floor_number == 26
         assert len(floor.domain) > 0
-    
+
     def test_floor_27_webassembly(self):
         """Test FLOOR_27_WEBASSEMBLY configuration"""
         floor = FLOOR_27_WEBASSEMBLY
         assert floor.language == ProgrammingLanguage.WEBASSEMBLY
         assert floor.floor_number == 27
         assert len(floor.domain) > 0
-    
+
     def test_floor_28_rust_async(self):
         """Test FLOOR_28_RUST_ASYNC configuration"""
         floor = FLOOR_28_RUST_ASYNC
@@ -468,15 +447,15 @@ class TestAllFloorSpecifications:
 
 class TestAllFloorsRegistry:
     """Test ALL_FLOORS registry"""
-    
+
     def test_all_floors_contains_all_languages(self):
         """Test ALL_FLOORS contains all 28 languages"""
         assert len(ALL_FLOORS) == 28
-        
+
         # Verify all languages are present
         for language in ProgrammingLanguage:
             assert language in ALL_FLOORS
-    
+
     def test_all_floors_mappings(self):
         """Test ALL_FLOORS maps languages to correct floors"""
         assert ALL_FLOORS[ProgrammingLanguage.PYTHON] == FLOOR_1_PYTHON
@@ -511,45 +490,45 @@ class TestAllFloorsRegistry:
 
 class TestModuleFunctions:
     """Test module-level functions"""
-    
+
     def test_get_floor_specification(self):
         """Test get_floor_specification returns correct floor"""
         floor = get_floor_specification(ProgrammingLanguage.PYTHON)
         assert floor == FLOOR_1_PYTHON
         assert floor.language == ProgrammingLanguage.PYTHON
-    
+
     def test_get_floor_specification_all_languages(self):
         """Test get_floor_specification for all languages"""
         for language in ProgrammingLanguage:
             floor = get_floor_specification(language)
             assert floor.language == language
-    
+
     def test_validate_floor_uniformity(self):
         """Test validate_floor_uniformity returns True"""
         assert validate_floor_uniformity() is True
-    
+
     def test_get_all_floors(self):
         """Test get_all_floors returns all 28 floors"""
         floors = get_all_floors()
         assert len(floors) == 28
         assert isinstance(floors, list)
-        
+
         # Verify all are FloorSpecification instances
         for floor in floors:
             assert isinstance(floor, FloorSpecification)
-    
+
     def test_get_all_floors_contains_all_languages(self):
         """Test get_all_floors contains all languages"""
         floors = get_all_floors()
         languages = {floor.language for floor in floors}
         assert languages == set(ProgrammingLanguage)
-    
+
     def test_route_directive_to_floor(self):
         """Test route_directive_to_floor routes to correct floor"""
         floor = route_directive_to_floor(ProgrammingLanguage.RUST)
         assert floor == FLOOR_2_RUST
         assert floor.language == ProgrammingLanguage.RUST
-    
+
     def test_route_directive_to_floor_all_languages(self):
         """Test route_directive_to_floor for all languages"""
         for language in ProgrammingLanguage:

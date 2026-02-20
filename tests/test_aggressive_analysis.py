@@ -13,8 +13,7 @@ All test cases are explicit with no summarization.
 """
 
 import pytest
-import ast
-from pathlib import Path
+
 from src.analysis.ast_analyzer import (
     ASTAnalyzer,
     ASTNode,
@@ -139,7 +138,6 @@ def outer():
         source = """
 import os
 import sys
-from pathlib import Path
 from typing import List, Dict
 """
         analyzer = ASTAnalyzer()
@@ -179,29 +177,29 @@ def main():
         report = analyzer.generate_report(root)
 
         # Verify report contains all expected fields
-        assert 'total_lines' in report
-        assert 'function_count' in report
-        assert 'class_count' in report
-        assert 'import_count' in report
-        assert 'functions' in report
-        assert 'classes' in report
-        assert 'imports' in report
-        assert 'max_nesting_depth' in report
-        assert 'total_bindings' in report
-        assert 'total_references' in report
+        assert "total_lines" in report
+        assert "function_count" in report
+        assert "class_count" in report
+        assert "import_count" in report
+        assert "functions" in report
+        assert "classes" in report
+        assert "imports" in report
+        assert "max_nesting_depth" in report
+        assert "total_bindings" in report
+        assert "total_references" in report
 
         # Verify counts
-        assert report['function_count'] == 3  # add, multiply, main
-        assert report['class_count'] == 1
-        assert report['import_count'] == 2
+        assert report["function_count"] == 3  # add, multiply, main
+        assert report["class_count"] == 1
+        assert report["import_count"] == 2
 
         # Verify function details
-        assert len(report['functions']) == 3
-        for func_info in report['functions']:
-            assert 'name' in func_info
-            assert 'line' in func_info
-            assert 'complexity' in func_info
-            assert 'arguments' in func_info
+        assert len(report["functions"]) == 3
+        for func_info in report["functions"]:
+            assert "name" in func_info
+            assert "line" in func_info
+            assert "complexity" in func_info
+            assert "arguments" in func_info
 
     def test_syntax_error_handling(self):
         """Test handling of syntax errors in source code"""
@@ -360,8 +358,8 @@ class MyClass:
 
     def test_ast_node_repr(self):
         """Test ASTNode __repr__ method"""
+
         from src.analysis.ast_analyzer import ASTNode, ASTNodeType
-        import ast
 
         # Create a simple function node to get a raw_node
         source = "def test_func(): pass"
@@ -398,19 +396,21 @@ z = y * 3
         report = analyzer.generate_report(root)
 
         # Should have bindings for x, y, z
-        assert report['total_bindings'] >= 3
+        assert report["total_bindings"] >= 3
 
         # Should have references to x, y
-        assert report['total_references'] >= 2
+        assert report["total_references"] >= 2
 
     def test_file_parsing(self, tmp_path):
         """Test parsing from file"""
         # Create temporary Python file
         test_file = tmp_path / "test_module.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 def test_function():
     return True
-""")
+"""
+        )
 
         analyzer = ASTAnalyzer()
         root, error = analyzer.parse_file(test_file)
@@ -539,9 +539,9 @@ class TestSemanticAnalyzer:
     def test_symbol_table_lookup_in_scope(self):
         """Test symbol lookup in current scope"""
         from src.analysis.semantic_analyzer import (
-            SymbolTable,
             Symbol,
             SymbolKind,
+            SymbolTable,
         )
 
         table = SymbolTable(scope_id="test")
@@ -561,9 +561,9 @@ class TestSemanticAnalyzer:
     def test_symbol_table_lookup_in_parent(self):
         """Test symbol lookup in parent scope"""
         from src.analysis.semantic_analyzer import (
-            SymbolTable,
             Symbol,
             SymbolKind,
+            SymbolTable,
         )
 
         parent_table = SymbolTable(scope_id="parent")
@@ -666,8 +666,8 @@ class TestSemanticAnalyzer:
 
     def test_semantic_analyzer_analyze(self):
         """Test semantic analyzer analyze method"""
-        from src.analysis.semantic_analyzer import SemanticAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.semantic_analyzer import SemanticAnalyzer
 
         # Parse simple source
         source = "x = 1"
@@ -704,8 +704,8 @@ class TestMetricsCalculator:
 
     def test_calculate_complexity(self):
         """Test complexity calculation"""
-        from src.analysis.metrics_calculator import MetricsCalculator
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.metrics_calculator import MetricsCalculator
 
         source = "def foo(): return 1"
         analyzer = ASTAnalyzer()
@@ -721,8 +721,8 @@ class TestMetricsCalculator:
 
     def test_calculate_maintainability(self):
         """Test maintainability index calculation"""
-        from src.analysis.metrics_calculator import MetricsCalculator
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.metrics_calculator import MetricsCalculator
 
         source = "x = 1"
         analyzer = ASTAnalyzer()
@@ -747,8 +747,8 @@ class TestPatternDetector:
 
     def test_detect_patterns(self):
         """Test pattern detection"""
-        from src.analysis.pattern_detector import PatternDetector
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.pattern_detector import PatternDetector
 
         source = "class Singleton: pass"
         analyzer = ASTAnalyzer()
@@ -761,8 +761,8 @@ class TestPatternDetector:
 
     def test_detect_antipatterns(self):
         """Test anti-pattern detection"""
-        from src.analysis.pattern_detector import PatternDetector
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.pattern_detector import PatternDetector
 
         source = "def foo(): pass"
         analyzer = ASTAnalyzer()
@@ -786,8 +786,8 @@ class TestDependencyAnalyzer:
 
     def test_analyze_dependencies(self):
         """Test dependency analysis"""
-        from src.analysis.dependency_analyzer import DependencyAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.dependency_analyzer import DependencyAnalyzer
 
         source = "import os\nimport sys"
         ast_analyzer = ASTAnalyzer()
@@ -818,9 +818,10 @@ class TestDependencyAnalyzer:
 
     def test_analyze_project_dependencies(self):
         """Test project-wide dependency analysis"""
-        from src.analysis.dependency_analyzer import DependencyAnalyzer
+        import os  # noqa: F401
         import tempfile
-        import os
+
+        from src.analysis.dependency_analyzer import DependencyAnalyzer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             analyzer = DependencyAnalyzer()
@@ -835,8 +836,8 @@ class TestFlowAnalyzer:
 
     def test_analyze_control_flow(self):
         """Test control flow analysis"""
-        from src.analysis.flow_analyzer import FlowAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.flow_analyzer import FlowAnalyzer
 
         source = "if x > 0:\n    y = 1\nelse:\n    y = 2"
         ast_analyzer = ASTAnalyzer()
@@ -852,8 +853,8 @@ class TestFlowAnalyzer:
 
     def test_analyze_data_flow(self):
         """Test data flow analysis"""
-        from src.analysis.flow_analyzer import FlowAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.flow_analyzer import FlowAnalyzer
 
         source = "x = 1\ny = x + 2"
         ast_analyzer = ASTAnalyzer()
@@ -875,9 +876,9 @@ class TestCodeCivilizationIntegration:
         from src.core.code_civilization import (
             CodeAuthoringCivilization,
             CodeDirective,
+            InputType,
             ProgrammingLanguage,
             RequestedOutcome,
-            InputType,
         )
 
         civilization = CodeAuthoringCivilization()
@@ -899,7 +900,7 @@ def calculate(x, y):
         )
 
         # Submit and process directive
-        directive_id = civilization.submit_directive(directive)
+        directive_id = civilization.submit_directive(directive)  # noqa: F841
 
         # Process through architectural pass (Step 2)
         arch_decision = civilization._architectural_pass(directive)
@@ -909,32 +910,32 @@ def calculate(x, y):
         assert arch_decision.ast_analysis is not None
 
         # Verify comprehensive analysis fields
-        if arch_decision.ast_analysis and 'parse_error' not in arch_decision.ast_analysis:
-            assert 'total_lines' in arch_decision.ast_analysis
-            assert 'function_count' in arch_decision.ast_analysis
-            assert 'function_details' in arch_decision.ast_analysis
+        if arch_decision.ast_analysis and "parse_error" not in arch_decision.ast_analysis:
+            assert "total_lines" in arch_decision.ast_analysis
+            assert "function_count" in arch_decision.ast_analysis
+            assert "function_details" in arch_decision.ast_analysis
 
             # Verify function details
-            func_details = arch_decision.ast_analysis['function_details']
+            func_details = arch_decision.ast_analysis["function_details"]
             assert len(func_details) > 0
 
             # Check first function has all required fields
             func = func_details[0]
-            assert 'name' in func
-            assert 'complexity' in func
-            assert 'arguments' in func
-            assert 'scope_id' in func
-            assert 'bindings' in func
-            assert 'references' in func
+            assert "name" in func
+            assert "complexity" in func
+            assert "arguments" in func
+            assert "scope_id" in func
+            assert "bindings" in func
+            assert "references" in func
 
     def test_analysis_not_triggered_for_spec_input(self):
         """Test that aggressive analysis is NOT triggered for spec-based input"""
         from src.core.code_civilization import (
             CodeAuthoringCivilization,
             CodeDirective,
+            InputType,
             ProgrammingLanguage,
             RequestedOutcome,
-            InputType,
         )
 
         civilization = CodeAuthoringCivilization()
@@ -970,8 +971,8 @@ class TestDesignAnalyzer:
 
     def test_analyze_simple_class(self):
         """Test design analysis of simple class"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class Calculator:
@@ -990,12 +991,12 @@ class Calculator:
 
         assert result is not None
         assert result.total_components >= 1
-        assert 'Calculator' in result.components
+        assert "Calculator" in result.components
 
     def test_detect_singleton_pattern(self):
         """Test singleton pattern detection"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class DatabaseConnection:
@@ -1018,12 +1019,12 @@ class DatabaseConnection:
 
     def test_detect_god_class_smell(self):
         """Test god class design smell detection"""
-        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
 
         # Create a large class with many methods
-        methods = '\n'.join([f"    def method_{i}(self): pass" for i in range(25)])
-        source = f"""
+        methods = "\n".join([f"    def method_{i}(self): pass" for i in range(25)])  # noqa: F841
+        source = """
 class GodClass:
 {methods}
 """
@@ -1040,8 +1041,8 @@ class GodClass:
 
     def test_solid_single_responsibility_violation(self):
         """Test SOLID single responsibility principle violation detection"""
-        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
 
         source = """
 class UserService:
@@ -1065,18 +1066,17 @@ class UserService:
         result = design_analyzer.analyze(ast_root, source)
 
         # Should detect SRP violation (multiple responsibilities)
-        srp_violations = [v for v in result.solid_violations
-                         if v.principle == SOLIDPrinciple.SINGLE_RESPONSIBILITY]
+        srp_violations = [v for v in result.solid_violations if v.principle == SOLIDPrinciple.SINGLE_RESPONSIBILITY]
         assert len(srp_violations) > 0
 
     def test_solid_interface_segregation_violation(self):
         """Test SOLID interface segregation principle violation detection"""
-        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
 
         # Create interface with too many methods
-        methods = '\n'.join([f"    def method_{i}(self): pass" for i in range(15)])
-        source = f"""
+        methods = "\n".join([f"    def method_{i}(self): pass" for i in range(15)])  # noqa: F841
+        source = """
 class LargeInterface:
 {methods}
 """
@@ -1088,14 +1088,13 @@ class LargeInterface:
         result = design_analyzer.analyze(ast_root, source)
 
         # Should detect ISP violation (too many methods in interface)
-        isp_violations = [v for v in result.solid_violations
-                         if v.principle == SOLIDPrinciple.INTERFACE_SEGREGATION]
+        isp_violations = [v for v in result.solid_violations if v.principle == SOLIDPrinciple.INTERFACE_SEGREGATION]
         assert len(isp_violations) > 0
 
     def test_quality_metrics_calculation(self):
         """Test design quality metrics calculation"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class ServiceA:
@@ -1118,8 +1117,8 @@ class ServiceB:
 
     def test_architectural_style_detection(self):
         """Test architectural style classification"""
-        from src.analysis.design_analyzer import DesignAnalyzer, ArchitecturalStyle
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import ArchitecturalStyle, DesignAnalyzer
 
         # Layered architecture example
         source = """
@@ -1144,8 +1143,8 @@ class UserRepository:
 
     def test_component_interaction_analysis(self):
         """Test component interaction analysis"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class ServiceA:
@@ -1166,8 +1165,8 @@ class ServiceB(ServiceA):
 
     def test_circular_dependency_detection(self):
         """Test circular dependency detection"""
-        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell  # noqa: F401
 
         # Note: Hard to create true circular dependency in simple code
         # But the detection mechanism should be tested
@@ -1190,8 +1189,8 @@ class B:
 
     def test_cross_cutting_concerns_identification(self):
         """Test identification of cross-cutting concerns"""
-        from src.analysis.design_analyzer import DesignAnalyzer, CrossCuttingConcern
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import CrossCuttingConcern, DesignAnalyzer
 
         source = """
 import logging
@@ -1218,8 +1217,8 @@ class Service:
 
     def test_failure_mode_analysis(self):
         """Test failure mode analysis"""
-        from src.analysis.design_analyzer import DesignAnalyzer, ComponentType
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import ComponentType, DesignAnalyzer  # noqa: F401
 
         source = """
 class DatabaseRepository:
@@ -1242,8 +1241,8 @@ class ApiClient:
 
     def test_generate_comprehensive_report(self):
         """Test comprehensive design report generation"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class Calculator:
@@ -1255,31 +1254,31 @@ class Calculator:
         assert error is None
 
         design_analyzer = DesignAnalyzer()
-        result = design_analyzer.analyze(ast_root, source)
+        result = design_analyzer.analyze(ast_root, source)  # noqa: F841
         report = design_analyzer.generate_report()
 
         # Report should contain all sections
-        assert 'patterns' in report
-        assert 'architecture' in report
-        assert 'quality_metrics' in report
-        assert 'solid_violations' in report
-        assert 'design_smells' in report
-        assert 'cross_cutting_concerns' in report
-        assert 'invariants' in report
-        assert 'edge_cases' in report
-        assert 'failure_modes' in report
-        assert 'extensibility' in report
-        assert 'governance' in report
-        assert 'summary' in report
+        assert "patterns" in report
+        assert "architecture" in report
+        assert "quality_metrics" in report
+        assert "solid_violations" in report
+        assert "design_smells" in report
+        assert "cross_cutting_concerns" in report
+        assert "invariants" in report
+        assert "edge_cases" in report
+        assert "failure_modes" in report
+        assert "extensibility" in report
+        assert "governance" in report
+        assert "summary" in report
 
     def test_design_analysis_integration_with_code_civilization(self):
         """Test design analysis integration into code civilization pipeline"""
         from src.core.code_civilization import (
             CodeAuthoringCivilization,
             CodeDirective,
+            InputType,
             ProgrammingLanguage,
             RequestedOutcome,
-            InputType,
         )
 
         civilization = CodeAuthoringCivilization()
@@ -1309,8 +1308,8 @@ class UserService:
 
     def test_edge_cases_identification(self):
         """Test edge case identification"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 class DataProcessor:
@@ -1331,8 +1330,8 @@ class DataProcessor:
 
     def test_extensibility_assessment(self):
         """Test extensibility assessment"""
-        from src.analysis.design_analyzer import DesignAnalyzer
         from src.analysis.ast_analyzer import ASTAnalyzer
+        from src.analysis.design_analyzer import DesignAnalyzer
 
         source = """
 from abc import ABC, abstractmethod

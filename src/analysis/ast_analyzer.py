@@ -23,12 +23,13 @@ Operational Constraints:
 import ast
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 class ASTNodeType(Enum):
     """Classification of AST node types with maximum granularity"""
+
     # Module-level structures
     MODULE = "module"
     IMPORT = "import"
@@ -110,6 +111,7 @@ class ASTNode:
     Attributes expose all structural, semantic, and positional information
     permitted within operational constraints.
     """
+
     node_type: ASTNodeType
     raw_node: Any  # Original AST node from parser
 
@@ -122,8 +124,8 @@ class ASTNode:
     # Structural metadata
     name: Optional[str] = None
     value: Optional[Any] = None
-    children: List['ASTNode'] = field(default_factory=list)
-    parent: Optional['ASTNode'] = None
+    children: List["ASTNode"] = field(default_factory=list)
+    parent: Optional["ASTNode"] = None
 
     # Semantic metadata
     scope_id: Optional[str] = None
@@ -165,7 +167,7 @@ class ASTVisitor:
         Routes to specific visit_* method based on node type.
         Returns result of specific visitor or default_visit.
         """
-        method_name = f'visit_{node.node_type.value}'
+        method_name = f"visit_{node.node_type.value}"
         visitor = getattr(self, method_name, self.default_visit)
         return visitor(node)
 
@@ -240,18 +242,18 @@ class ASTAnalyzer:
         - Computes all metadata fields
         """
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 source = f.read()
             return self.parse_source(source, str(filepath))
         except UnicodeDecodeError as e:
             # Attempt fallback encoding
             try:
-                with open(filepath, 'r', encoding='latin-1') as f:
+                with open(filepath, "r", encoding="latin-1") as f:
                     source = f.read()
                 return self.parse_source(source, str(filepath))
             except Exception as fallback_error:
                 return None, f"Encoding error: UTF-8 failed with {e}, latin-1 failed with {fallback_error}"
-        except FileNotFoundError as e:
+        except FileNotFoundError as e:  # noqa: F841
             return None, f"File not found: {filepath}"
         except Exception as e:
             return None, f"File read error: {type(e).__name__}: {e}"
@@ -275,16 +277,13 @@ class ASTAnalyzer:
         5. Link parent-child relationships
         """
         try:
-            tree = ast.parse(source, filename=filename, mode='exec')
+            tree = ast.parse(source, filename=filename, mode="exec")
             root = self._build_node(tree, parent=None)
             self._compute_scopes(root)
             self._compute_complexity(root)
             return root, None
         except SyntaxError as e:
-            error_msg = (
-                f"Syntax error at line {e.lineno}, column {e.offset}: {e.msg}\n"
-                f"Text: {e.text}"
-            )
+            error_msg = f"Syntax error at line {e.lineno}, column {e.offset}: {e.msg}\n" f"Text: {e.text}"
             return None, error_msg
         except RecursionError:
             return None, "Recursion depth exceeded: AST nesting > 1000 levels"
@@ -314,10 +313,10 @@ class ASTAnalyzer:
         node_type = self._classify_node(raw_node)
 
         # Extract positional information
-        line_start = getattr(raw_node, 'lineno', 0)
-        line_end = getattr(raw_node, 'end_lineno', line_start)
-        col_start = getattr(raw_node, 'col_offset', 0)
-        col_end = getattr(raw_node, 'end_col_offset', col_start)
+        line_start = getattr(raw_node, "lineno", 0)
+        line_end = getattr(raw_node, "end_lineno", line_start)
+        col_start = getattr(raw_node, "col_offset", 0)
+        col_end = getattr(raw_node, "end_col_offset", col_start)
 
         # Create base node
         node = ASTNode(
@@ -327,11 +326,11 @@ class ASTAnalyzer:
             line_end=line_end,
             col_start=col_start,
             col_end=col_end,
-            parent=parent
+            parent=parent,
         )
 
         # Extract name if present
-        if hasattr(raw_node, 'name'):
+        if hasattr(raw_node, "name"):
             node.name = raw_node.name
         elif isinstance(raw_node, ast.Name):
             node.name = raw_node.id
@@ -424,7 +423,7 @@ class ASTAnalyzer:
         }
 
         # Python 3.10+ match statements
-        if hasattr(ast, 'Match'):
+        if hasattr(ast, "Match"):
             type_map[ast.Match] = ASTNodeType.MATCH
 
         return type_map.get(type(node), ASTNodeType.UNKNOWN)
@@ -433,7 +432,7 @@ class ASTAnalyzer:
         """Extract decorator name from decorator node"""
         try:
             return ast.unparse(decorator)
-        except:
+        except Exception:
             return "<unknown>"
 
     def _extract_arguments(self, args: ast.arguments) -> List[Tuple[str, Optional[str]]]:
@@ -482,6 +481,7 @@ class ASTAnalyzer:
         - node.bindings (names defined in scope)
         - node.references (names used in scope)
         """
+
         def visit(node: ASTNode, current_scope: str):
             node.scope_id = current_scope
 
@@ -524,6 +524,7 @@ class ASTAnalyzer:
         - list/dict/set comprehensions with if
         - lambda with if
         """
+
         def count_decisions(node: ASTNode) -> int:
             count = 0
 
@@ -634,41 +635,41 @@ class ASTAnalyzer:
         visit(root)
 
         return {
-            'total_lines': root.line_end,
-            'node_type_counts': type_counts,
-            'function_count': len(functions),
-            'functions': [
+            "total_lines": root.line_end,
+            "node_type_counts": type_counts,
+            "function_count": len(functions),
+            "functions": [
                 {
-                    'name': f.name,
-                    'line': f.line_start,
-                    'complexity': f.cyclomatic_complexity,
-                    'arguments': f.arguments,
-                    'return_type': f.return_annotation,
-                    'decorators': f.decorators,
+                    "name": f.name,
+                    "line": f.line_start,
+                    "complexity": f.cyclomatic_complexity,
+                    "arguments": f.arguments,
+                    "return_type": f.return_annotation,
+                    "decorators": f.decorators,
                 }
                 for f in functions
             ],
-            'class_count': len(classes),
-            'classes': [
+            "class_count": len(classes),
+            "classes": [
                 {
-                    'name': c.name,
-                    'line': c.line_start,
-                    'base_classes': c.base_classes,
-                    'decorators': c.decorators,
+                    "name": c.name,
+                    "line": c.line_start,
+                    "base_classes": c.base_classes,
+                    "decorators": c.decorators,
                 }
                 for c in classes
             ],
-            'import_count': len(imports),
-            'imports': [
+            "import_count": len(imports),
+            "imports": [
                 {
-                    'line': i.line_start,
-                    'type': i.node_type.value,
+                    "line": i.line_start,
+                    "type": i.node_type.value,
                 }
                 for i in imports
             ],
-            'max_nesting_depth': max_depth,
-            'total_bindings': len(total_bindings),
-            'total_references': len(total_references),
-            'unique_names_bound': list(sorted(total_bindings)),
-            'unique_names_referenced': list(sorted(total_references)),
+            "max_nesting_depth": max_depth,
+            "total_bindings": len(total_bindings),
+            "total_references": len(total_references),
+            "unique_names_bound": list(sorted(total_bindings)),
+            "unique_names_referenced": list(sorted(total_references)),
         }

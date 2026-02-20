@@ -15,14 +15,14 @@ Shows:
 - All without summarization or compression
 """
 
+
 from src.core.code_civilization import (
     CodeAuthoringCivilization,
     CodeDirective,
+    InputType,
     ProgrammingLanguage,
     RequestedOutcome,
-    InputType,
 )
-import json
 
 
 def print_section(title: str):
@@ -166,8 +166,8 @@ class APIClient:
 
         # Summary statistics
         print("Summary Statistics:")
-        if 'summary' in design:
-            summary = design['summary']
+        if "summary" in design:
+            summary = design["summary"]
             print(f"  Total Patterns Detected: {summary.get('total_patterns', 0)}")
             print(f"  Total Components: {summary.get('total_components', 0)}")
             print(f"  Total Interactions: {summary.get('total_interactions', 0)}")
@@ -176,8 +176,8 @@ class APIClient:
 
         # Detected Patterns
         print("\nDetected Design Patterns:")
-        if 'patterns' in design and design['patterns']:
-            for pattern in design['patterns']:
+        if "patterns" in design and design["patterns"]:
+            for pattern in design["patterns"]:
                 print(f"  - {pattern['pattern'].upper()}")
                 print(f"    Confidence: {pattern['confidence']:.2f}")
                 print(f"    Quality: {pattern['quality_score']:.2f}")
@@ -188,14 +188,14 @@ class APIClient:
 
         # Architectural Analysis
         print("\nArchitectural Structure:")
-        if 'architecture' in design:
-            arch = design['architecture']
+        if "architecture" in design:
+            arch = design["architecture"]
             print(f"  Style: {arch.get('style', 'unknown').upper()}")
             print(f"  Components: {len(arch.get('components', {}))}")
 
-            if 'components' in arch:
+            if "components" in arch:
                 print("\n  Component Details:")
-                for name, component in list(arch['components'].items())[:5]:  # Show first 5
+                for name, component in list(arch["components"].items())[:5]:  # Show first 5
                     print(f"    {name}:")
                     print(f"      Type: {component.get('type', 'unknown')}")
                     print(f"      Cohesion: {component.get('cohesion', 0.0):.2f}")
@@ -204,8 +204,8 @@ class APIClient:
 
         # Quality Metrics
         print("\nDesign Quality Metrics:")
-        if 'quality_metrics' in design:
-            metrics = design['quality_metrics']
+        if "quality_metrics" in design:
+            metrics = design["quality_metrics"]
             print(f"  Cohesion: {metrics.get('cohesion', 0.0):.2f}/1.0 (higher is better)")
             print(f"  Coupling: {metrics.get('coupling', 0.0):.2f}/1.0 (lower is better)")
             print(f"  Complexity: {metrics.get('complexity', 0.0):.2f}/1.0")
@@ -215,8 +215,8 @@ class APIClient:
 
         # SOLID Violations
         print("\nSOLID Principle Violations:")
-        if 'solid_violations' in design and design['solid_violations']:
-            for violation in design['solid_violations'][:3]:  # Show first 3
+        if "solid_violations" in design and design["solid_violations"]:
+            for violation in design["solid_violations"][:3]:  # Show first 3
                 print(f"  - {violation['principle'].upper()}")
                 print(f"    Severity: {violation['severity']}")
                 print(f"    Component: {violation['component']}")
@@ -227,8 +227,8 @@ class APIClient:
 
         # Design Smells
         print("\nDesign Smells Detected:")
-        if 'design_smells' in design and design['design_smells']:
-            for smell in design['design_smells'][:3]:  # Show first 3
+        if "design_smells" in design and design["design_smells"]:
+            for smell in design["design_smells"][:3]:  # Show first 3
                 print(f"  - {smell['smell'].upper()}")
                 print(f"    {smell['description']}")
         else:
@@ -237,16 +237,16 @@ class APIClient:
 
         # Cross-Cutting Concerns
         print("\nCross-Cutting Concerns:")
-        if 'cross_cutting_concerns' in design and design['cross_cutting_concerns']:
-            for concern, components in design['cross_cutting_concerns'].items():
+        if "cross_cutting_concerns" in design and design["cross_cutting_concerns"]:
+            for concern, components in design["cross_cutting_concerns"].items():
                 print(f"  - {concern.upper()}: {len(components)} locations")
         else:
             print("  (Expected: Logging concern detected)")
 
         # Failure Modes
         print("\nFailure Mode Analysis:")
-        if 'failure_modes' in design and design['failure_modes']:
-            for failure in design['failure_modes'][:2]:  # Show first 2
+        if "failure_modes" in design and design["failure_modes"]:
+            for failure in design["failure_modes"][:2]:  # Show first 2
                 print(f"  - {failure['type']}")
                 print(f"    Component: {failure['component']}")
                 print(f"    Impact: {failure['impact']}")
@@ -257,8 +257,8 @@ class APIClient:
 
         # Edge Cases
         print("\nEdge Cases Identified:")
-        if 'edge_cases' in design:
-            for edge_case in design['edge_cases'][:5]:  # Show first 5
+        if "edge_cases" in design:
+            for edge_case in design["edge_cases"][:5]:  # Show first 5
                 print(f"  - {edge_case}")
 
     else:
@@ -269,15 +269,15 @@ class APIClient:
     decision_dict = arch_decision.to_dict()
 
     # Count total data points
-    total_invariants = len(decision_dict.get('invariants', []))
-    has_ast = decision_dict.get('ast_analysis') is not None
-    has_semantic = decision_dict.get('semantic_issues') is not None
-    has_metrics = decision_dict.get('complexity_metrics') is not None
-    has_patterns = decision_dict.get('detected_patterns') is not None
-    has_deps = decision_dict.get('dependency_graph') is not None
-    has_design = decision_dict.get('design_analysis') is not None
+    total_invariants = len(decision_dict.get("invariants", []))
+    has_ast = decision_dict.get("ast_analysis") is not None
+    has_semantic = decision_dict.get("semantic_issues") is not None
+    has_metrics = decision_dict.get("complexity_metrics") is not None
+    has_patterns = decision_dict.get("detected_patterns") is not None
+    has_deps = decision_dict.get("dependency_graph") is not None
+    has_design = decision_dict.get("design_analysis") is not None
 
-    print(f"Total Analysis Dimensions:")
+    print("Total Analysis Dimensions:")
     print(f"  Invariants: {total_invariants}")
     print(f"  AST Analysis: {'✓' if has_ast else '✗'}")
     print(f"  Semantic Analysis: {'✓' if has_semantic else '✗'}")

@@ -12,19 +12,15 @@ Tests cover:
 - Request/response handling
 - Integration with actual floor directories
 """
-import pytest
+
 import json
 import subprocess
-import time
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, call
-from io import BytesIO
+from unittest.mock import Mock, patch
 
-from src.core.floor_manager import (
-    FloorProcess,
-    MultiLanguageFloorManager,
-    demo
-)
+import pytest
+
+from src.core.floor_manager import FloorProcess, MultiLanguageFloorManager, demo
 
 
 class TestFloorProcess:
@@ -35,11 +31,7 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = None  # Process is running
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         assert floor_process.floor_number == 1
         assert floor_process.language == "python"
@@ -49,11 +41,7 @@ class TestFloorProcess:
         """Test all FloorProcess attributes are set correctly"""
         mock_process = Mock()
 
-        floor_process = FloorProcess(
-            floor_number=5,
-            language="rust",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=5, language="rust", process=mock_process)
 
         assert floor_process.floor_number == 5
         assert floor_process.language == "rust"
@@ -73,11 +61,7 @@ class TestFloorProcess:
         response_data = {"result": "success"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         result = floor_process.send_request("get_info")
 
@@ -107,11 +91,7 @@ class TestFloorProcess:
         response_data = {"status": "analyzed", "issues": []}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=2,
-            language="rust",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=2, language="rust", process=mock_process)
 
         params = {"code": "fn main() {}", "operation": "analyze"}
         result = floor_process.send_request("process_code", params)
@@ -137,16 +117,9 @@ class TestFloorProcess:
         response_data = {"processed": True}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=3,
-            language="go",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=3, language="go", process=mock_process)
 
-        params = {
-            "nested": {"key": "value", "list": [1, 2, 3]},
-            "array": ["a", "b", "c"]
-        }
+        params = {"nested": {"key": "value", "list": [1, 2, 3]}, "array": ["a", "b", "c"]}
         result = floor_process.send_request("complex_method", params)
 
         written_data = mock_stdin.write.call_args[0][0].decode()
@@ -160,11 +133,7 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = None  # None means running
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         assert floor_process.is_running() is True
 
@@ -173,11 +142,7 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = 0  # Return code means terminated
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         assert floor_process.is_running() is False
 
@@ -190,11 +155,7 @@ class TestFloorProcess:
         mock_process.poll.return_value = None  # Process is running
         mock_process.wait.return_value = None
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         floor_process.stop()
 
@@ -212,11 +173,7 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = 0  # Already stopped
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         floor_process.stop()
 
@@ -233,11 +190,7 @@ class TestFloorProcess:
         mock_process.poll.return_value = None  # Process is running
         mock_process.wait.side_effect = subprocess.TimeoutExpired("test", 5)
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         floor_process.stop()
 
@@ -372,7 +325,7 @@ class TestMultiLanguageFloorManager:
 
         assert result is False
 
-    @patch('subprocess.Popen')
+    @patch("subprocess.Popen")
     def test_start_floor_success_no_build(self, mock_popen):
         """Test successfully starting a floor without build requirement"""
         manager = MultiLanguageFloorManager()
@@ -382,7 +335,7 @@ class TestMultiLanguageFloorManager:
         mock_popen.return_value = mock_process
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("python")
 
         assert result is True
@@ -392,12 +345,12 @@ class TestMultiLanguageFloorManager:
         mock_popen.assert_called_once()
         call_args = mock_popen.call_args
 
-        assert call_args[1]['stdin'] == subprocess.PIPE
-        assert call_args[1]['stdout'] == subprocess.PIPE
-        assert call_args[1]['stderr'] == subprocess.PIPE
+        assert call_args[1]["stdin"] == subprocess.PIPE
+        assert call_args[1]["stdout"] == subprocess.PIPE
+        assert call_args[1]["stderr"] == subprocess.PIPE
 
-    @patch('subprocess.run')
-    @patch('subprocess.Popen')
+    @patch("subprocess.run")
+    @patch("subprocess.Popen")
     def test_start_floor_with_build_success(self, mock_popen, mock_run):
         """Test starting a floor that requires building"""
         manager = MultiLanguageFloorManager()
@@ -412,7 +365,7 @@ class TestMultiLanguageFloorManager:
         mock_popen.return_value = mock_process
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("rust")
 
         assert result is True
@@ -424,7 +377,7 @@ class TestMultiLanguageFloorManager:
         assert "cargo" in build_call_args[0][0]
         assert "build" in build_call_args[0][0]
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_start_floor_build_fails(self, mock_run):
         """Test starting a floor when build fails"""
         manager = MultiLanguageFloorManager()
@@ -436,13 +389,13 @@ class TestMultiLanguageFloorManager:
         mock_run.return_value = mock_run_result
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("rust")
 
         assert result is False
         assert "rust" not in manager.active_floors
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_start_floor_build_exception(self, mock_run):
         """Test handling exceptions during build"""
         manager = MultiLanguageFloorManager()
@@ -451,13 +404,13 @@ class TestMultiLanguageFloorManager:
         mock_run.side_effect = Exception("Build error")
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("rust")
 
         assert result is False
         assert "rust" not in manager.active_floors
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_start_floor_build_timeout(self, mock_run):
         """Test handling build timeout"""
         manager = MultiLanguageFloorManager()
@@ -466,12 +419,12 @@ class TestMultiLanguageFloorManager:
         mock_run.side_effect = subprocess.TimeoutExpired("cargo", 60)
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("rust")
 
         assert result is False
 
-    @patch('subprocess.Popen')
+    @patch("subprocess.Popen")
     def test_start_floor_popen_exception(self, mock_popen):
         """Test handling exception when starting process"""
         manager = MultiLanguageFloorManager()
@@ -480,7 +433,7 @@ class TestMultiLanguageFloorManager:
         mock_popen.side_effect = Exception("Failed to start process")
 
         # Mock directory exists
-        with patch.object(Path, 'exists', return_value=True):
+        with patch.object(Path, "exists", return_value=True):
             result = manager.start_floor("python")
 
         assert result is False
@@ -563,7 +516,7 @@ class TestMultiLanguageFloorManager:
             "domain": "backend",
             "offices": ["Architecture", "Implementation"],
             "agent_count": 3,
-            "task_count": 5
+            "task_count": 5,
         }
         mock_floor.send_request.return_value = info_data
 
@@ -705,7 +658,7 @@ class TestMultiLanguageFloorManager:
 class TestDemo:
     """Test the demo function"""
 
-    @patch('src.core.floor_manager.MultiLanguageFloorManager')
+    @patch("src.core.floor_manager.MultiLanguageFloorManager")
     def test_demo_function_no_floors_started(self, mock_manager_class):
         """Test demo when no floors can be started"""
         # Mock the manager and its methods
@@ -730,7 +683,7 @@ class TestDemo:
         # Verify stop_all_floors was called at the end
         mock_manager.stop_all_floors.assert_called_once()
 
-    @patch('src.core.floor_manager.MultiLanguageFloorManager')
+    @patch("src.core.floor_manager.MultiLanguageFloorManager")
     def test_demo_function_with_successful_floors(self, mock_manager_class):
         """Test demo with successfully started floors"""
         mock_manager = Mock()
@@ -750,7 +703,7 @@ class TestDemo:
                 "domain": "backend",
                 "offices": ["Architecture", "Implementation"],
                 "agent_count": 3,
-                "task_count": 5
+                "task_count": 5,
             },
             "javascript": {
                 "floor_number": 4,
@@ -758,8 +711,8 @@ class TestDemo:
                 "domain": "frontend",
                 "offices": ["Architecture", "Review"],
                 "agent_count": 2,
-                "task_count": 3
-            }
+                "task_count": 3,
+            },
         }
 
         # Mock active_floors
@@ -768,12 +721,7 @@ class TestDemo:
         # Mock send_request_to_floor
         def mock_send_request(lang, method, params=None):
             if method == "process_code":
-                return {
-                    "analysis": {
-                        "lines": 2,
-                        "functions": 1
-                    }
-                }
+                return {"analysis": {"lines": 2, "functions": 1}}
             return None
 
         mock_manager.send_request_to_floor.side_effect = mock_send_request
@@ -784,7 +732,7 @@ class TestDemo:
         # Verify stop_all_floors was called
         mock_manager.stop_all_floors.assert_called_once()
 
-    @patch('src.core.floor_manager.MultiLanguageFloorManager')
+    @patch("src.core.floor_manager.MultiLanguageFloorManager")
     def test_demo_function_with_floor_errors(self, mock_manager_class):
         """Test demo with floor errors"""
         mock_manager = Mock()
@@ -795,12 +743,8 @@ class TestDemo:
 
         # Mock get_all_floor_info with errors
         mock_manager.get_all_floor_info.return_value = {
-            "python": {
-                "error": "Connection failed"
-            },
-            "rust": {
-                "error": "Timeout"
-            }
+            "python": {"error": "Connection failed"},
+            "rust": {"error": "Timeout"},
         }
 
         # Mock active_floors as empty
@@ -811,7 +755,7 @@ class TestDemo:
 
         mock_manager.stop_all_floors.assert_called_once()
 
-    @patch('src.core.floor_manager.MultiLanguageFloorManager')
+    @patch("src.core.floor_manager.MultiLanguageFloorManager")
     def test_demo_function_with_result_no_analysis(self, mock_manager_class):
         """Test demo when result has no analysis key"""
         mock_manager = Mock()
@@ -825,9 +769,7 @@ class TestDemo:
         mock_manager.active_floors = {"python": Mock()}
 
         # Mock send_request_to_floor to return result without analysis
-        mock_manager.send_request_to_floor.return_value = {
-            "status": "ok"
-        }
+        mock_manager.send_request_to_floor.return_value = {"status": "ok"}
 
         # Should handle missing analysis key
         demo()
@@ -887,7 +829,7 @@ class TestFloorUniformity:
             "Review Office",
             "Test Office",
             "Security Office",
-            "Manager Office"
+            "Manager Office",
         ]
         assert len(required_offices) == 6
 
@@ -918,11 +860,7 @@ class TestEdgeCases:
         response_data = {"result": "ok"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         # Empty dict is falsy, so params won't be included
         result = floor_process.send_request("test", {})
@@ -938,11 +876,7 @@ class TestEdgeCases:
         """Test floor process can have floor number 0"""
         mock_process = Mock()
 
-        floor_process = FloorProcess(
-            floor_number=0,
-            language="test",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=0, language="test", process=mock_process)
 
         assert floor_process.floor_number == 0
 
@@ -1032,11 +966,7 @@ class TestProcessCommunication:
         response_data = {"result": "ok"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         params = {"unicode": "こんにちは", "special": "test\n\t"}
         floor_process.send_request("test", params)
@@ -1062,11 +992,7 @@ class TestProcessCommunication:
         response_data = {"message": "Success! 🎉", "data": [1, 2, 3]}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         result = floor_process.send_request("test")
 
@@ -1082,17 +1008,12 @@ class TestProcessCommunication:
         mock_process.poll.return_value = None
         mock_process.wait.return_value = None
 
-        floor_process = FloorProcess(
-            floor_number=1,
-            language="python",
-            process=mock_process
-        )
+        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
 
         floor_process.stop()
 
         # Verify order of calls
-        calls = [call[0] for call in [mock_stdin.close.call_args,
-                                        mock_process.terminate.call_args]]
+        calls = [call[0] for call in [mock_stdin.close.call_args, mock_process.terminate.call_args]]  # noqa: F841,F811
 
         # stdin.close should be called before terminate
         assert mock_stdin.close.called
