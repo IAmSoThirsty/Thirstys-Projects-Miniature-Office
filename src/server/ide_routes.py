@@ -11,10 +11,26 @@ from src.core.audit import EventType, get_audit_log
 from src.runtime.terminal import TerminalError, run_command, split_command_line
 from src.workspace.fs import WorkspaceError, get_workspace
 
+PLACEHOLDER_SECRETS = {
+    "change-this-secret-key",
+    "change-this-in-production-use-a-random-string",
+    "dev-secret-key-only-for-testing",
+}
+
 
 def _error(exc):
     status = getattr(exc, "status_code", 400)
     return jsonify({"error": str(exc)}), status
+
+
+def _require_real_secret() -> None:
+    if os.getenv("FLASK_ENV") != "production":
+        return
+    secret_key = os.getenv("SECRET_KEY")
+    if not secret_key or secret_key in PLACEHOLDER_SECRETS:
+        raise RuntimeError(
+            "SECRET_KEY must be set to a non-placeholder value when FLASK_ENV=production"
+        )
 
 
 def register_ide_routes(app: Flask) -> None:
@@ -132,6 +148,7 @@ def register_ide_routes(app: Flask) -> None:
         audit = get_audit_log()
         return jsonify(
             {
+                "status": "ok",
                 "workspace": info,
                 "audit_events": len(audit.graph.events),
                 "audit_chain_ok": audit.verify_chain(),
@@ -143,6 +160,7 @@ def register_ide_routes(app: Flask) -> None:
 
 def configure_ide_defaults() -> None:
     """Attach process workspace and optional persisted audit log."""
+    _require_real_secret()
     workspace_root = os.getenv("MO_WORKSPACE")
     if workspace_root:
         get_workspace(Path(workspace_root)).seed_if_empty()
