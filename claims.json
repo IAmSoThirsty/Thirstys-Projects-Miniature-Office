@@ -51,6 +51,14 @@
     "cd_f24ae5c": {
       "run": 33208378559,
       "conclusion": "success"
+    },
+    "ci_1a103bf": {
+      "run": 33215760008,
+      "conclusion": "success"
+    },
+    "cd_1a103bf": {
+      "run": 33215760012,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -88,7 +96,11 @@
       "3.10",
       "3.11",
       "3.12"
-    ]
+    ],
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1626,
+    "fresh_cov_note": "XML 7494/7749 on fdd9762. Identical src/tests at 1a103bf. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
   },
   "verdicts": {
     "holds": [
@@ -120,12 +132,17 @@
     ]
   },
   "corrections": [
-    "Independent clone of HEAD fdd9762: pytest 1573 passed, 1 skipped, 13.14s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization module 1421 lines / 52653 bytes. Parent pin 590b90c claimed 7493/7749 (96.70%) — off by one covered statement.",
-    "CI 33212776987 and CD 33212776992 both succeeded on fdd9762. CI/CD is Holds. Docker stays Partial (in-memory world, chmod 777).",
-    "Canonical files now cite the SHA that was independently re-measured (fdd9762), not the parent 590b90c.",
-    "EASY_ACCESS does not deny the PWA shell. manifest.json + sw.js exist; there is still no WebXR.",
-    "GETTING_STARTED does not claim compose ships a placeholder SECRET_KEY. Compose interpolates SECRET_KEY with no default.",
-    "Score 9/6/1/3 of 19. Production ready remains False."
+    "Code pin is fdd9762 (last src/tests change). Docs commit 1a103bf is identical in src/ and tests/. Do not retarget the pin to a docs-only SHA.",
+    "Independent pytest on fdd9762: 1573 passed, 1 skipped, 13.14s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization 1421 lines / 52653 bytes.",
+    "Anchored def test_ in tests/ = 1606. Unanchored in tests/ = 1608. Whole-repo unanchored = 1626. 1612 is not a reproducible count.",
+    "CI 33212776987 and CD 33212776992 green on fdd9762. CI 33215760008 and CD 33215760012 green on 1a103bf. CI/CD is Holds. Docker stays Partial.",
+    "Coverage XML may swing by one statement across machines on an identical tree. That is not a parent-pin error.",
+    "Score 9/6/1/3 of 19. Production ready remains False.",
+    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale of current main."
   ],
-  "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a"
+  "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
+  "docs_commit_observed": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
+  "docs_commit_short": "1a103bf",
+  "src_tests_identical_through": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
+  "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree."
 }

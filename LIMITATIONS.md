@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Independently re-measured 28 August 2026 on [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a). CI [33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987) and CD [33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992) both green.
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Independently re-measured 28 August 2026 on **code pin** [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) (last `src/` / `tests/` change). CI [33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987) and CD [33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992) green on that pin. Docs commit [`1a103bf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/1a103bf198ebb4b795b36d04cdc081d3a1fa4687) is identical in `src/` and `tests/` and is also green ([CI 33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008), [CD 33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012)).
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -21,7 +21,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
 - `/health` is a liveness probe (HTTP 200)
 - Python **3.10+** (`pytest==9.0.3` does not install on 3.9)
-- CI and CD **green** on `fdd9762`
+- CI and CD **green** on code pin `fdd9762` and on docs commit `1a103bf`
 
 ## What is not implemented (but was claimed)
 
@@ -49,8 +49,9 @@ Steps 1–6 exist as Python methods. Python:
 
 | Source | Number | Meaning |
 | --- | --- | --- |
-| Independent pytest | 1,573 passed, 1 skipped | Collected tests on `fdd9762` |
-| `def test_` grep | 1,606 | Functions defined, not the same as collected |
+| Independent pytest | 1,573 passed, 1 skipped | Collected tests on code pin `fdd9762` |
+| Anchored `def test_` grep | 1,606 | `^\s*def test_` in `tests/` (not the same as collected) |
+| Unanchored `def test_` in `tests/` | 1,608 | Includes comment/string hits. Not 1,612. |
 | Fresh `pytest --cov=src` | 7,494 / 7,749 statements (96.71%) | Imported modules only; still omits `integrated_specs/` |
 | `src/` Python lines | 24,441 total / 19,058 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
