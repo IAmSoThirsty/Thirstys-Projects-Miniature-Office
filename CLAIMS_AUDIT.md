@@ -16,7 +16,7 @@
 
 ## Score
 
-Of 18 headline claims: **3 hold**, **5 are partial**, **3 are inflated**, **7 are false**.
+Of 18 headline claims: **3 hold**, **4 are partial**, **4 are inflated**, **7 are false**.
 
 ## Claim table
 
