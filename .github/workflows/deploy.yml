@@ -53,14 +53,22 @@ jobs:
     needs: build-and-push
     permissions:
       contents: read
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Test Docker Compose
       run: |
-        docker compose up -d
-        sleep 10
-        curl -f http://localhost:5000/health || exit 1
+        docker compose up -d --build
+        ok=0
+        for i in $(seq 1 24); do
+          if curl -sf http://localhost:5000/health; then
+            ok=1
+            break
+          fi
+          sleep 5
+        done
+        docker compose logs || true
+        test "$ok" = "1"
         docker compose down
