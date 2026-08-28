@@ -1,4 +1,4 @@
-> **Measured status:** this directory now contains `lib/department_floor*.ex` so the Mix project has modules. It is a prototype, not a fault-tolerant OTP product.
+> **Toy floor — prototype Mix project, not a fault-tolerant OTP product.** Mix modules exist (`lib/department_floor*.ex`). This is not a production Elixir runtime. Inventory: [floors/README.md](../README.md).
 
 # Floor 22 - Elixir Jurisdiction
 
