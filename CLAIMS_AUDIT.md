@@ -18,9 +18,9 @@
 
 ## Score
 
-Of 18 headline claims: **4 hold**, **9 are partial**, **2 are inflated**, **3 are false**.
+Of 18 headline claims: **5 hold**, **8 are partial**, **2 are inflated**, **3 are false**.
 
-Was 3 / 4 / 4 / 7 at the docs-only pass, then 4 / 8 / 2 / 4 after the code follow-up. The extra hold/partials come from making cheap claims true (tests, `start.command`, locks, Mix modules, banners, CI green). CD was still red on `docker-compose` (v1); this docs/CD patch does not make the product a production IDE.
+Was 3 / 4 / 4 / 7 at the docs-only pass, then 4 / 8 / 2 / 4 after the code follow-up. Extra holds: tests, then CI+CD green on `16a7e0a`. The product is still not a production IDE.
 
 ## Claim table
 
@@ -37,11 +37,11 @@ Was 3 / 4 / 4 / 7 at the docs-only pass, then 4 / 8 / 2 / 4 after the code follo
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | In-memory. Per-event SHA-256 of own fields. Parent **ids**, not parent hashes. Not persisted. `datetime.utcnow` removed. |
 | Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI on port 5000. `start.command` exists. No WebXR. Access docs no longer say VR is a product. |
 | 45+ API endpoints | **Holds** | 45+ | 64 Flask routes |
-| CI / CD healthy | **Partial** | Live green badges | `CI - Test and Lint` **succeeded** on `5e182f2`. `CD - Build and Deploy` failed: `docker-compose: command not found` (v1). Workflow now uses `docker compose`. Security steps remain `\|\| true`. |
+| CI / CD healthy | **Holds** | Live green badges | **CI** [run 33172120863](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33172120863) and **CD** [run 33172120883](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33172120883) both succeeded on `16a7e0a`. Security steps remain `\|\| true`. |
 | 0 lint / 0 vulns | **Partial** | Clean | Critical flake8, Black, and isort pass on `src/` (CI green). `datetime.utcnow` gone. Committed `flake8_remaining*.txt` dumps remain. Bandit/safety cannot fail CI. |
 | Registry thread-safe via GIL | **Partial** | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. Gunicorn uses 4 eventlet workers (separate processes). |
 | Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`) |
-| Docker / compose | **Partial** | Verified, hardened | Files exist. Default `SECRET_KEY` is `change-this-secret-key`. CD compose test used a missing v1 binary until this patch. |
+| Docker / compose | **Partial** | Verified, hardened | Files exist. Default `SECRET_KEY` is `change-this-secret-key`. CD compose health check succeeded on `16a7e0a`. |
 | Docs consistent | **Partial** | Maximum detail, no omission | Canonical README / LIMITATIONS / this file agree. Historical certificates are bannered. [floors/README.md](floors/README.md) no longer stamps every floor “Implemented.” [DOCS.md](DOCS.md) classifies files. |
 | Apache 2.0 | **Holds** | Apache 2.0 | LICENSE matches |
 
@@ -103,10 +103,9 @@ result = data  # TODO: Implement actual logic
 
 Workflow files: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`.
 
-- `CI - Test and Lint` on `5e182f2`: **success** (52s).
-- `CD - Build and Deploy` on `5e182f2`: **failure** — `docker-compose: command not found`. Ubuntu runners ship Compose v2 as `docker compose`. This patch switches the job and waits for `/health`.
-
-Security `safety` / `bandit` still use `|| true`.
+- `CI - Test and Lint` on `16a7e0a`: **success** ([run 33172120863](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33172120863)).
+- `CD - Build and Deploy` on `16a7e0a`: **success** ([run 33172120883](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33172120883)) after switching to `docker compose`.
+- Security `safety` / `bandit` still use `|| true`.
 
 ## What we changed to make claims accurate
 

@@ -20,8 +20,8 @@ This README reports the **measured** state of `main` at [`5e182f2`](https://gith
 | Audit log | `src/core/audit.py` — SHA-256 of each event’s own fields, in memory, not a hash chain, not persisted |
 | Code pipeline | `src/core/code_civilization.py` — **1,364-line** template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
 | Floors | 28 directories under `floors/`. Elixir has Mix modules. The SQL floor is Python. See [floors/README.md](floors/README.md) |
-| Tests | **1,537 passing**, 1 skipped (pytest; GitHub Actions CI green on `5e182f2`) |
-| CI / CD | `CI - Test and Lint` succeeded on `5e182f2`. CD failed on the v1 `docker-compose` binary; workflow now uses `docker compose` |
+| Tests | **1,537 passing**, 1 skipped (pytest; GitHub Actions CI green) |
+| CI / CD | **CI and CD are green** on `16a7e0a`. Security scans still use `\|\| true` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 

@@ -67,12 +67,11 @@ Everything lives in the process. Restarting the server drops world state, audit 
 
 ## Roadmap (not done)
 
-1. Confirm CD is green after the `docker compose` patch.
-2. Fail the job on security findings instead of `|| true`.
-3. Persist audit events; hash each event over the **previous hash**.
-4. Replace template TODOs with real generation, or stop claiming a pipeline.
-5. Include every `src/` module in coverage reports.
-6. Archive historical `*_COMPLETE.md` files so they cannot be cited even below the banner.
+1. Fail the job on security findings instead of `|| true`.
+2. Persist audit events; hash each event over the **previous hash**.
+3. Replace template TODOs with real generation, or stop claiming a pipeline.
+4. Include every `src/` module in coverage reports.
+5. Archive historical `*_COMPLETE.md` files so they cannot be cited even below the banner.
 
 ## Contributing
 
