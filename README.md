@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an in-memory audit log, language “floors,” and a template-based code-generation pipeline.
 
-This README reports the **measured** state of `main` as of 28 August 2026 (honesty pass after [`b8827e7`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/b8827e7812c2da4e5336851288c92461b27f588b)). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Index: [DOCS.md](DOCS.md).
+This README reports the **measured** state of `main` at [`fe9cdf1`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77) (28 August 2026). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
@@ -20,8 +20,8 @@ This README reports the **measured** state of `main` as of 28 August 2026 (hones
 | Audit log | `src/core/audit.py` — in-memory SHA-256 **chain** (`prev_hash` + parent hashes). Not persisted, not signed |
 | Code pipeline | `src/core/code_civilization.py` — **1,364-line** template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
 | Floors | 28 directories under `floors/`. Every floor README is marked a toy. The SQL floor is Python. See [floors/README.md](floors/README.md) |
-| Tests | **1,541 passing**, 1 skipped (local pytest; prior GitHub Actions CI green on `b8827e7`) |
-| CI / CD | **CI and CD are green** on `b8827e7`. Security scans still use `\|\| true` |
+| Tests | **1,541 passing**, 1 skipped (local pytest on `fe9cdf1`; GitHub Actions CI green on the same commit) |
+| CI / CD | **CI and CD are green** on `fe9cdf1` ([CI run 33179509134](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509134), [CD run 33179509146](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509146)). Security scans still use `\|\| true` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
@@ -37,6 +37,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 | Language floors | 30+ native, working | 28 dirs; mixed; SQL floor is Python; each README is bannered as a toy |
 | Flask routes | 45+ | 64 `@app.route` entries |
 | macOS `start.command` | Documented | **Present** — launches `start.sh` |
+| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **6 / 7 / 2 / 3** of 18 (sums; VR is Partial) |
 
 ## What still works as a prototype
 
@@ -82,6 +83,7 @@ Linux: `./install.sh` then `./start.sh`. macOS: `./install.sh` then `./start.com
 | --- | --- |
 | [DOCS.md](DOCS.md) | Which files are canonical vs historical |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence. Canonical for status. |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (6/7/2/3 = 18) |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations, without contradictory percentages |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design notes — treat as intent, not a completion certificate |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Historical. Superseded. |
