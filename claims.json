@@ -1,0 +1,12 @@
+{
+  "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
+  "commit": "fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77",
+  "measured_at": "2026-08-28",
+  "status": "experimental prototype",
+  "production_ready": false,
+  "score": { "holds": 6, "partial": 7, "inflated": 2, "false": 3, "total": 18 },
+  "corrections": [
+    "CLAIMS_AUDIT.md said 8 holds of 18; the table sums to 7 holds if VR is counted as Holds, or 6 if VR is Partial. VR is Partial (no WebXR).",
+    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469, which is stale relative to the 28 Aug honesty pass."
+  ]
+}
