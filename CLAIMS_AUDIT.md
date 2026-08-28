@@ -4,25 +4,28 @@
 **Original audit commit:** `537c469a8ce34d952525ac25886ed8a85a629f82`  
 **Code follow-up:** `5e182f2` (cheap claims made true: tests, `start.command`, locks, Mix modules, Black/isort, CI)  
 **Docs follow-up:** `b8827e7` (operator how-tos, floor inventory)  
-**This file:** 28 August 2026 — remaining live overclaims removed; in-memory hash chain implemented  
+**Honesty pass:** `fe9cdf1` — remaining live overclaims removed; in-memory hash chain implemented  
+**Score correction:** 28 August 2026 evening — table arithmetic was 8/6/2/3 (19). The 18-row table is **6 holds / 7 partial / 2 inflated / 3 false** once VR is Partial. Independent re-measure of `fe9cdf1` confirmed the tree numbers.  
 **Rule:** a claim is true only if the tree implements it. Design prose is not implementation.
 
 ## Method
 
-1. Clone the default branch (previous HEAD `b8827e7`, then this honesty pass).
+1. Clone `main` at `fe9cdf1`.
 2. Count lines in `src/**/*.py` and `def test_` in `tests/`.
 3. Compare README / LIMITATIONS / PRODUCTION_READY numbers to those counts and to `coverage.json`.
 4. Open modules that the README treats as complete (pipeline, analyzers, audit log, floors).
 5. List Flask routes in `src/server/app.py`.
 6. List GitHub Actions runs of `CI - Test and Lint` and `CD - Build and Deploy`.
-7. Local pytest (Python 3.10) this pass: **1,541 passed, 1 skipped**. Prior GitHub Actions CI success on `b8827e7` ([run 33174907396](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907396)).
+7. Independent pytest on `fe9cdf1` (Python 3.12): **1,541 passed, 1 skipped**. GitHub Actions CI success on the same commit ([run 33179509134](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509134)). Fresh `pytest --cov=src`: **6,908 / 6,971** statements (99% of imported modules).
 8. Sweep remaining live operator docs (`DEMO.txt`, `QUICKSTART.md`, `package.json`, per-floor READMEs) for VR / PWA / ledger / “spatialized IDE” language.
 
 ## Score
 
-Of 18 headline claims: **8 hold**, **6 are partial**, **2 are inflated**, **3 are false**.
+Of 18 headline claims: **6 hold**, **7 are partial**, **2 are inflated**, **3 are false**.
 
-The three **false** and two **inflated** rows are *historical* claims. Canonical README / LIMITATIONS / this file no longer assert them. Remaining **partial** rows are still true of the code (template codegen, toy floors, unsigned in-memory audit, `|| true` security, placeholder compose secret). The product is still not a production IDE.
+That is `6 + 7 + 2 + 3 = 18`. The previous score line (`8 hold / 6 partial / 2 inflated / 3 false`) summed to 19 and cannot describe an 18-row table. Ledger: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md).
+
+The three **false** and two **inflated** rows are *historical* claims. Canonical README / LIMITATIONS / this file no longer assert them. Remaining **partial** rows are still true of the code (template codegen, toy floors, unsigned in-memory audit, `|| true` security, placeholder compose secret, no VR). The product is still not a production IDE.
 
 ## Claim table
 
@@ -30,21 +33,21 @@ The three **false** and two **inflated** rows are *historical* claims. Canonical
 | --- | --- | --- | --- |
 | Production ready | **False** | Production-ready core pipeline | Experimental. In-memory. Template codegen. |
 | 99% coverage | **Inflated** | 99% overall, core at 100% | Committed `coverage.json`: 98.7% of 6,438 statements, omitting `design_analyzer.py` + `integrated_specs/`. Fresh `pytest --cov=src`: 99% of 6,971 *imported* statements; `integrated_specs/` still omitted. Not 99% of the tree. |
-| 1,537 tests passing | **Holds** (updated) | 1,537 passing | **1,541 passed**, 1 skipped locally (Python 3.10). Four hash-chain tests added this pass. `def test_` grep = 1,574 (grep ≠ collected). |
-| 18,285 src lines | **False** | 18,285 | **23,250** total / **17,991** non-comment after the audit-chain edit. |
+| 1,537 tests passing | **Holds** (updated) | 1,537 passing | **1,541 passed**, 1 skipped. Independent pytest on `fe9cdf1` (Python 3.12). Four hash-chain tests added on that commit. `def test_` grep = 1,574 (grep ≠ collected). |
+| 18,285 src lines | **False** | 18,285 | **23,250** total / **17,991** non-comment. |
 | `code_civilization.py` is 49,741 lines | **False** | 49,741 lines | **1,364 lines** (50,430 bytes). Original misread **bytes as lines**. |
-| 30+ native language floors | **Partial** | 30+ working native floors | 28 directories. Every floor README now opens with a toy-floor banner. SQL floor is still Python. Inventory: [floors/README.md](floors/README.md). |
+| 30+ native language floors | **Partial** | 30+ working native floors | 28 directories. Floor READMEs open with a toy/prototype banner. SQL floor is still Python. Nested `floors/java/bin/README.md` is committed build output. Inventory: [floors/README.md](floors/README.md). |
 | Complete codegen → tested artifact | **Partial** | Working code with tests | Templates with `TODO`. Comment: “we assume tests pass.” Tests are not run on generated code. |
 | 23+ patterns, SOLID, 17+ smells | **Inflated** | Full design analysis | `pattern_detector.py` returns `[]`. Flow/metrics/dependency analyzers are placeholders. `design_analyzer.py` exists; omitted from committed `coverage.json`. |
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | In-memory SHA-256 **chain**: each event hashes `prev_hash` plus parent hashes. Not persisted, not signed. Restart drops it. |
-| Desktop / mobile / VR | **Holds** | Any device including VR | Browser UI on port 5000. `start.command` exists. No WebXR, no PWA. `DEMO.txt` / Quickstart no longer say “you're in VR.” |
-| 45+ API endpoints | **Holds** | 45+ | 64 Flask routes |
-| CI / CD healthy | **Holds** | Live green badges | **CI** [run 33174907396](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907396) and **CD** [run 33174907349](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907349) succeeded on `b8827e7`. Security steps remain `\|\| true`. |
+| Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI on port 5000. `start.command` exists. No WebXR, no PWA. A Holds verdict is not compatible with a missing VR surface. |
+| 45+ API endpoints | **Holds** | 45+ | 64 Flask `@app.route` entries |
+| CI / CD healthy | **Holds** | Live green badges | **CI** [run 33179509134](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509134) and **CD** [run 33179509146](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509146) succeeded on `fe9cdf1`. Security steps remain `\|\| true`. |
 | 0 lint / 0 vulns | **Partial** | Clean | Critical flake8, Black, and isort pass on `src/` (CI green). Committed `flake8_remaining*.txt` dumps remain. Bandit/safety cannot fail CI. |
 | Registry thread-safe via GIL | **Partial** | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. Gunicorn uses 4 eventlet workers (separate processes). |
-| Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`) |
-| Docker / compose | **Partial** | Verified, hardened | Files exist. Default `SECRET_KEY` is `change-this-secret-key`. CD compose health check succeeded on `b8827e7`. |
-| Docs consistent | **Holds** | Maximum detail, no omission | Canonical README / LIMITATIONS / this file agree. Remaining live overclaims in `DEMO.txt`, Quickstart “immutability,” `package.json`, and unbannered floor READMEs were corrected this pass. |
+| Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`): 7 `EntityType`, 8 `RelationType`. |
+| Docker / compose | **Partial** | Verified, hardened | Files exist. Default `SECRET_KEY` is `change-this-secret-key`. CD compose health check succeeded on `fe9cdf1`. |
+| Docs consistent | **Holds** | Maximum detail, no omission | Canonical README / LIMITATIONS / this file / [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) agree on 6/7/2/3. Historical `*_COMPLETE.md` files stay bannered. |
 | Apache 2.0 | **Holds** | Apache 2.0 | LICENSE matches |
 
 ## Internal contradictions (original smoking gun)
@@ -68,7 +71,7 @@ Those contradictions are why the canonical files were rewritten. Historical file
 
 `coverage.json` (still the pre-format snapshot) does not include:
 
-- `src/analysis/design_analyzer.py` (1,333 lines at `8132127`)
+- `src/analysis/design_analyzer.py` (1,333 lines)
 - `src/core/integrated_specs/canonical_bundle.py` (1,800)
 - `src/core/integrated_specs/domain_base.py` (332)
 - `src/core/integrated_specs/governance.py` (671)
@@ -105,8 +108,8 @@ result = data  # TODO: Implement actual logic
 
 Workflow files: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`.
 
-- `CI - Test and Lint` on `b8827e7`: **success** ([run 33174907396](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907396)).
-- `CD - Build and Deploy` on `b8827e7`: **success** ([run 33174907349](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907349)).
+- `CI - Test and Lint` on `fe9cdf1`: **success** ([run 33179509134](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509134)).
+- `CD - Build and Deploy` on `fe9cdf1`: **success** ([run 33179509146](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509146)).
 - Security `safety` / `bandit` still use `|| true`.
 
 ## What we changed to make claims accurate
@@ -133,14 +136,21 @@ Canonical README / LIMITATIONS / this file. `PRODUCTION_READY.md` superseded.
 3. Honest [floors/README.md](floors/README.md); added [DOCS.md](DOCS.md).
 4. GitHub About description no longer claims a civilization-tier IDE.
 
-### This pass (`b8827e7` remaining live claims)
+### `fe9cdf1` remaining live claims
 
 1. `DEMO.txt` no longer says “You're in VR with Miniature Office.”
 2. Quickstart no longer claims an event hash proves a tamper-proof ledger.
 3. `package.json` no longer describes a spatialized IDE or a phantom `src/client/main.js`.
-4. Every `floors/*/README.md` opens with a toy-floor banner (SQL: “not SQL”).
-5. `src/core/audit.py` now hashes `prev_hash` and parent hashes (in-memory chain). Local pytest: **1,541 passed**, 1 skipped.
+4. Floor READMEs open with a toy/prototype banner (SQL: “not SQL”).
+5. `src/core/audit.py` now hashes `prev_hash` and parent hashes (in-memory chain). Pytest: **1,541 passed**, 1 skipped.
 6. Re-measured `src/`: **23,250** total / **17,991** non-comment.
 
-The product remains a Flask office metaphor with templates and in-memory state. It is not a civilization-tier IDE.
+### This correction (score + evidence pin)
 
+1. Score line was 8/6/2/3 (sums to 19). Corrected to **6/7/2/3** (sums to 18). VR is Partial.
+2. CI/CD evidence pinned to green runs on `fe9cdf1`, not the older `b8827e7`.
+3. Independent pytest re-run: 1,541 passed, 1 skipped; 6,908 / 6,971 imported statements covered.
+4. LIMITATIONS roadmap no longer lists “hash over previous hash” as undone work; hashing exists, persistence/signing do not.
+5. Nested `floors/java/bin/README.md` gets a toy banner so it cannot be cited as an enterprise runtime.
+
+The product remains a Flask office metaphor with templates and in-memory state. It is not a civilization-tier IDE.

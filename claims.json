@@ -1,0 +1,59 @@
+{
+  "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
+  "commit": "fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77",
+  "measured_at": "2026-08-28",
+  "status": "experimental prototype",
+  "production_ready": false,
+  "score": { "holds": 6, "partial": 7, "inflated": 2, "false": 3, "total": 18 },
+  "measured": {
+    "src_python_lines_total": 23250,
+    "src_python_lines_noncomment": 17991,
+    "code_civilization_lines": 1364,
+    "code_civilization_bytes": 50430,
+    "pytest_passed": 1541,
+    "pytest_skipped": 1,
+    "def_test_grep": 1574,
+    "flask_routes": 64,
+    "floor_directories": 28,
+    "coverage_json_statements": 6438,
+    "coverage_json_covered": 6354,
+    "fresh_cov_statements": 6971,
+    "fresh_cov_covered": 6908,
+    "ci_run": 33179509134,
+    "cd_run": 33179509146
+  },
+  "verdicts": {
+    "holds": [
+      "tests_passing",
+      "api_endpoints",
+      "ci_cd_healthy",
+      "entity_ontology",
+      "docs_consistent",
+      "apache_2"
+    ],
+    "partial": [
+      "language_floors",
+      "codegen_pipeline",
+      "audit_log",
+      "desktop_mobile_vr",
+      "lint_vulns",
+      "registry_thread_safety",
+      "docker_compose"
+    ],
+    "inflated": [
+      "coverage_99",
+      "pattern_analysis"
+    ],
+    "false": [
+      "production_ready",
+      "src_line_count_18285",
+      "code_civilization_49741_lines"
+    ]
+  },
+  "corrections": [
+    "CLAIMS_AUDIT.md said 8 holds of 18; that sums to 19. VR is Partial (no WebXR). Score is 6/7/2/3.",
+    "CI/CD evidence was still citing b8827e7 after fe9cdf1 went green (CI 33179509134, CD 33179509146).",
+    "LIMITATIONS roadmap listed hashing prev_hash as undone; hashing exists, persistence and signing do not.",
+    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469, which is stale relative to the 28 Aug honesty pass."
+  ]
+}

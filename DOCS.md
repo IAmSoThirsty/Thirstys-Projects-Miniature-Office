@@ -2,7 +2,7 @@
 
 **Rule:** a claim is true only if the tree implements it. Design prose is not implementation.
 
-Canonical status lives in the three files below. Everything else is operator how-to, design intent, or a historical agent certificate.
+Canonical status lives in the files below. Everything else is operator how-to, design intent, or a historical agent certificate.
 
 ## Canonical (cite these)
 
@@ -10,6 +10,8 @@ Canonical status lives in the three files below. Everything else is operator how
 | --- | --- |
 | [README.md](README.md) | What the project is, measured metrics, how to run it |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (6/7/2/3 = 18) |
+| [claims.json](claims.json) | Same score as JSON |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations without contradictory percentages |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Superseded certificate, kept as history |
 
