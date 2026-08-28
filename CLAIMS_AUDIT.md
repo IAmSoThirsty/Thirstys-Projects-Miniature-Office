@@ -10,20 +10,22 @@
 
 **Honesty-repair merge:** [`f24ae5c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f24ae5c3d419f9bb14388591b05b8fb40ab70cc0) (PR #18). CI on that SHA was red.
 
-**This pin:** [`a4b3de4`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6) — CI and CD observed **green**. Remaining operator-doc inaccuracy (GETTING_STARTED claimed a compose placeholder `SECRET_KEY`) is corrected in this pin.
+**Prior pin:** [`a4b3de4`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6) (PR #23) — CI and CD green; GETTING_STARTED no longer claimed a compose placeholder `SECRET_KEY`.
+
+**This pin:** [`590b90c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/590b90ce53bd859d8baf32a2155820e3169a93e8) — independently re-measured. CI and CD observed **green** on HEAD. Remaining operator-doc inaccuracy (EASY_ACCESS denied the PWA shell) is corrected in this pin.
 
 **Rule:** a claim is true only if the tree implements it. Design prose is not implementation.
 
 ## Method
 
-1. Clone `main` at `a4b3de48`.
+1. Clone `main` at `590b90ce`.
 2. Count lines in `src/**/*.py` and `def test_` in `tests/`.
-3. Independent pytest on `a4b3de4`: **1,569 passed**, 1 skipped, 13.10s. Fresh `--cov=src`: **7,493 / 7,749** (96.70% of imported statements).
+3. Independent pytest on `590b90c`: **1,571 passed**, 1 skipped, 13.89s. Fresh `--cov=src`: **7,493 / 7,749** (96.70% of imported statements).
 4. `bandit -r src -ll`: 0 medium/high (B104 nosec on `run_server`). `pip-audit -r requirements.txt`: clean.
-5. Observe GitHub Actions on merge `a4b3de4`:
-   - CI [33209447993](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209447993) **succeeded**.
-   - CD [33209448004](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209448004) **succeeded**.
-6. Operator GETTING_STARTED still said compose’s default `SECRET_KEY` is a placeholder. Compose interpolates `SECRET_KEY` with **no** default. That sentence is removed in this pin.
+5. Observe GitHub Actions on HEAD `590b90c`:
+   - CI [33211771675](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771675) **succeeded**.
+   - CD [33211771674](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771674) **succeeded**.
+6. Operator EASY_ACCESS still said there is “no PWA package” and that the repo does not ship a web app manifest or service worker. `manifest.json` + `sw.js` exist. Those sentences are removed in this pin.
 
 ## Score
 
@@ -33,7 +35,7 @@ That is `9 + 6 + 1 + 3 = 19`. Ledger: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md).
 
 The three **false** rows and the **inflated** coverage row are *historical* claims. Canonical README / LIMITATIONS / this file no longer assert them. Remaining **partial** rows are still true of the code. The product is still not a production IDE.
 
-CI/CD moved from Partial to **Holds** because both jobs were observed green on `a4b3de4`. Docker stays Partial: a green compose healthcheck is not a hardened stack.
+CI/CD remains **Holds** because both jobs were observed green on `590b90c`. Docker stays Partial: a green compose healthcheck is not a hardened stack.
 
 ## Claim table
 
@@ -41,7 +43,7 @@ CI/CD moved from Partial to **Holds** because both jobs were observed green on `
 | --- | --- | --- | --- |
 | Production ready | **False** | Production-ready core pipeline | Experimental. Template codegen. Auth only if `MO_IDE_TOKEN` is set. |
 | 99% coverage | **Inflated** | 99% overall, core at 100% | Fresh `pytest --cov=src`: **7,493 / 7,749** (96.70% of imported statements). `integrated_specs/` still omitted. |
-| 1,537 tests passing | **Holds** (updated) | 1,537 passing | **1,571 passed**, 1 skipped. `def test_` grep = 1,604 (1,569 on `a4b3de4` + 2 honesty-lock tests) (grep ≠ collected). |
+| 1,537 tests passing | **Holds** (updated) | 1,537 passing | **1,573 passed**, 1 skipped. `def test_` grep = 1,606 (1,571 on `590b90c` + 2 honesty-lock tests) (grep ≠ collected). |
 | 18,285 src lines | **False** | 18,285 | **24,441** total / **19,058** non-comment (53 files). |
 | `code_civilization.py` is 49,741 lines | **False** | 49,741 lines | **1,421 lines** (52,653 bytes). Original misread **bytes as lines**. |
 | 30+ native language floors | **Partial** | 30+ working native floors | 28 directories. SQL floor includes `schema.sql`. Department runtime is Python. Inventory: [floors/README.md](floors/README.md). |
@@ -50,12 +52,12 @@ CI/CD moved from Partial to **Holds** because both jobs were observed green on `
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | SHA-256 chain. Optional HMAC-SHA256 when `MO_AUDIT_HMAC_KEY` or a real `SECRET_KEY` is set. Not a ledger. |
 | Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI + `manifest.json` / `sw.js`. No WebXR. |
 | 45+ API endpoints | **Holds** | 45+ | **74** Flask `@app.route` entries (67 in `app.py` + 7 IDE). |
-| CI / CD healthy | **Holds** | Live green badges | CI [33209447993](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209447993) and CD [33209448004](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209448004) both **green** on `a4b3de4`. |
+| CI / CD healthy | **Holds** | Live green badges | CI [33211771675](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771675) and CD [33211771674](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771674) both **green** on `590b90c`. |
 | 0 lint / 0 vulns | **Holds** | Clean | Critical flake8, Black, isort pass. Bandit `-ll` clean. `pip-audit` clean. 13 bandit **low** findings remain. |
 | Registry thread-safe via GIL | **Holds** (restated) | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. |
 | Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`): 7 `EntityType`, 8 `RelationType`. |
-| Docker / compose | **Partial** | Verified, hardened | Files exist. Compose has **no** default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` **succeeded** on `a4b3de4`. Still not hardened (in-memory world, `chmod 777` in the workflow). |
-| Docs consistent | **Holds** (this pin) | Maximum detail, no omission | Canonical README / LIMITATIONS / this file / [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) agree on 9/6/1/3 of 19. GETTING_STARTED no longer claims a compose placeholder secret. |
+| Docker / compose | **Partial** | Verified, hardened | Files exist. Compose has **no** default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` **succeeded** on `590b90c`. Still not hardened (in-memory world, `chmod 777` in the workflow). |
+| Docs consistent | **Holds** (this pin) | Maximum detail, no omission | Canonical README / LIMITATIONS / this file / [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) agree on 9/6/1/3 of 19. EASY_ACCESS no longer denies the PWA shell. |
 | Apache 2.0 | **Holds** | Apache 2.0 | LICENSE matches |
 | Real workspace / editor / terminal | **Holds** | PR #15: real IDE core | Jailed `Workspace`, no-shell `subprocess.run`, 7 `/api/ide/*` routes, `register_ide_routes(app)` called. Token gate when `MO_IDE_TOKEN` is set. Browser UI has a file tree, textarea editor, and terminal form. Not Monaco, not LSP. |
 
@@ -98,8 +100,8 @@ Workflow files: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`.
 
 - Security job: `pip-audit` (can fail) then `bandit -r src -ll` (can fail). JSON dump also uses `-ll`.
 - Test matrix: 3.10, 3.11, 3.12. Python 3.9 dropped because pytest 9 does not install.
-- CD `test-docker`: liveness + readiness, writable workspace dirs — **green** on `a4b3de4`.
-- CI on `a4b3de4` was **green**. The parent `f24ae5c` was red (bandit JSON dump without `-ll`; pytest 9 vs Python 3.9).
+- CD `test-docker`: liveness + readiness, writable workspace dirs — **green** on `590b90c`.
+- CI on `590b90c` was **green**. `a4b3de4` was also green (33209447993 / 33209448004). `f24ae5c` was red (bandit JSON dump without `-ll`; pytest 9 vs Python 3.9).
 
 ## Ecosystem
 

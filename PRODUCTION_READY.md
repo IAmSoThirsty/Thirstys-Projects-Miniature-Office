@@ -2,18 +2,17 @@
 
 **This certificate is inaccurate.** It was generated 11 February 2026 from 22 tests and 32% coverage, then left in the tree after later documents claimed 1,537 tests and 99% coverage.
 
-Audited 28 August 2026 against commit `537c469`, then re-checked on `8132127`. See [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) and [LIMITATIONS.md](LIMITATIONS.md).
+Do not cite this file. Current measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md), [LIMITATIONS.md](LIMITATIONS.md). Independently re-measured 28 August 2026 on [`590b90c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/590b90ce53bd859d8baf32a2155820e3169a93e8).
 
-Facts that contradict this file:
+Facts that still contradict this certificate on current `main`:
 
-- Application state is in-memory
-- Code generation writes `TODO` bodies and does not run tests
-- `coverage.json` omits `design_analyzer.py` and `src/core/integrated_specs/`
-- Compose no longer defaults `SECRET_KEY`; production refuses placeholders; `.env.example` still has one
-- There is no authentication
-- CI and CD are **not** green on `a41e1f8` (bandit B104; CD `/health` 503)
-
-A green CI on an older commit does not make this certificate true.
+- The product is an experimental Flask prototype, not a production IDE
+- Application / world state is in-memory
+- Python codegen is an identity transform; non-Python tests are not executed
+- Fresh coverage is 7,493 / 7,749 imported statements (96.70%), and `integrated_specs/` is still omitted
+- Compose has no default `SECRET_KEY`; `.env.example` still has a placeholder
+- `/api/ide/*` is open unless `MO_IDE_TOKEN` is set (required only in production)
+- Docker is a compose healthcheck, not a hardened stack
 
 The original text is kept below as a historical artifact. Do not cite it.
 
