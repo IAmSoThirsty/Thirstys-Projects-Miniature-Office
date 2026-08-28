@@ -30,7 +30,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | Pattern / flow / metrics analysis | Detector and analyzer modules return empty or constant results (`design_analyzer.py` is a real exception). |
 | Tamper-proof ledger | Hashing exists. JSONL persist is optional and **unsigned**. |
 | Security CI as a gate | `safety` and `bandit` cannot fail the job (`\|\| true`). |
-| CI / CD on HEAD | Red on `6196f8a`. This repair is locally tested. Do not cite a green badge until a new run succeeds. |
+| CI / CD on HEAD | Red on `6196f8a`. Repair CI green on `aa7b439` ([33198450337](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33198450337)). CD not claimed until a run succeeds. |
 
 ## Code generation pipeline
 

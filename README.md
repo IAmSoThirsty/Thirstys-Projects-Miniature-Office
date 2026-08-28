@@ -22,7 +22,7 @@ This README reports the **measured** state of `aa7b439`, the working tree that r
 | Code pipeline | `src/core/code_civilization.py` — **1,364-line** template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
 | Floors | 28 directories under `floors/`. Every floor README is marked a toy. The SQL floor is Python. See [floors/README.md](floors/README.md) |
 | Tests | **1,558 passing**, 1 skipped (independent pytest of this tree) |
-| CI / CD | **Red** on `6196f8a`. Last green docs pin was `f560d651`. This commit is the repair; Actions status is not claimed until a run succeeds |
+| CI / CD | **Red** on `6196f8a`. Repair **CI green** on `aa7b439` ([run 33198450337](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33198450337)). CD not claimed until a run succeeds. Security still `\|\| true` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 

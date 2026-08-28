@@ -42,7 +42,7 @@ The three **false** and two **inflated** rows are *historical* claims. Canonical
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | SHA-256 chain (`prev_hash` + parent hashes). Optional unsigned JSONL when `MO_DATA_DIR` is set. Not signed. Not a ledger. |
 | Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI on port 5000. `start.command` exists. No WebXR, no PWA. |
 | 45+ API endpoints | **Holds** | 45+ | **71** Flask `@app.route` entries (64 in `app.py` + 7 IDE). |
-| CI / CD healthy | **Partial** | Live green badges | **Failed** on `6196f8a` ([CI 33197912388](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33197912388)). Last green docs pin: `f560d651`. This repair is independently tested; Actions is not claimed green until a run succeeds. Security steps remain `\|\| true`. |
+| CI / CD healthy | **Partial** | Live green badges | **Failed** on `6196f8a` ([CI 33197912388](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33197912388)). Repair **CI succeeded** on `aa7b439` ([33198450337](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33198450337)). CD not claimed until a run succeeds. Security steps remain `\|\| true`. |
 | 0 lint / 0 vulns | **Partial** | Clean | Critical flake8, Black, and isort pass on `src/` on this tree. Bandit/safety cannot fail CI. |
 | Registry thread-safe via GIL | **Partial** | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. Gunicorn uses 4 eventlet workers (separate processes). |
 | Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`): 7 `EntityType`, 8 `RelationType`. |
