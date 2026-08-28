@@ -3,318 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miniature Office - Cognitive IDE</title>
+    <title>Miniature Office IDE</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: #0a0e1a;
-            color: #00ff41;
-            overflow: hidden;
-        }
-
-        /* Vault-Tec Aesthetic */
-        .vault-tec-header {
-            background: linear-gradient(180deg, #1a3a4a 0%, #0d1f2a 100%);
-            border-bottom: 3px solid #ff9f00;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .vault-tec-logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff9f00;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .vault-tec-logo::before {
-            content: "⚙ ";
-        }
-
-        .status-bar {
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-        }
-
-        .status-item {
-            padding: 5px 10px;
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid #00ff41;
-            border-radius: 3px;
-        }
-
-        .status-item.active {
-            background: rgba(255, 159, 0, 0.2);
-            border-color: #ff9f00;
-            color: #ff9f00;
-        }
-
-        /* Main Container */
-        .container {
-            display: flex;
-            height: calc(100vh - 70px);
-        }
-
-        /* World Canvas */
-        .world-view {
-            flex: 1;
-            position: relative;
-            background-color: #0d1f2a;
-            border-right: 2px solid #00ff41;
-        }
-
-        #worldCanvas {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
-
-        /* Control Panel */
-        .control-panel {
-            width: 350px;
-            background: linear-gradient(180deg, #0d1f2a 0%, #061018 100%);
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 2px solid #ff9f00;
-        }
-
-        .panel-section {
-            margin-bottom: 25px;
-            border: 1px solid #00ff41;
-            border-radius: 5px;
-            padding: 15px;
-            background: rgba(0, 255, 65, 0.05);
-        }
-
-        .panel-section h2 {
-            font-size: 18px;
-            color: #ff9f00;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #ff9f00;
-            padding-bottom: 5px;
-        }
-
-        .button {
-            padding: 10px 15px;
-            background: linear-gradient(180deg, #1a3a4a 0%, #0d1f2a 100%);
-            border: 2px solid #00ff41;
-            color: #00ff41;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            border-radius: 3px;
-            margin: 5px;
-            transition: all 0.2s;
-        }
-
-        .button:hover {
-            background: linear-gradient(180deg, #2a5a6a 0%, #1a3a4a 100%);
-            border-color: #ff9f00;
-            color: #ff9f00;
-            box-shadow: 0 0 10px rgba(255, 159, 0, 0.5);
-        }
-
-        .button:active {
-            transform: scale(0.95);
-        }
-
-        .button.danger {
-            border-color: #ff4444;
-            color: #ff4444;
-        }
-
-        .info-list {
-            list-style: none;
-            font-size: 12px;
-        }
-
-        .info-list li {
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(0, 0, 0, 0.3);
-            border-left: 3px solid #00ff41;
-            border-radius: 2px;
-        }
-
-        .info-list li:hover {
-            background: rgba(0, 255, 65, 0.1);
-            border-left-color: #ff9f00;
-        }
-
-        .metric {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 13px;
-        }
-
-        .metric-label {
-            color: #88ccff;
-        }
-
-        .metric-value {
-            color: #ff9f00;
-            font-weight: bold;
-        }
-
-        /* Scanline effect */
-        .world-view::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-        }
-
-        /* CRT effect */
-        .world-view::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
-            pointer-events: none;
-        }
-
-        .log-entry {
-            font-size: 11px;
-            padding: 4px;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
-            color: #88ccff;
-        }
-
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-
-        .log-container {
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px;
-            border-radius: 3px;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #00ff41;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff9f00;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { font-family: "Courier New", monospace; background: #0a0e1a; color: #00ff41; overflow: hidden; }
+        .header { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: linear-gradient(180deg, #1a3a4a 0%, #0d1f2a 100%); border-bottom: 3px solid #ff9f00; }
+        .logo { color: #ff9f00; font-weight: bold; letter-spacing: 1px; }
+        .status-bar { display: flex; gap: 10px; font-size: 12px; }
+        .status-item { padding: 4px 8px; border: 1px solid #00ff41; background: rgba(0,255,65,0.08); }
+        .status-item.active { border-color: #ff9f00; color: #ff9f00; }
+        .shell { display: grid; grid-template-columns: 240px 1fr 320px; grid-template-rows: 1fr 220px; height: calc(100vh - 52px); }
+        .files, .panel { background: #061018; border-right: 1px solid #00ff41; overflow: auto; padding: 10px; }
+        .panel { border-right: none; border-left: 2px solid #ff9f00; grid-row: 1 / 3; }
+        .main { display: flex; flex-direction: column; min-width: 0; }
+        .tabs { display: flex; border-bottom: 1px solid #00ff41; }
+        .tab { padding: 8px 14px; cursor: pointer; border-right: 1px solid #00ff41; color: #88ccff; }
+        .tab.active { background: #1a3a4a; color: #ff9f00; }
+        .view { flex: 1; min-height: 0; position: relative; }
+        .view.hidden { display: none; }
+        #worldCanvas { width: 100%; height: 100%; }
+        #editor { width: 100%; height: 100%; background: #0d1f2a; color: #d7ffe3; border: none; padding: 12px; resize: none; font: 13px/1.45 "Courier New", monospace; }
+        .editor-bar { display: flex; gap: 8px; align-items: center; padding: 6px 10px; border-bottom: 1px solid #1a3a4a; font-size: 12px; }
+        .terminal { grid-column: 1 / 3; background: #000; border-top: 2px solid #00ff41; display: flex; flex-direction: column; }
+        .term-out { flex: 1; overflow: auto; padding: 8px; font-size: 12px; white-space: pre-wrap; color: #88ccff; }
+        .term-in { display: flex; border-top: 1px solid #1a3a4a; }
+        .term-in input { flex: 1; background: #0d1f2a; color: #00ff41; border: none; padding: 8px; font: 13px "Courier New", monospace; }
+        button { background: #0d1f2a; color: #00ff41; border: 1px solid #00ff41; padding: 6px 10px; font: 12px "Courier New", monospace; cursor: pointer; }
+        button:hover { border-color: #ff9f00; color: #ff9f00; }
+        button.danger { border-color: #ff4444; color: #ff4444; }
+        h2 { color: #ff9f00; font-size: 14px; margin: 12px 0 8px; }
+        .tree-item { padding: 3px 4px; cursor: pointer; font-size: 12px; }
+        .tree-item:hover { background: rgba(0,255,65,0.12); }
+        .tree-item.dir { color: #88ccff; }
+        .metric { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; }
+        .log { max-height: 180px; overflow: auto; font-size: 11px; color: #88ccff; }
+        .info-list { list-style: none; font-size: 12px; }
+        .info-list li { padding: 6px; margin: 4px 0; background: rgba(0,0,0,0.3); border-left: 3px solid #00ff41; }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="vault-tec-header">
-        <div class="vault-tec-logo">MINIATURE OFFICE IDE</div>
+    <div class="header">
+        <div class="logo">MINIATURE OFFICE IDE</div>
         <div class="status-bar">
-            <div class="status-item" id="connectionStatus">CONNECTING...</div>
+            <div class="status-item" id="connectionStatus">CONNECTING</div>
             <div class="status-item" id="simulationStatus">STOPPED</div>
-            <div class="status-item">TIME: <span id="worldTime">0</span></div>
+            <div class="status-item">TIME <span id="worldTime">0</span></div>
+            <div class="status-item" id="fileStatus">NO FILE</div>
         </div>
     </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- World View -->
-        <div class="world-view">
-            <canvas id="worldCanvas"></canvas>
-        </div>
-
-        <!-- Control Panel -->
-        <div class="control-panel">
-            <!-- Simulation Controls -->
-            <div class="panel-section">
-                <h2>⚙ Simulation Control</h2>
-                <button class="button" onclick="stepSimulation()">STEP (+1 Tick)</button>
-                <button class="button" onclick="startSimulation()" id="startBtn">START</button>
-                <button class="button danger" onclick="stopSimulation()" id="stopBtn">STOP</button>
-                <button class="button" onclick="refreshState()">REFRESH STATE</button>
+    <div class="shell">
+        <aside class="files">
+            <h2>Workspace</h2>
+            <div id="wsRoot" style="font-size:11px;color:#88ccff;margin-bottom:8px;"></div>
+            <button onclick="refreshTree()">REFRESH</button>
+            <button onclick="newFile()">NEW FILE</button>
+            <div id="fileTree"></div>
+        </aside>
+        <section class="main">
+            <div class="tabs">
+                <div class="tab active" data-view="world" onclick="showView('world')">WORLD</div>
+                <div class="tab" data-view="editor" onclick="showView('editor')">EDITOR</div>
             </div>
-
-            <!-- World Metrics -->
-            <div class="panel-section">
-                <h2>📊 World Metrics</h2>
-                <div class="metric">
-                    <span class="metric-label">Floors:</span>
-                    <span class="metric-value" id="floorCount">0</span>
+            <div class="view" id="worldView"><canvas id="worldCanvas"></canvas></div>
+            <div class="view hidden" id="editorView">
+                <div class="editor-bar">
+                    <span id="openPath">unsaved</span>
+                    <button onclick="saveFile()">SAVE</button>
                 </div>
-                <div class="metric">
-                    <span class="metric-label">Agents:</span>
-                    <span class="metric-value" id="agentCount">0</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Tasks:</span>
-                    <span class="metric-value" id="taskCount">0</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Tools Available:</span>
-                    <span class="metric-value" id="toolCount">0</span>
-                </div>
+                <textarea id="editor" spellcheck="false"></textarea>
             </div>
-
-            <!-- Active Agents -->
-            <div class="panel-section">
-                <h2>👤 Active Agents</h2>
-                <ul class="info-list" id="agentList">
-                    <li>No agents yet...</li>
-                </ul>
-            </div>
-
-            <!-- Recent Events -->
-            <div class="panel-section">
-                <h2>📜 Event Log</h2>
-                <div class="log-container" id="eventLog">
-                    <div class="log-entry">System initialized...</div>
-                </div>
-            </div>
-        </div>
+        </section>
+        <aside class="panel">
+            <h2>Simulation</h2>
+            <button onclick="stepSimulation()">STEP</button>
+            <button onclick="startSimulation()">START</button>
+            <button class="danger" onclick="stopSimulation()">STOP</button>
+            <button onclick="refreshState()">REFRESH</button>
+            <h2>Metrics</h2>
+            <div class="metric"><span>Floors</span><span id="floorCount">0</span></div>
+            <div class="metric"><span>Agents</span><span id="agentCount">0</span></div>
+            <div class="metric"><span>Tasks</span><span id="taskCount">0</span></div>
+            <div class="metric"><span>Tools</span><span id="toolCount">0</span></div>
+            <h2>Agents</h2>
+            <ul class="info-list" id="agentList"><li>None</li></ul>
+            <h2>Log</h2>
+            <div class="log" id="eventLog"></div>
+        </aside>
+        <section class="terminal">
+            <div class="term-out" id="termOut">Terminal ready. Commands run inside the workspace.
+</div>
+            <form class="term-in" onsubmit="return runTerm(event)">
+                <input id="termInput" autocomplete="off" placeholder="python3 --version" />
+                <button type="submit">RUN</button>
+            </form>
+        </section>
     </div>
-
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        // API Configuration
         const API_BASE = window.location.origin;
         const socket = io(API_BASE);
-
-        // Canvas Setup
         const canvas = document.getElementById('worldCanvas');
         const ctx = canvas.getContext('2d');
-        
-        // Set canvas size
+        let worldState = null;
+        let currentPath = null;
+        let currentOverwrite = false;
         function resizeCanvas() {
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
@@ -322,225 +115,183 @@
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-
-        // State
-        let worldState = null;
-
-        // WebSocket Events
+        function showView(name) {
+            document.getElementById('worldView').classList.toggle('hidden', name !== 'world');
+            document.getElementById('editorView').classList.toggle('hidden', name !== 'editor');
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === name));
+            if (name === 'world') resizeCanvas();
+        }
+        async function api(path, method='GET', body=null) {
+            const options = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) options.body = JSON.stringify(body);
+            const res = await fetch(`${API_BASE}${path}`, options);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || res.statusText);
+            return data;
+        }
+        function addLog(message, isError=false) {
+            const box = document.getElementById('eventLog');
+            const row = document.createElement('div');
+            row.style.color = isError ? '#ff4444' : '#88ccff';
+            row.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            box.insertBefore(row, box.firstChild);
+            while (box.children.length > 50) box.removeChild(box.lastChild);
+        }
         socket.on('connect', () => {
             document.getElementById('connectionStatus').textContent = 'CONNECTED';
             document.getElementById('connectionStatus').classList.add('active');
-            addLog('Connected to simulation server');
+            addLog('Connected');
             refreshState();
+            refreshTree();
         });
-
         socket.on('disconnect', () => {
             document.getElementById('connectionStatus').textContent = 'DISCONNECTED';
             document.getElementById('connectionStatus').classList.remove('active');
-            addLog('Disconnected from server');
         });
-
-        socket.on('tick_start', (data) => {
-            document.getElementById('worldTime').textContent = data.time;
-        });
-
-        socket.on('tick_end', (data) => {
-            refreshState();
-        });
-
-        socket.on('state_update', (data) => {
-            worldState = data;
-            updateUI();
-        });
-
-        // API Functions
-        async function apiCall(endpoint, method = 'GET', body = null) {
-            const options = {
-                method,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-            if (body) {
-                options.body = JSON.stringify(body);
-            }
-            
-            try {
-                const response = await fetch(`${API_BASE}/api${endpoint}`, options);
-                return await response.json();
-            } catch (error) {
-                addLog(`Error: ${error.message}`, true);
-                return null;
-            }
-        }
-
+        socket.on('tick_end', refreshState);
         async function refreshState() {
-            const state = await apiCall('/world/state');
-            if (state) {
-                worldState = state;
-                updateUI();
-            }
+            try { worldState = await api('/api/world/state'); updateUI(); }
+            catch (err) { addLog(err.message, true); }
         }
-
         async function stepSimulation() {
-            const result = await apiCall('/world/step', 'POST');
-            if (result && result.success) {
-                addLog(`Stepped simulation to tick ${result.tick_count}`);
-                await refreshState();
-            }
+            const r = await api('/api/world/step', 'POST');
+            addLog('tick ' + r.tick_count);
+            await refreshState();
         }
-
         async function startSimulation() {
-            const result = await apiCall('/world/start', 'POST');
-            if (result && result.success) {
-                document.getElementById('simulationStatus').textContent = 'RUNNING';
-                document.getElementById('simulationStatus').classList.add('active');
-                addLog('Simulation started');
-            }
+            await api('/api/world/start', 'POST');
+            document.getElementById('simulationStatus').textContent = 'RUNNING';
+            document.getElementById('simulationStatus').classList.add('active');
         }
-
         async function stopSimulation() {
-            const result = await apiCall('/world/stop', 'POST');
-            if (result && result.success) {
-                document.getElementById('simulationStatus').textContent = 'STOPPED';
-                document.getElementById('simulationStatus').classList.remove('active');
-                addLog('Simulation stopped');
-            }
+            await api('/api/world/stop', 'POST');
+            document.getElementById('simulationStatus').textContent = 'STOPPED';
+            document.getElementById('simulationStatus').classList.remove('active');
         }
-
-        // UI Updates
         function updateUI() {
             if (!worldState) return;
-
             const world = worldState.world;
-            
-            // Update metrics
             document.getElementById('worldTime').textContent = world.time;
             document.getElementById('floorCount').textContent = world.floors.length;
-            
-            // Update world visualization
             renderWorld();
-            
-            // Fetch additional data
             updateAgentsList();
-            updateTasksCount();
-            updateToolsCount();
+            api('/api/tasks').then(d => { if (d.tasks) document.getElementById('taskCount').textContent = d.tasks.length; });
+            api('/api/supply-store').then(d => { if (d) document.getElementById('toolCount').textContent = d.available_count; });
         }
-
         async function updateAgentsList() {
-            const data = await apiCall('/agents');
-            if (data && data.agents) {
-                const agentList = document.getElementById('agentList');
-                agentList.innerHTML = data.agents.map(agent => 
-                    `<li>${agent.name} [${agent.role}] - ${agent.status}</li>`
-                ).join('') || '<li>No agents</li>';
-                
-                document.getElementById('agentCount').textContent = data.agents.length;
-            }
+            const data = await api('/api/agents');
+            if (!data.agents) return;
+            document.getElementById('agentCount').textContent = data.agents.length;
+            document.getElementById('agentList').innerHTML = data.agents.map(a => `<li>${a.name} [${a.role}] - ${a.status}</li>`).join('') || '<li>None</li>';
         }
-
-        async function updateTasksCount() {
-            const data = await apiCall('/tasks');
-            if (data && data.tasks) {
-                document.getElementById('taskCount').textContent = data.tasks.length;
+        function renderTree(node, depth=0) {
+            if (!node) return '';
+            const kids = node.children || [];
+            let html = '';
+            if (node.path !== '.') {
+                const cls = node.type === 'dir' ? 'tree-item dir' : 'tree-item';
+                const mark = node.type === 'dir' ? '[D] ' : '';
+                html += `<div class="${cls}" data-path="${node.path}" data-type="${node.type}">${'  '.repeat(depth)}${mark}${node.name}</div>`;
             }
+            kids.forEach(child => { html += renderTree(child, node.path === '.' ? depth : depth+1); });
+            return html;
         }
-
-        async function updateToolsCount() {
-            const data = await apiCall('/supply-store');
-            if (data) {
-                document.getElementById('toolCount').textContent = data.available_count;
+        async function refreshTree() {
+            try {
+                const info = await api('/api/ide/workspace');
+                document.getElementById('wsRoot').textContent = info.root;
+                document.getElementById('fileTree').innerHTML = renderTree(info.tree);
+                document.querySelectorAll('#fileTree .tree-item').forEach(el => {
+                    el.onclick = () => { if (el.dataset.type === 'file') openFile(el.dataset.path); };
+                });
+            } catch (err) { addLog(err.message, true); }
+        }
+        async function openFile(path) {
+            try {
+                const file = await api('/api/ide/files?path=' + encodeURIComponent(path));
+                currentPath = file.path;
+                currentOverwrite = true;
+                document.getElementById('editor').value = file.content;
+                document.getElementById('openPath').textContent = file.path;
+                document.getElementById('fileStatus').textContent = file.path;
+                showView('editor');
+            } catch (err) { addLog(err.message, true); }
+        }
+        async function saveFile() {
+            const path = currentPath || prompt('Save as path');
+            if (!path) return;
+            try {
+                await api('/api/ide/files', 'PUT', { path, content: document.getElementById('editor').value, overwrite: currentOverwrite || path === currentPath });
+                currentPath = path;
+                currentOverwrite = true;
+                document.getElementById('openPath').textContent = path;
+                document.getElementById('fileStatus').textContent = 'SAVED ' + path;
+                addLog('Saved ' + path);
+                refreshTree();
+            } catch (err) { addLog(err.message, true); }
+        }
+        function newFile() {
+            const path = prompt('New file path');
+            if (!path) return;
+            currentPath = path;
+            currentOverwrite = false;
+            document.getElementById('editor').value = '';
+            document.getElementById('openPath').textContent = path + ' (new)';
+            showView('editor');
+        }
+        async function runTerm(ev) {
+            ev.preventDefault();
+            const input = document.getElementById('termInput');
+            const command = input.value.trim();
+            if (!command) return false;
+            const out = document.getElementById('termOut');
+            out.textContent += '\n$ ' + command + '\n';
+            input.value = '';
+            try {
+                const result = await api('/api/ide/terminal', 'POST', { command });
+                if (result.stdout) out.textContent += result.stdout;
+                if (result.stderr) out.textContent += result.stderr;
+                out.textContent += '\n[exit ' + result.exit_code + ' / ' + result.duration_ms + 'ms]\n';
+            } catch (err) {
+                out.textContent += 'ERROR: ' + err.message + '\n';
             }
+            out.scrollTop = out.scrollHeight;
+            return false;
         }
-
-        function addLog(message, isError = false) {
-            const logContainer = document.getElementById('eventLog');
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.style.color = isError ? '#ff4444' : '#88ccff';
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContainer.insertBefore(entry, logContainer.firstChild);
-            
-            // Keep only last 50 entries
-            while (logContainer.children.length > 50) {
-                logContainer.removeChild(logContainer.lastChild);
-            }
-        }
-
-        // World Rendering
         function renderWorld() {
             if (!worldState) return;
-
             ctx.fillStyle = '#0d1f2a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             const world = worldState.world;
-            
-            // Draw title
-            ctx.font = '24px Courier New';
+            ctx.font = '20px Courier New';
             ctx.fillStyle = '#ff9f00';
-            ctx.fillText(world.name, 20, 40);
-            
-            // Draw floors
-            const floorHeight = 120;
-            const floorSpacing = 20;
-            const startY = 80;
-            
+            ctx.fillText(world.name, 20, 32);
+            const floorHeight = 110;
             world.floors.forEach((floor, index) => {
-                const y = startY + (index * (floorHeight + floorSpacing));
-                
-                // Floor background
+                const y = 50 + index * (floorHeight + 16);
                 ctx.fillStyle = '#1a3a4a';
                 ctx.fillRect(20, y, canvas.width - 40, floorHeight);
-                
-                // Floor border
                 ctx.strokeStyle = '#00ff41';
-                ctx.lineWidth = 2;
                 ctx.strokeRect(20, y, canvas.width - 40, floorHeight);
-                
-                // Floor label
-                ctx.font = '16px Courier New';
                 ctx.fillStyle = '#00ff41';
-                ctx.fillText(`Floor ${index + 1}: ${floor.language}`, 30, y + 25);
-                
-                // Draw offices
-                const offices = floor.offices || [];
-                const officeWidth = 80;
-                const officeSpacing = 10;
-                
-                offices.forEach((office, officeIndex) => {
-                    const x = 30 + (officeIndex * (officeWidth + officeSpacing));
-                    const officeY = y + 40;
-                    
-                    // Office box
+                ctx.font = '14px Courier New';
+                ctx.fillText('Floor ' + (index + 1) + ': ' + floor.language, 30, y + 22);
+                (floor.offices || []).forEach((office, i) => {
+                    const x = 30 + i * 90;
                     ctx.fillStyle = '#0d1f2a';
-                    ctx.fillRect(x, officeY, officeWidth, 60);
-                    
+                    ctx.fillRect(x, y + 36, 80, 56);
                     ctx.strokeStyle = '#88ccff';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x, officeY, officeWidth, 60);
-                    
-                    // Office name
-                    ctx.font = '10px Courier New';
+                    ctx.strokeRect(x, y + 36, 80, 56);
                     ctx.fillStyle = '#88ccff';
-                    ctx.fillText('Office', x + 5, officeY + 15);
-                    
-                    // Agent count
-                    const agentCount = office.roles ? office.roles.length : 0;
+                    ctx.font = '10px Courier New';
+                    ctx.fillText('Office', x + 6, y + 52);
                     ctx.fillStyle = '#ff9f00';
-                    ctx.fillText(`Agents: ${agentCount}`, x + 5, officeY + 30);
+                    ctx.fillText('Agents: ' + ((office.roles || []).length), x + 6, y + 68);
                 });
             });
-            
-            // Draw info box
-            ctx.font = '14px Courier New';
-            ctx.fillStyle = '#00ff41';
-            ctx.fillText(`Time: ${world.time} ticks`, 20, canvas.height - 20);
         }
-
-        // Initialize
         refreshState();
-        setInterval(refreshState, 5000); // Refresh every 5 seconds
+        refreshTree();
     </script>
 </body>
 </html>
