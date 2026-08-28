@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured on `5e182f2` (28 August 2026).
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured on `8132127` (28 August 2026).
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -12,8 +12,8 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - Audit events with a per-event SHA-256 of the event’s own fields (not a chain, not durable)
 - Template code generation for Python / JavaScript / Rust snippets
 - 28 language-floor directories of uneven completeness; Elixir has Mix modules; SQL floor is Python ([floors/README.md](floors/README.md))
-- Docker / docker-compose / GitHub Actions **files**
-- **1,537 tests passing**, 1 skipped (`pytest tests/`; GitHub Actions CI green on `5e182f2`)
+- Docker Compose / GitHub Actions **files**; CI and CD are green on `8132127`
+- **1,537 tests passing**, 1 skipped (`pytest tests/`; GitHub Actions CI green)
 - `start.sh`, `start.bat`, `start.command`
 
 ## What is not implemented (but was claimed)
@@ -25,11 +25,11 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | 49,741-line civilization module | `src/core/code_civilization.py` is **1,364 lines** (bytes were originally counted as lines). |
 | Executed tests of generated code | Pipeline comment: “we assume tests pass.” |
 | Native 30-language runtime | SQL floor is Python. Several floors are JSON-RPC toys, not compilers. |
-| VR | Browser only. No WebXR. |
+| VR / PWA / native apps | Browser only. No WebXR, no `manifest.json`, no service worker. |
 | Pattern / flow / metrics analysis | Detector and analyzer modules return empty or constant results (`design_analyzer.py` is a real exception). |
 | Durable audit / hash chain | Memory dict. Parent event **ids**, not parent hashes. |
 | Security CI as a gate | `safety` and `bandit` cannot fail the job (`\|\| true`). |
-| CD | Failed on `5e182f2` because the runner has `docker compose`, not `docker-compose`. Workflow patched. |
+| CD | Green on `8132127` ([run 33172395561](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33172395561)). Uses `docker compose`. Default `SECRET_KEY` is still a placeholder. |
 
 ## Code generation pipeline
 
@@ -44,9 +44,9 @@ Steps 1–6 exist as Python methods. They are a **template printer**:
 | Source | Number | Meaning |
 | --- | --- | --- |
 | Local + GitHub pytest | 1,537 passed, 1 skipped | Collected tests |
-| `def test_` grep | 1,570 | Functions defined, not the same as collected |
+| `def test_` grep | 1,572 | Functions defined, not the same as collected |
 | `coverage.json` totals | 6,354 / 6,438 statements (98.7%) | Only files pytest was told to measure |
-| Omitted Python | ~5,548 lines | `design_analyzer.py` + `integrated_specs/` at `5e182f2` |
+| Omitted Python | ~5,548 lines | `design_analyzer.py` + `integrated_specs/` at `8132127` |
 | `src/` Python lines | 23,196 total / 17,943 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
 

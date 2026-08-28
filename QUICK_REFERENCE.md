@@ -36,10 +36,12 @@ Double-click: start.command
 
 ```bash
 # One command - no installation needed
-docker-compose up
+docker compose up --build
+
 
 # Stop
-docker-compose down
+docker compose down
+
 ```
 
 ## Access URLs
@@ -55,7 +57,8 @@ docker-compose down
 1. Start server on computer (see above)
 2. Find computer's IP address
 3. Open phone browser → `http://YOUR_IP:5000`
-4. Add to Home Screen for app-like experience
+4. Optional: bookmark it. “Add to Home Screen” is a browser shortcut, not a PWA.
+
 
 ## Headsets
 

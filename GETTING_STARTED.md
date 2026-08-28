@@ -10,7 +10,7 @@ What device do you have?
 ├─ 🖥️  Desktop Computer (Windows/Mac/Linux)
 │   │
 │   ├─ Have Docker installed? 
-│   │   └─ YES → Run: docker-compose up ✅ (Easiest!)
+│   │   └─ YES → Run: docker compose up --build
 │   │   └─ NO  → Run the installer script (install.sh or install.ps1)
 │   │
 │   └─ Then open browser to: http://localhost:5000
@@ -21,8 +21,9 @@ What device do you have?
 │   │   └─ YES → Open browser to: http://[server-ip]:5000
 │   │   └─ NO  → Need someone to start the server first
 │   │
-│   └─ Want app-like experience?
-│       └─ Add to Home Screen from browser! (Acts like an app)
+│   └─ Optional: bookmark the URL, or use the browser’s “Add to Home Screen”
+│       (a shortcut — this repo is not a PWA)
+
 │
 └─ Headset browser
     │
@@ -141,14 +142,16 @@ Look for an address like `192.168.1.100`
 2. Scroll down and tap "Add to Home Screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. Now you have an app icon! Tap it anytime to launch
+5. This creates a browser shortcut, not a packaged app. There is no web-app manifest or service worker in this repo.
+
 
 **Android:**
 1. Tap the menu button (⋮) in the browser
 2. Tap "Add to Home screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. Now you have an app icon! Tap it anytime to launch
+5. This creates a browser shortcut, not a packaged app. There is no web-app manifest or service worker in this repo.
+
 
 ---
 
@@ -177,14 +180,14 @@ Install Docker Desktop: https://www.docker.com/products/docker-desktop
 
 3. **Start with one command**:
    ```bash
-   docker-compose up
+   docker compose up --build
    ```
 
 4. **Wait for it to start** (10-30 seconds)
 
 5. **Open browser to**: `http://localhost:5000`
 
-6. **To stop**: Press `Ctrl+C` or run `docker-compose down`
+6. **To stop**: Press `Ctrl+C` or run `docker compose down`
 
 ---
 
@@ -207,7 +210,7 @@ Install Docker Desktop: https://www.docker.com/products/docker-desktop
 
 ### "Permission denied" on Mac/Linux
 ```bash
-chmod +x install.sh start.sh
+chmod +x install.sh start.sh start.command
 ```
 
 ### Still having issues?
@@ -232,9 +235,9 @@ Once you're in:
 ## 💡 Pro Tips
 
 - **Bookmark it**: Save the URL for quick access
-- **Keep server running**: Access from multiple devices simultaneously
-- **Share access**: Give others your IP on the same LAN
-- **Use Docker**: Easiest setup with zero configuration
+- **Keep the process running**: Restarting drops in-memory world state
+- **LAN access**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
+- **Docker**: `docker compose up --build` if you have Docker; default `SECRET_KEY` is a placeholder
 
 ---
 

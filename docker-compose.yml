@@ -7,8 +7,10 @@ services:
     ports:
       - "5000:5000"
     environment:
+      # Flask's "production" env flag. The app itself is still an in-memory prototype.
       - FLASK_ENV=production
       - FLASK_DEBUG=0
+      # Local-demo default. Do not deploy with this value.
       - SECRET_KEY=${SECRET_KEY:-change-this-secret-key}
       - HOST=0.0.0.0
       - PORT=5000

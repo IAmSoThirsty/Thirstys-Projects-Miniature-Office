@@ -1,5 +1,7 @@
 # Miniature Office - Architecture Documentation
 
+> **Design notes, not a completion certificate.** This file describes intended architecture. Measured status is [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). The running system is an experimental Flask prototype with in-memory state and template codegen. Do not read the layers below as shipped capabilities.
+
 ## System Overview
 
 The Miniature Office is a **Civilization-Tier Cognitive IDE** that implements software development as a living organizational simulation. It transforms coding from "writing text files" into "managing a software company in miniature."

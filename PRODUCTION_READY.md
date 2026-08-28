@@ -2,15 +2,17 @@
 
 **This certificate is inaccurate.** It was generated 11 February 2026 from 22 tests and 32% coverage, then left in the tree after later documents claimed 1,537 tests and 99% coverage.
 
-Audited 28 August 2026 against commit `537c469`. See [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) and [LIMITATIONS.md](LIMITATIONS.md).
+Audited 28 August 2026 against commit `537c469`, then re-checked on `8132127`. See [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) and [LIMITATIONS.md](LIMITATIONS.md).
 
 Facts that contradict this file:
 
-- GitHub Actions `CI - Test and Lint` has been failing, including on HEAD
 - Application state is in-memory
 - Code generation writes `TODO` bodies and does not run tests
 - `coverage.json` omits `design_analyzer.py` and `src/core/integrated_specs/`
 - Compose `SECRET_KEY` defaults to `change-this-secret-key`
+- There is no authentication
+
+CI and CD are green as of `8132127`. That does not make this certificate true.
 
 The original text is kept below as a historical artifact. Do not cite it.
 

@@ -1,4 +1,7 @@
+> **Historical document — not current status.** These floors are toy JSON-RPC programs. “Nine-nines reliability” is Erlang folklore, not a measured SLA. Measured inventory: [floors/README.md](floors/README.md). Status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
 # Quick Reference: Floors 20, 22, 23
+
 
 ## Floor 20 - Haskell (Pure Functional Programming)
 

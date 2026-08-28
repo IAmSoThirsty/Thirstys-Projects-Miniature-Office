@@ -1,6 +1,7 @@
 # Language floors
 
-**Measured on `5e182f2` (28 August 2026):** 28 directories under `floors/`. This is not “30+ working native runtimes.” A directory is not a compiler, language server, or CI-quality toolchain.
+**Measured on `8132127` (28 August 2026):** 28 directories under `floors/`. This is not “30+ working native runtimes.” A directory is not a compiler, language server, or CI-quality toolchain.
+
 
 Older docs marked every floor “Implemented.” Completeness is uneven. Some directories are a single small program plus JSON-RPC glue.
 

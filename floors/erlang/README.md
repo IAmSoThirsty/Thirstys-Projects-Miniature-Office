@@ -1,4 +1,7 @@
+> **Toy floor.** This directory is a small Erlang JSON-RPC program. “Nine-nines reliability” is Erlang folklore, not a measured SLA for this tree. Inventory: [floors/README.md](../README.md).
+
 # Floor 23 - Erlang Jurisdiction
+
 
 **Language:** Erlang  
 **Floor Number:** 23  

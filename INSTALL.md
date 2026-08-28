@@ -46,7 +46,7 @@ This means:
 
 ```bash
 # One command to run everything
-docker-compose up
+docker compose up --build
 ```
 
 Then open: `http://localhost:5000`
@@ -83,11 +83,9 @@ The Miniature Office is a **web-based application** that works perfectly on mobi
 
 **Example**: If your computer's IP is `192.168.1.100`, go to `http://192.168.1.100:5000`
 
-### Method 2: Progressive Web App (PWA)
-1. Open the application in your mobile browser
-2. **iOS Safari**: Tap the Share button → "Add to Home Screen"
-3. **Android Chrome**: Tap the menu (⋮) → "Add to Home Screen"
-4. Now you have an app icon that launches Miniature Office like a native app!
+### Method 2: Browser shortcut (optional)
+
+You can bookmark `http://YOUR_COMPUTER_IP:5000` or use the browser’s “Add to Home Screen.” That is a shortcut to the Flask page. This repo does not ship a PWA (`manifest.json` and a service worker are absent).
 
 ### Method 3: Run on Your Phone (Advanced)
 
@@ -106,27 +104,9 @@ python run.py
 
 ---
 
-## 🥽 VR Access (Quest, PSVR, PC VR)
+## Headset browsers (not a VR product)
 
-The Miniature Office works in VR through web browsers!
-
-### Meta Quest (Quest 2, Quest 3, Quest Pro)
-1. Start the Miniature Office server on your PC
-2. On your Quest, open the **Browser** app
-3. Navigate to your PC's IP address: `http://192.168.1.XXX:5000`
-4. The web interface is fully functional in VR!
-
-### PC VR (Steam VR, Virtual Desktop)
-1. Run the Miniature Office on your PC
-2. In VR, open Steam's Desktop view or Virtual Desktop
-3. Open any browser to `http://localhost:5000`
-4. Interact with the interface in VR space
-
-### WebXR Support (Future)
-The application uses web technologies that are compatible with WebXR. Future updates may include immersive VR mode with:
-- 3D spatial visualization of the office
-- VR controller interaction
-- Hand tracking support
+A Quest (or other) browser can load `http://YOUR_COMPUTER_IP:5000` the same way a phone can. That is the Flask HTML UI. There is no WebXR session, no controller support, and no immersive office.
 
 ---
 
@@ -174,8 +154,8 @@ start.bat            # Start the application
 
 ### Docker (All Platforms)
 ```bash
-docker-compose up    # Start everything
-docker-compose down  # Stop everything
+docker compose up --build    # Start everything
+docker compose down          # Stop everything
 ```
 
 ---
@@ -206,7 +186,8 @@ run_server(host='0.0.0.0', port=8080)
 
 ### Permission Denied on Scripts
 ```bash
-chmod +x install.sh start.sh
+chmod +x install.sh start.sh start.command
+
 ```
 
 ### Mobile Can't Connect
@@ -214,29 +195,27 @@ chmod +x install.sh start.sh
 - Check your firewall isn't blocking port 5000
 - Try disabling VPN temporarily
 
-### VR Browser Issues
-- Ensure your VR headset and PC are on the same network
-- Try using the IP address instead of `localhost`
-- Update your VR browser to the latest version
+### Headset browser cannot load the page
+- Same as a phone: same Wi-Fi, use the PC’s LAN IP, not `localhost`
+- You still get the Flask HTML UI. There is no WebXR client to update.
 
 ---
 
 ## 💡 Tips
 
-1. **Bookmark it**: Save `http://localhost:5000` as a bookmark on all devices
-2. **Mobile home screen**: Add to home screen for quick access
-3. **Always accessible**: Keep the server running and access from any device
-4. **Share with others**: Start the server and share your IP for collaborative access
-5. **Use Docker**: For the easiest setup with no Python installation needed
+1. **Bookmark it**: Save `http://localhost:5000` on the machine that runs the server
+2. **LAN only**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
+3. **Keep the process running**: Restarting drops in-memory world state
+4. **Docker**: `docker compose up --build` if you have Docker; default `SECRET_KEY` is a placeholder
 
 ---
 
 ## 📚 Additional Resources
 
-- **[README.md](README.md)** - Project overview
+- **[README.md](README.md)** - Project overview and measured metrics
+- **[CLAIMS_AUDIT.md](CLAIMS_AUDIT.md)** - What is actually implemented
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick usage guide
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Design notes (intent, not a completion certificate)
 
 ---
 
