@@ -17,7 +17,7 @@
 
 ## Score
 
-Of 18 headline claims: **4 hold**, **8 are partial**, **2 are inflated**, **4 are false**.
+Of 18 headline claims: **4 hold**, **9 are partial**, **2 are inflated**, **3 are false**.
 
 Was 3 / 4 / 4 / 7 at the docs-only pass. The extra holds and partials come from making cheap claims true in the tree (tests, `start.command`, locks, Mix modules, banners), not from becoming a production IDE.
 
@@ -36,7 +36,7 @@ Was 3 / 4 / 4 / 7 at the docs-only pass. The extra holds and partials come from 
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | In-memory. Per-event SHA-256 of own fields. Parent **ids**, not parent hashes. Not persisted. `datetime.utcnow` removed. |
 | Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI on port 5000. `start.command` now exists. No WebXR. Access docs no longer say VR is a product. |
 | 45+ API endpoints | **Holds** | 45+ | 64 Flask routes |
-| CI / CD healthy | **False** | Live green badges | Before this change: 15+ consecutive failures. Root causes were `upload-artifact@v3` (hard-fail) and `black --check` (34 files). Workflow bumped to v4; Black/isort applied. **GitHub Actions must still go green on this push.** Security steps remain `\|\| true`. |
+| CI / CD healthy | **Partial** | Live green badges | **CI - Test and Lint is green** on `5e182f2` ([run 33171944142](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33171944142)). CD is still red. Security steps remain `\|\| true`. |
 | 0 lint / 0 vulns | **Partial** | Clean | Critical flake8, Black, and isort pass on `src/`. `datetime.utcnow` gone. Committed `flake8_remaining*.txt` dumps remain. Bandit/safety cannot fail CI. |
 | Registry thread-safe via GIL | **Partial** | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. Gunicorn uses 4 eventlet workers (processes, not a single GIL). |
 | Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`) |
@@ -109,7 +109,7 @@ Observed before this change: every inspected run concluded **failure**. Two mech
 
 This change upgrades artifact/cache actions to v4, formats with Black + isort (`--profile black`), and keeps Codecov from failing the job. Security `safety` / `bandit` still use `|| true`.
 
-Local pytest is green (1,537 passed). The GitHub badge is true only after the next Actions run succeeds.
+Local pytest is green (1,537 passed). **CI - Test and Lint is green** on `5e182f2` ([run 33171944142](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33171944142)). CD was still red because the runner has `docker compose`, not `docker-compose`.
 
 ## What we changed to make claims accurate
 

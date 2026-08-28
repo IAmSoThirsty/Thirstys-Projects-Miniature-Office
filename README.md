@@ -20,7 +20,7 @@ This README reports the **measured** state of `main`. Earlier documents describe
 | Code pipeline | `src/core/code_civilization.py` — 1,233-line template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
 | Floors | 28 directories under `floors/`. Elixir now has Mix modules under `lib/`. The SQL floor is still Python |
 | Tests | **1,537 passing**, 1 skipped (pytest, Python 3.10, 28 Aug 2026) |
-| CI | Workflow repaired (Black/isort gates, `upload-artifact@v4`). GitHub run status is the badge, not this paragraph |
+| CI | **CI - Test and Lint is green** on `5e182f2`. CD still used `docker-compose` (v1) which GitHub runners no longer ship |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
