@@ -5,7 +5,7 @@
 **Honesty-pass code:** `fe9cdf1`  
 **Docs pin (pre-IDE):** `27d7fdf` / `f560d651` — score 6/7/2/3 of 18  
 **PR #15 merge:** `6196f8a` — IDE files landed, routes unhooked, CI red  
-**This re-measure:** 28 August 2026 — independent clone of `6196f8a`, then repair of the unhooked IDE core.  
+**This repair commit:** `aa7b439` — independent clone of `6196f8a`, then wire of the unhooked IDE core.  
 **Rule:** a claim is true only if the tree implements it. Design prose is not implementation.
 
 ## Method

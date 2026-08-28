@@ -4,7 +4,7 @@ Canonical prose remains [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). This file is the
 score that must sum.
 
 **Parent measured:** `6196f8a` (PR #15 merge — IDE files present, routes unhooked, CI red)  
-**This repair:** wires `register_ide_routes`, optional unsigned JSONL persist  
+**This repair:** `aa7b439` — wires `register_ide_routes`, optional unsigned JSONL persist  
 **Status:** experimental prototype — not production-ready  
 **Rule:** a claim is true only if the tree implements it.  
 **Independent pytest of this tree:** **1,558 passed / 1 skipped** (7.14s). `src/` **23,858** lines / **18,527** non-comment; **71** `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **7,192 / 7,356** (97.8% of imported statements). CI [33197912388](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33197912388) **failed** on `6196f8a`. Last green: `f560d651`.

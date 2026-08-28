@@ -6,7 +6,13 @@
   "status": "experimental prototype",
   "production_ready": false,
   "rule": "A claim is true only if the tree implements it.",
-  "score": { "holds": 6, "partial": 8, "inflated": 2, "false": 3, "total": 19 },
+  "score": {
+    "holds": 6,
+    "partial": 8,
+    "inflated": 2,
+    "false": 3,
+    "total": 19
+  },
   "measured": {
     "src_python_lines_total": 23858,
     "src_python_lines_noncomment": 18527,
@@ -64,5 +70,6 @@
     "This repair registers the 7 /api/ide/* routes, adds unsigned JSONL persist, and re-measures. Independent pytest: 1558 passed, 1 skipped.",
     "Score is now 6/8/2/3 of 19. CI/CD moved to Partial. IDE core added as Holds.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY badge. Stale."
-  ]
+  ],
+  "commit": "aa7b439e2f4929d3a540bb0e1f7c69cfb2287f6b"
 }
