@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an optional HMAC-tagged audit JSONL, language “floors,” a template-based code-generation pipeline, a jailed workspace / no-shell terminal API, a browser editor/file-tree/terminal UI, and a small PWA shell.
 
-This README reports the **measured** state of [`ffd9b5e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ffd9b5e7310194c713473941a06eaf797cfdfd38) merged as [`f24ae5c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f24ae5c3d419f9bb14388591b05b8fb40ab70cc0). Independent pytest: **1,567 passed**, 1 skipped. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
+This README reports the **measured** state of [`a4b3de4`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6). Independent pytest on that SHA: **1,569 passed**, 1 skipped. This pin adds two honesty-lock tests (score sums; compose has no placeholder secret). Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -22,19 +22,19 @@ This README reports the **measured** state of [`ffd9b5e`](https://github.com/IAm
 | PWA | `manifest.json` + `sw.js`. No WebXR |
 | Code pipeline | `src/core/code_civilization.py` — **1,421-line** template generator (not 49,741 lines). Python identity bodies; generated pytest is executed |
 | Floors | 28 directories under `floors/`. SQL floor includes `schema.sql`. Every floor README is marked a toy. See [floors/README.md](floors/README.md) |
-| Tests | **1,567 passing**, 1 skipped |
-| CI / CD | CD **green** on `f24ae5c` ([33208378559](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378559)). CI **red** on the same SHA ([33208378504](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378504)): bandit JSON dump omitted `-ll`; pytest 9 does not install on Python 3.9. This pin drops 3.9 and adds `-ll` to the JSON dump. |
+| Tests | **1,571 passing**, 1 skipped (1,569 on `a4b3de4` + 2 honesty-lock tests) |
+| CI / CD | **Both green** on `a4b3de4`: [CI 33209447993](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209447993), [CD 33209448004](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209448004). Matrix is Python 3.10–3.12; bandit JSON dump uses `-ll` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
 ## Honest metrics (measured 28 August 2026)
 
-| Metric | Claimed (old README) | Measured (this pin) |
+| Metric | Claimed (old README) | Measured (`a4b3de4`) |
 | --- | --- | --- |
 | Production status | Production ready | Experimental prototype |
 | `src/` Python lines | 18,285 | **24,441** total / **19,058** non-comment (53 files) |
 | `code_civilization.py` | 49,741 lines | **1,421 lines** (52,653 bytes; original error treated bytes as lines) |
-| Tests | 1,537 passing | **1,567 passed**, 1 skipped (`def test_` grep = 1,600) |
+| Tests | 1,537 passing | **1,571 passed**, 1 skipped (`def test_` grep = 1,604; 1,569 on `a4b3de4` + 2 honesty-lock tests) |
 | Coverage | 99% of the system | Fresh `pytest --cov=src`: **7,493 / 7,749** imported statements (**96.70%**). `integrated_specs/` still omitted |
 | Language floors | 30+ native, working | 28 dirs; SQL has `schema.sql`; each README is bannered as a toy |
 | Flask routes | 45+ | **74** `@app.route` entries (67 in `app.py` + 7 IDE) |
@@ -42,7 +42,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 | macOS `start.command` | Documented | **Present** — launches `start.sh` |
 | Editor UI | (older docs denied it) | **Present** |
 | PWA | Claimed | **Present** (`manifest.json`, `sw.js`); no WebXR |
-| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **8 / 7 / 1 / 3** of 19 (sums) |
+| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **9 / 6 / 1 / 3** of 19 (sums). CI/CD moved to Holds after both jobs were green on `a4b3de4` |
 
 ## What still works as a prototype
 
@@ -53,8 +53,8 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Real terminal: one PATH program + args, no shell operators, 15s default timeout
 - Browser IDE chrome: file tree, editor, terminal (HTTP API, not Monaco/LSP)
 - AST-backed pattern / flow / metrics / dependency analyzers (small named set)
-- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `f24ae5c`.
-- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12
+- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `a4b3de4`.
+- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `a4b3de4`
 
 ## What does not work as advertised
 
@@ -64,7 +64,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Bandit still reports 13 **low** findings
 - There is no WebXR
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
-- CI on `f24ae5c` failed; the fix in this pin is not claimed green until observed
+- Docker is a compose healthcheck, not a hardened stack (in-memory world, `chmod 777` in CD)
 
 ## Quick start
 
@@ -94,7 +94,7 @@ Linux: `./install.sh` then `./start.sh`. macOS: `./install.sh` then `./start.com
 | --- | --- |
 | [DOCS.md](DOCS.md) | Which files are canonical vs historical |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence. Canonical for status. |
-| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (8/7/1/3 = 19) |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (9/6/1/3 = 19) |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations, without contradictory percentages |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Design notes — treat as intent, not a completion certificate |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Historical. Superseded. |
