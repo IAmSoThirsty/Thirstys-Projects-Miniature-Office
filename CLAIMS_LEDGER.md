@@ -3,11 +3,19 @@
 Canonical prose remains [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). This file is the
 score that must sum.
 
-**Measured commit:** `a41e1f8` (`a41e1f866cad6452c678495e23f6cf9d97ec6231`)  
-**Parent code:** IDE UI + secret gate + bandit-can-fail, landed on `aa7b439` wiring  
+**Docs HEAD:** `8f7ee8be` (`8f7ee8be10ef4a64599415db84b07cefe535ca88`) — docs-only pin  
+**Measured code:** `a41e1f8` (`a41e1f866cad6452c678495e23f6cf9d97ec6231`)  
 **Status:** experimental prototype — not production-ready  
 **Rule:** a claim is true only if the tree implements it.  
-**Independent pytest of `a41e1f8`:** **1,558 passed / 1 skipped** (11.64s). `src/` **23,876** lines / **18,542** non-comment; **71** `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **7,194 / 7,364** (97.69% of imported statements). CI [33201115573](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115573) **failed** (bandit B104). CD [33201115545](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115545) **failed** (`/health` 503).
+**Independent pytest of `a41e1f8`:** **1,558 passed / 1 skipped** (11.64s). `src/` **23,876** lines / **18,542** non-comment; **71** `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **7,194 / 7,364** (97.69% of imported statements).  
+**CI on `a41e1f8`:** [33201115573](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115573) **failed** (bandit B104).  
+**CI on HEAD `8f7ee8be`:** [33202552780](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33202552780) **failed** (same B104).  
+**CD on `a41e1f8`:** [33201115545](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115545) **failed** (`/health` 503).  
+**CD on HEAD `8f7ee8be`:** [33202552838](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33202552838) **failed** (same probe mismatch).
+
+This branch repairs CD/Dockerfile to curl `/api/ide/health` and makes the
+workspace volume writable. **Do not mark CI/CD Holds until a run on the
+repair SHA is independently green.** Bandit B104 is unchanged.
 
 ## Score
 
@@ -24,7 +32,7 @@ score that must sum.
 - Tests passing (1,558 passed, 1 skipped on `a41e1f8`)
 - 45+ API endpoints (71 routes)
 - Formal entity ontology (7 types, 8 relations)
-- Canonical docs consistent (this pin of `a41e1f8`)
+- Canonical docs consistent (this pin of `a41e1f8` / HEAD `8f7ee8be`)
 - Apache 2.0
 - Real workspace / editor API / terminal (jailed FS, no-shell argv, 7 `/api/ide/*` routes, browser file-tree/editor/terminal UI)
 
@@ -36,8 +44,8 @@ score that must sum.
 - Desktop / mobile / VR (browser UI exists; no WebXR, no PWA)
 - 0 lint / 0 vulns (lint clean; bandit fails B104; safety `|| true`)
 - Registry thread-safe via GIL (actually `RLock`; 4 gunicorn workers)
-- Docker / compose (files exist; no compose default `SECRET_KEY`; CD probe fails; volume not writable by image user)
-- CI / CD healthy (unit tests green; security red; CD red)
+- Docker / compose (files exist; no compose default `SECRET_KEY`; CD probe was mismatched; volume was not writable by image user)
+- CI / CD healthy (unit tests green; security red; CD red on HEAD)
 
 **Inflated (2)**
 
@@ -63,4 +71,3 @@ Ecosystem claim [EC-013](https://www.thirstysystems.com/claims) still pins `LIMI
 - Unsigned audit chain (JSONL is not a signature)
 - Safety CI uses `|| true`; bandit fails on expected bind-all-interfaces
 - IDE HTTP API has no auth
-- CD compose test curls the wrong path and the workspace volume is not writable

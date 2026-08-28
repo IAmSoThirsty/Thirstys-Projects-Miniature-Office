@@ -1,7 +1,10 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
+  "head": "8f7ee8be10ef4a64599415db84b07cefe535ca88",
+  "head_short": "8f7ee8be",
   "measured_commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231",
   "measured_short": "a41e1f8",
+  "note": "HEAD 8f7ee8be is a docs-only pin of independently measured a41e1f8. Source tree is identical. This branch also repairs the CD health probe; do not mark CI/CD Holds until Actions on the repair SHA is independently green.",
   "parent_code": "aa7b439e2f4929d3a540bb0e1f7c69cfb2287f6b",
   "parent_merge": "6196f8afb941351c8fb435e5ea68199add48b0ae",
   "measured_at": "2026-08-28",
@@ -39,11 +42,15 @@
     "safety_or_true": true,
     "ci_run_a41e1f8": 33201115573,
     "ci_a41e1f8_conclusion": "failure",
+    "ci_run_head": 33202552780,
+    "ci_head_conclusion": "failure",
     "ci_unit_tests": "success",
     "bandit_finding": "B104 hardcoded_bind_all_interfaces src/server/app.py:1533",
     "cd_run_a41e1f8": 33201115545,
     "cd_a41e1f8_conclusion": "failure",
-    "cd_failure": "test-docker curls /health (503); compose healthchecks /api/ide/health; workspace PermissionError welcome.txt"
+    "cd_run_head": 33202552838,
+    "cd_head_conclusion": "failure",
+    "cd_failure": "test-docker curled /health (503); compose healthchecks /api/ide/health; workspace PermissionError welcome.txt. Repair on this branch points both probes at /api/ide/health."
   },
   "verdicts": {
     "holds": [
@@ -75,10 +82,9 @@
     ]
   },
   "corrections": [
-    "a41e1f8 shipped IDE UI, production secret gate, and a failing bandit scan but canonical files still described aa7b439.",
-    "Independent pytest of a41e1f8: 1558 passed, 1 skipped. src 23876/18542. cov 7194/7364. 71 routes.",
-    "CI 33201115573 failed (bandit B104). Unit-test matrix 3.9-3.12 succeeded. CD 33201115545 failed (test-docker /health 503).",
-    "Compose no longer defaults SECRET_KEY. Production refuses placeholders. .env.example still has a placeholder.",
+    "HEAD 8f7ee8be is a docs pin of a41e1f8. Live CI 33202552780 and CD 33202552838 failed for the same reasons as a41e1f8.",
+    "Independent pytest of a41e1f8: 1558 passed, 1 skipped. src 23876/18542. cov 7194/7364. 71 routes. 28 floors.",
+    "pattern_detector.py still returns []. SQL floor is still Python. LICENSE is Apache 2.0.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY badge. Stale."
   ],
   "commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231"
