@@ -16,7 +16,8 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        # pytest 9.0.3 requires Python >=3.10. The 3.9+ README badge was false.
+        python-version: ['3.10', '3.11', '3.12']
 
     steps:
     - uses: actions/checkout@v4
@@ -91,7 +92,7 @@ jobs:
     - name: Run bandit security scan
       run: |
         bandit -r src -ll
-        bandit -r src -f json -o bandit-report.json
+        bandit -r src -ll -f json -o bandit-report.json --exit-zero
 
     - name: Upload bandit report
       uses: actions/upload-artifact@v4

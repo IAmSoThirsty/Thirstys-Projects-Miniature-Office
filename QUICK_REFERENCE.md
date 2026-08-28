@@ -60,7 +60,7 @@ docker compose down
 1. Start server on computer (see above)
 2. Find computer's IP address
 3. Open phone browser → `http://YOUR_IP:5000`
-4. Optional: bookmark it. “Add to Home Screen” is a browser shortcut, not a PWA.
+4. Optional: “Add to Home Screen” installs the PWA shell (`manifest.json` + `sw.js`). Not a native app. No WebXR.
 
 
 ## Headsets

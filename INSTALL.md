@@ -13,7 +13,8 @@ The Miniature Office runs as a web application, accessible from **any device wit
 This means:
 - **Desktop**: Chrome, Firefox, Safari, Edge on Windows/Mac/Linux
 - **Mobile / tablet**: any phone or tablet browser pointed at the Flask server
-- **Not included**: a native app, PWA install package, or WebXR session
+- **Not included**: a native app or WebXR session
+- **Included**: a small PWA shell (`manifest.json` + `sw.js`). “Add to Home Screen” installs that shell, not a native app
 
 ---
 

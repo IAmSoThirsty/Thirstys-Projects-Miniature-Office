@@ -15,7 +15,7 @@ There is a small PWA shell (`manifest.json` + `sw.js`). There is no native deskt
 
 `install.sh` is not a native OS installer. `start.command` is a shell wrapper, not a signed macOS app.
 
-CD `test-docker` now curls `/health` and `/api/ide/health` and `chmod 777`s `user_workspace` / `data` / `logs` before compose up. Actions on this SHA have not yet been observed.
+CD `test-docker` curls `/health` and `/api/ide/health` and `chmod 777`s `user_workspace` / `data` / `logs` before compose up. CD **succeeded** on `f24ae5c` ([33208378559](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378559)). CI **failed** on that SHA ([33208378504](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378504)); this pin repairs the two failure modes. Actions on *this* SHA have not yet been observed.
 
 ## Browsers
 

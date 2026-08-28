@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on the honesty-repair pin (parent `8f7ee8be`).
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on parent `f24ae5c` (code pin `ffd9b5e`) plus the CI/docs repair on this pin.
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -15,11 +15,12 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - Template code generation; Python tests of generated code **are executed**
 - AST-backed pattern / flow / metrics / dependency analyzers (5 patterns, 4 anti-patterns)
 - 28 language-floor directories; SQL floor includes `schema.sql` ([floors/README.md](floors/README.md))
-- Docker Compose / GitHub Actions **files**; security job uses bandit `-ll` + `pip-audit` (no `|| true`)
+- Docker Compose / GitHub Actions **files**; security job uses bandit `-ll` + `pip-audit` (no `|| true`). CD green on `f24ae5c`
 - **1,567 tests passing**, 1 skipped
 - `start.sh`, `start.bat`, `start.command`
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
 - `/health` is a liveness probe (HTTP 200)
+- Python **3.10+** (pytest 9.0.3)
 
 ## What is not implemented (but was claimed)
 
@@ -33,7 +34,8 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | VR | Browser + PWA only. No WebXR. |
 | 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
-| CI / CD on this SHA | Workflows rewritten to be able to pass. No Actions run observed yet. |
+| Python 3.9 | pytest 9.0.3 requires 3.10+. The 3.9+ badge was false. |
+| CI on `f24ae5c` | Failed ([33208378504](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378504)). This pin repairs the two causes. Actions on this SHA not yet observed. |
 
 ## Code generation pipeline
 
@@ -48,7 +50,7 @@ Steps 1–6 exist as Python methods. Python:
 | Source | Number | Meaning |
 | --- | --- | --- |
 | Independent pytest | 1,567 passed, 1 skipped | Collected tests |
-| `def test_` grep | 1,600 | Functions defined, not the same as collected |
+| `def test_` grep | 1,602 | Functions defined, not the same as collected |
 | Fresh `pytest --cov=src` | 7,493 / 7,749 statements (96.70%) | Imported modules only; still omits `integrated_specs/` |
 | `src/` Python lines | 24,441 total / 19,058 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
@@ -73,7 +75,7 @@ There is no single 99% of the whole tree.
 
 ## Roadmap (not done)
 
-1. Observe GitHub Actions on this SHA and move CI/CD + Docker to **Holds** if both jobs are green.
+1. Observe GitHub Actions on this SHA and move CI/CD to **Holds** if the unit-test and security jobs are green.
 2. Turn HMAC on by default in compose via a generated key.
 3. Replace identity codegen with spec-mapped generators, or stop listing a pipeline.
 4. Include every `src/` module in coverage reports.

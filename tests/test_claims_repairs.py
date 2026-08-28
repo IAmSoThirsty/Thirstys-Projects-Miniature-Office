@@ -84,3 +84,29 @@ def test_ide_token_rejects_terminal(monkeypatch, tmp_path):
         )
     assert denied.status_code == 401
     assert allowed.status_code == 200
+
+
+def test_ci_python_matrix_matches_pytest_nine():
+    """pytest==9.0.3 requires Python >=3.10. The 3.9 matrix cell cannot install."""
+    ci = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+    req = Path("requirements.txt").read_text(encoding="utf-8")
+    assert "pytest==9.0.3" in req
+    assert "'3.9'" not in ci
+    assert "'3.10'" in ci
+    assert "'3.11'" in ci
+    assert "'3.12'" in ci
+
+
+def test_ci_bandit_json_dump_cannot_fail_the_job():
+    """HEAD f24ae5c failed because `bandit -r src -f json` (no -ll) exits 1 on 13 lows."""
+    ci = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "bandit -r src -ll" in ci
+    json_lines = [
+        line.strip()
+        for line in ci.splitlines()
+        if "bandit" in line and "-f json" in line
+    ]
+    assert json_lines, "expected a bandit JSON dump step"
+    for line in json_lines:
+        assert "-ll" in line
+        assert "--exit-zero" in line

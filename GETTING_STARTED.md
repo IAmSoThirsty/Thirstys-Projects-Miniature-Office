@@ -22,7 +22,7 @@ What device do you have?
 │   │   └─ NO  → Need someone to start the server first
 │   │
 │   └─ Optional: bookmark the URL, or use the browser’s “Add to Home Screen”
-│       (a shortcut — this repo is not a PWA)
+│       (PWA shell: manifest.json + sw.js. Not a native app. No WebXR.)
 
 │
 └─ Headset browser
