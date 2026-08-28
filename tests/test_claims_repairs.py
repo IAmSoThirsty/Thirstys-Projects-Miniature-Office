@@ -88,13 +88,13 @@ def test_ide_token_rejects_terminal(monkeypatch, tmp_path):
 
 def test_ci_bandit_json_uses_severity_floor():
     text = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
-    bandit_lines = [
+    cmd_lines = [
         line.strip()
         for line in text.splitlines()
-        if "bandit " in line and not line.strip().startswith("#")
+        if line.strip().startswith("bandit ")
     ]
-    assert bandit_lines
-    for line in bandit_lines:
+    assert cmd_lines, "no bandit command lines in ci.yml"
+    for line in cmd_lines:
         assert "-ll" in line, line
     assert "'3.9'" not in text
     assert "'3.10'" in text
