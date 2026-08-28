@@ -46,9 +46,10 @@ USER minioffice
 # Expose port
 EXPOSE 5000
 
-# Health check using curl
+# Align with compose: /health is a simulation-readiness probe (503 until init).
+# gunicorn with default FLASK_ENV=development skips module-level init.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+    CMD curl -f http://localhost:5000/api/ide/health || exit 1
 
 # Run with gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--worker-class", "eventlet", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "src.server.app:app"]

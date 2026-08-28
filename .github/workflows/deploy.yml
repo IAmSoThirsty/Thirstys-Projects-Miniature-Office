@@ -60,10 +60,13 @@ jobs:
 
     - name: Test Docker Compose
       run: |
+        mkdir -p user_workspace data logs
+        chmod -R a+rwX user_workspace data logs
+        export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
         docker compose up -d --build
         ok=0
         for i in $(seq 1 24); do
-          if curl -sf http://localhost:5000/health; then
+          if curl -sf http://localhost:5000/api/ide/health; then
             ok=1
             break
           fi
