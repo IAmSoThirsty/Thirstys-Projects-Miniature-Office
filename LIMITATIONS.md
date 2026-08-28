@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Independently re-measured 28 August 2026 on [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a). CI [33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987) and CD [33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992) both green.
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Independently re-measured 28 August 2026 on [`1a103bf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/1a103bf198ebb4b795b36d04cdc081d3a1fa4687). CI [33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008) and CD [33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012) both green.
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -21,14 +21,14 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
 - `/health` is a liveness probe (HTTP 200)
 - Python **3.10+** (`pytest==9.0.3` does not install on 3.9)
-- CI and CD **green** on `fdd9762`
+- CI and CD **green** on `1a103bf`
 
 ## What is not implemented (but was claimed)
 
 | Topic | Reality |
 | --- | --- |
 | Production deployment | World state is in-memory. IDE API is open unless `MO_IDE_TOKEN` is set. |
-| 99% system coverage | Fresh `pytest --cov=src` is 7,494 / 7,749 imported statements (96.71%) and still omits `integrated_specs/`. |
+| 99% system coverage | Fresh `pytest --cov=src` is 7,493 / 7,749 imported statements (96.70%) and still omits `integrated_specs/`. |
 | 49,741-line civilization module | `src/core/code_civilization.py` is **1,421 lines** (bytes were originally counted as lines). |
 | Spec-faithful generated code | Python generation is an identity transform. Non-Python tests are not executed. |
 | Native 30-language runtime | 28 toy directories. SQL has a schema file; department logic is Python. |
@@ -49,9 +49,9 @@ Steps 1–6 exist as Python methods. Python:
 
 | Source | Number | Meaning |
 | --- | --- | --- |
-| Independent pytest | 1,573 passed, 1 skipped | Collected tests on `fdd9762` |
-| `def test_` grep | 1,606 | Functions defined, not the same as collected |
-| Fresh `pytest --cov=src` | 7,494 / 7,749 statements (96.71%) | Imported modules only; still omits `integrated_specs/` |
+| Independent pytest | 1,573 passed, 1 skipped | Collected tests on `1a103bf` |
+| `def test_` grep | 1,612 | Functions defined (including class methods), not the same as collected |
+| Fresh `pytest --cov=src` | 7,493 / 7,749 statements (96.70%) | Imported modules only; still omits `integrated_specs/` |
 | `src/` Python lines | 24,441 total / 19,058 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
 
@@ -69,7 +69,7 @@ There is no single 99% of the whole tree.
 - Security headers module: yes
 - SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one
 - Bandit `-ll`: clean (B104 nosec on `run_server`). JSON dump in CI also uses `-ll`.
-- pip-audit: clean on `fdd9762`
+- pip-audit: clean on `1a103bf`
 - `MO_IDE_TOKEN` required when `FLASK_ENV=production`
 - `datetime.utcnow` has been replaced with `datetime.now(timezone.utc)`
 

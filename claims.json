@@ -1,9 +1,9 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "measured_commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
-  "measured_short": "fdd9762",
-  "code_pin": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
-  "parent_code": "590b90ce53bd859d8baf32a2155820e3169a93e8",
+  "measured_commit": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
+  "measured_short": "1a103bf",
+  "code_pin": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
+  "parent_code": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
@@ -51,6 +51,14 @@
     "cd_f24ae5c": {
       "run": 33208378559,
       "conclusion": "success"
+    },
+    "ci_1a103bf": {
+      "run": 33215760008,
+      "conclusion": "success"
+    },
+    "cd_1a103bf": {
+      "run": 33215760012,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -62,16 +70,16 @@
     "pytest_passed": 1573,
     "pytest_skipped": 1,
     "pytest_collected": 1574,
-    "pytest_seconds": 13.14,
-    "def_test_grep": 1606,
+    "pytest_seconds": 6.3,
+    "def_test_grep": 1612,
     "flask_routes": 74,
     "app_py_routes": 67,
     "ide_routes": 7,
     "floor_directories": 28,
     "sql_floor_has_sql": true,
     "fresh_cov_statements": 7749,
-    "fresh_cov_covered": 7494,
-    "fresh_cov_percent": 96.71,
+    "fresh_cov_covered": 7493,
+    "fresh_cov_percent": 96.7,
     "editor_ui": true,
     "pwa_manifest": true,
     "webxr": false,
@@ -120,12 +128,13 @@
     ]
   },
   "corrections": [
-    "Independent clone of HEAD fdd9762: pytest 1573 passed, 1 skipped, 13.14s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization module 1421 lines / 52653 bytes. Parent pin 590b90c claimed 7493/7749 (96.70%) — off by one covered statement.",
-    "CI 33212776987 and CD 33212776992 both succeeded on fdd9762. CI/CD is Holds. Docker stays Partial (in-memory world, chmod 777).",
-    "Canonical files now cite the SHA that was independently re-measured (fdd9762), not the parent 590b90c.",
+    "Independent clone of tree 1a103bf: pytest 1573 passed, 1 skipped, 6.30s. src 24441/19058; cov 7493/7749 (96.70%); 74 routes; 28 floors; civilization module 1421 lines / 52653 bytes. Parent pin fdd9762 claimed 7494/7749 (96.71%) and def_test_grep 1606 \u2014 off by one covered statement and six test defs.",
+    "CI 33215760008 and CD 33215760012 both succeeded on 1a103bf. CI/CD is Holds. Docker stays Partial (in-memory world, chmod 777).",
+    "Canonical files now cite the SHA that was independently re-measured (1a103bf). A later docs commit will have a different SHA.",
     "EASY_ACCESS does not deny the PWA shell. manifest.json + sw.js exist; there is still no WebXR.",
     "GETTING_STARTED does not claim compose ships a placeholder SECRET_KEY. Compose interpolates SECRET_KEY with no default.",
-    "Score 9/6/1/3 of 19. Production ready remains False."
+    "Score 9/6/1/3 of 19. Production ready remains False.",
+    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale."
   ],
-  "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a"
+  "commit": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687"
 }

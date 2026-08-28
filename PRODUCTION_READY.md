@@ -2,14 +2,14 @@
 
 **This certificate is inaccurate.** It was generated 11 February 2026 from 22 tests and 32% coverage, then left in the tree after later documents claimed 1,537 tests and 99% coverage.
 
-Do not cite this file. Current measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md), [LIMITATIONS.md](LIMITATIONS.md). Independently re-measured 28 August 2026 on [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a).
+Do not cite this file. Current measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md), [LIMITATIONS.md](LIMITATIONS.md). Independently re-measured 28 August 2026 on [`1a103bf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/1a103bf198ebb4b795b36d04cdc081d3a1fa4687).
 
 Facts that still contradict this certificate on current `main`:
 
 - The product is an experimental Flask prototype, not a production IDE
 - Application / world state is in-memory
 - Python codegen is an identity transform; non-Python tests are not executed
-- Fresh coverage is 7,494 / 7,749 imported statements (96.71%), and `integrated_specs/` is still omitted
+- Fresh coverage is 7,493 / 7,749 imported statements (96.70%), and `integrated_specs/` is still omitted
 - Compose has no default `SECRET_KEY`; `.env.example` still has a placeholder
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set (required only in production)
 - Docker is a compose healthcheck, not a hardened stack
