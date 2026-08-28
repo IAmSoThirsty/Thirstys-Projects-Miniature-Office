@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import stat
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -20,7 +19,11 @@ class WorkspaceError(Exception):
 class Workspace:
     def __init__(self, root: Path):
         self.root = Path(root).resolve()
-        self.root.mkdir(parents=True, exist_ok=True)
+        try:
+            self.root.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            # Bind-mounted host dirs may exist but not be writable yet.
+            pass
 
     def resolve(self, rel: Optional[str]) -> Path:
         raw = "." if rel is None or str(rel).strip() == "" else str(rel)
@@ -140,7 +143,10 @@ class Workspace:
                     "File exists; pass overwrite=true to replace it", 409
                 )
         else:
-            path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                path.parent.mkdir(parents=True, exist_ok=True)
+            except OSError as exc:
+                raise WorkspaceError(str(exc), 500)
         path.write_text(content, encoding="utf-8")
         return {
             "path": self.relpath(path),
@@ -176,22 +182,31 @@ class Workspace:
         return {"deleted": self.relpath(path)}
 
     def seed_if_empty(self) -> None:
-        visible = [p for p in self.root.iterdir() if not p.name.startswith(".")]
-        if visible:
+        try:
+            if not self.root.exists():
+                self.root.mkdir(parents=True, exist_ok=True)
+            visible = [p for p in self.root.iterdir() if not p.name.startswith(".")]
+            if visible:
+                return
+            (self.root / "welcome.txt").write_text(
+                "Miniature Office IDE workspace\n"
+                "==============================\n\n"
+                "Files saved here persist on disk.\n"
+                "The terminal runs with this directory as its working root.\n",
+                encoding="utf-8",
+            )
+        except OSError:
             return
-        (self.root / "welcome.txt").write_text(
-            "Miniature Office IDE workspace\n"
-            "==============================\n\n"
-            "Files saved here persist on disk.\n"
-            "The terminal runs with this directory as its working root.\n",
-            encoding="utf-8",
-        )
 
     def info(self) -> Dict[str, Any]:
-        mode = self.root.stat().st_mode
+        writable = False
+        try:
+            writable = os.access(self.root, os.W_OK) if self.root.exists() else False
+        except OSError:
+            writable = False
         return {
             "root": str(self.root),
-            "writable": bool(mode & stat.S_IWUSR),
+            "writable": writable,
             "max_file_bytes": MAX_FILE_BYTES,
         }
 

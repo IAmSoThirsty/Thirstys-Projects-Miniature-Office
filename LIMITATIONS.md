@@ -1,57 +1,56 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on `a41e1f8`.
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on the honesty-repair pin (parent `8f7ee8be`).
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
 ## What is implemented
 
 - Flask app + Socket.IO (`src/server/app.py`), static client (`src/client/index.html`) with file tree, textarea editor, and terminal
+- PWA shell: `manifest.json` + `sw.js`. No WebXR
 - Entity registry, departments, agents, supply store, task state machine — in-process Python objects
 - `threading.RLock` on `EntityRegistry` and `GlobalRegistry`
-- Audit events with a SHA-256 **chain** (`prev_hash` + parent hashes). Optional unsigned JSONL when `MO_DATA_DIR` is set. Not signed, not a ledger
-- Jailed workspace filesystem (`src/workspace/fs.py`) and no-shell terminal (`src/runtime/terminal.py`) via `/api/ide/*`
-- Template code generation for Python / JavaScript / Rust snippets
-- 28 language-floor directories of uneven completeness; each README is a toy banner; SQL floor is Python ([floors/README.md](floors/README.md))
-- Docker Compose / GitHub Actions **files**; unit tests green on `a41e1f8`; CI security job **failed** (bandit B104); CD docker probe **failed**
-- **1,558 tests passing**, 1 skipped (independent pytest of `a41e1f8`)
+- Audit events with a SHA-256 **chain**. Optional HMAC-SHA256 when `MO_AUDIT_HMAC_KEY` or a non-placeholder `SECRET_KEY` is set
+- Jailed workspace filesystem (`src/workspace/fs.py`) and no-shell terminal (`src/runtime/terminal.py`) via `/api/ide/*`, token-gated when `MO_IDE_TOKEN` is set
+- Template code generation; Python tests of generated code **are executed**
+- AST-backed pattern / flow / metrics / dependency analyzers (5 patterns, 4 anti-patterns)
+- 28 language-floor directories; SQL floor includes `schema.sql` ([floors/README.md](floors/README.md))
+- Docker Compose / GitHub Actions **files**; security job uses bandit `-ll` + `pip-audit` (no `|| true`)
+- **1,567 tests passing**, 1 skipped
 - `start.sh`, `start.bat`, `start.command`
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
+- `/health` is a liveness probe (HTTP 200)
 
 ## What is not implemented (but was claimed)
 
 | Topic | Reality |
 | --- | --- |
-| Production deployment | World state is in-memory. API has no auth. CD compose probe fails. Workspace volume is not writable by the image user. |
-| 99% system coverage | Fresh `pytest --cov=src` is 7,194 / 7,364 imported statements (97.69%) and still omits `integrated_specs/`. |
-| 49,741-line civilization module | `src/core/code_civilization.py` is **1,364 lines** (bytes were originally counted as lines). |
-| Executed tests of generated code | Pipeline comment: “we assume tests pass.” |
-| Native 30-language runtime | SQL floor is Python. Several floors are JSON-RPC toys, not compilers. |
-| VR / PWA / native apps | Browser only. No WebXR, no `manifest.json`, no service worker. |
-| Pattern / flow / metrics analysis | Detector and analyzer modules return empty or constant results (`design_analyzer.py` is a real exception). |
-| Tamper-proof ledger | Hashing exists. JSONL persist is optional and **unsigned**. |
-| Security CI as a clean gate | Bandit **fails** the job (B104 bind `0.0.0.0`). `safety` still cannot fail (`\|\| true`). |
-| CI / CD on HEAD | Unit tests green. CI red on `a41e1f8` ([33201115573](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115573)). CD red ([33201115545](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115545)). |
+| Production deployment | World state is in-memory. IDE API is open unless `MO_IDE_TOKEN` is set. |
+| 99% system coverage | Fresh `pytest --cov=src` is 7,493 / 7,749 imported statements (96.70%) and still omits `integrated_specs/`. |
+| 49,741-line civilization module | `src/core/code_civilization.py` is **1,421 lines** (bytes were originally counted as lines). |
+| Spec-faithful generated code | Python generation is an identity transform. Non-Python tests are not executed. |
+| Native 30-language runtime | 28 toy directories. SQL has a schema file; department logic is Python. |
+| VR | Browser + PWA only. No WebXR. |
+| 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
+| Tamper-proof ledger | Hashing exists. HMAC is optional. |
+| CI / CD on this SHA | Workflows rewritten to be able to pass. No Actions run observed yet. |
 
 ## Code generation pipeline
 
-Steps 1–6 exist as Python methods. They are a **template printer**:
+Steps 1–6 exist as Python methods. Python:
 
-- Implementation sprint writes `TODO: Implement actual logic`
-- Testing mandate writes `assert result is not None`
-- Manager seal does not run the generated tests
+- Implementation sprint writes `result = data`
+- Testing mandate writes pytest and **runs it** in a temp directory
+- Other languages still skip execution
 
 ## Test coverage (do not mix these numbers)
 
 | Source | Number | Meaning |
 | --- | --- | --- |
-| Independent pytest of `a41e1f8` | 1,558 passed, 1 skipped | Collected tests |
-| GitHub Actions unit tests on `a41e1f8` | Success (3.9–3.12) | Same tree, matrix job |
-| GitHub Actions CI on `a41e1f8` | Failure [run 33201115573](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115573) | Bandit B104 |
-| `def test_` grep | 1,591 | Functions defined, not the same as collected |
-| Fresh `pytest --cov=src` | 7,194 / 7,364 statements (97.69%) | Imported modules only; still omits `integrated_specs/` |
-| Omitted Python | `integrated_specs/` (~4,215 lines) | Not imported by the test run |
-| `src/` Python lines | 23,876 total / 18,542 non-comment | Whole tree, not coverage |
+| Independent pytest | 1,567 passed, 1 skipped | Collected tests |
+| `def test_` grep | 1,600 | Functions defined, not the same as collected |
+| Fresh `pytest --cov=src` | 7,493 / 7,749 statements (96.70%) | Imported modules only; still omits `integrated_specs/` |
+| `src/` Python lines | 24,441 total / 19,058 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
 
 There is no single 99% of the whole tree.
@@ -60,27 +59,25 @@ There is no single 99% of the whole tree.
 
 - World / simulation / registries: in-process. Restart drops them.
 - Workspace files: on disk under `MO_WORKSPACE` (default `./user_workspace`).
-- Audit chain: in-process unless `MO_DATA_DIR` is set, in which case `audit.jsonl` is appended. Unsigned.
+- Audit chain: in-process unless `MO_DATA_DIR` is set, in which case `audit.jsonl` is appended. HMAC-tagged when a real key is set.
 
 ## Security
 
 - Non-root Docker user: yes
 - Security headers module: yes
 - SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one
-- Bandit: can fail the job, currently does (B104)
-- Safety: informational only (`|| true`)
-- No authentication on the API, including the terminal route
+- Bandit `-ll`: clean (B104 nosec on `run_server`)
+- pip-audit: clean on this pin
+- `MO_IDE_TOKEN` required when `FLASK_ENV=production`
 - `datetime.utcnow` has been replaced with `datetime.now(timezone.utc)`
 
 ## Roadmap (not done)
 
-1. Either bind explicitly and `# nosec B104` with a reason, or accept that bandit stays red. Make `safety` a gate instead of `|| true`.
-2. Point CD `test-docker` at `/api/ide/health` and make `./user_workspace` writable by the image user.
-3. Sign the audit chain. Hashing over `prev_hash` already exists; JSONL is not a signature.
-4. Replace template TODOs with real generation, or stop claiming a pipeline.
-5. Include every `src/` module in coverage reports.
-6. Add authentication before treating `/api/ide/terminal` as a product surface.
-7. Archive historical `*_COMPLETE.md` files so they cannot be cited even below the banner.
+1. Observe GitHub Actions on this SHA and move CI/CD + Docker to **Holds** if both jobs are green.
+2. Turn HMAC on by default in compose via a generated key.
+3. Replace identity codegen with spec-mapped generators, or stop listing a pipeline.
+4. Include every `src/` module in coverage reports.
+5. Archive historical `*_COMPLETE.md` files so they cannot be cited even below the banner.
 
 ## Contributing
 

@@ -1,0 +1,17 @@
+{
+  "name": "Miniature Office IDE",
+  "short_name": "MinOffice",
+  "description": "Experimental spatial office metaphor for software work. Not production-ready.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0d1f2a",
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

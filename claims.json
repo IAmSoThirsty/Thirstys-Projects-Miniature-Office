@@ -1,49 +1,50 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "measured_commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231",
-  "measured_short": "a41e1f8",
-  "parent_code": "aa7b439e2f4929d3a540bb0e1f7c69cfb2287f6b",
-  "parent_merge": "6196f8afb941351c8fb435e5ea68199add48b0ae",
+  "measured_commit": "pending-this-pin",
+  "measured_short": "pending",
+  "parent_code": "8f7ee8be10ef4a64599415db84b07cefe535ca88",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
   "rule": "A claim is true only if the tree implements it.",
   "score": {
-    "holds": 6,
-    "partial": 8,
-    "inflated": 2,
+    "holds": 8,
+    "partial": 7,
+    "inflated": 1,
     "false": 3,
     "total": 19
   },
   "measured": {
-    "src_python_lines_total": 23876,
-    "src_python_lines_noncomment": 18542,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
     "src_python_files": 53,
-    "code_civilization_lines": 1364,
-    "code_civilization_bytes": 50430,
-    "pytest_passed": 1558,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "pytest_passed": 1567,
     "pytest_skipped": 1,
-    "pytest_collected": 1559,
-    "pytest_seconds": 11.64,
-    "def_test_grep": 1591,
-    "flask_routes": 71,
-    "app_py_routes": 64,
+    "pytest_collected": 1568,
+    "pytest_seconds": 4.37,
+    "def_test_grep": 1600,
+    "flask_routes": 74,
+    "app_py_routes": 67,
     "ide_routes": 7,
     "floor_directories": 28,
-    "fresh_cov_statements": 7364,
-    "fresh_cov_covered": 7194,
-    "fresh_cov_percent": 97.69,
+    "sql_floor_has_sql": true,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_covered": 7493,
+    "fresh_cov_percent": 96.7,
     "editor_ui": true,
+    "pwa_manifest": true,
+    "webxr": false,
     "compose_default_secret_key": false,
-    "bandit_can_fail": true,
-    "safety_or_true": true,
-    "ci_run_a41e1f8": 33201115573,
-    "ci_a41e1f8_conclusion": "failure",
-    "ci_unit_tests": "success",
-    "bandit_finding": "B104 hardcoded_bind_all_interfaces src/server/app.py:1533",
-    "cd_run_a41e1f8": 33201115545,
-    "cd_a41e1f8_conclusion": "failure",
-    "cd_failure": "test-docker curls /health (503); compose healthchecks /api/ide/health; workspace PermissionError welcome.txt"
+    "bandit_ll_medium_or_high": 0,
+    "bandit_b104_nosec": true,
+    "pip_audit": "clean",
+    "safety_or_true": false,
+    "audit_hmac": "optional via MO_AUDIT_HMAC_KEY or non-placeholder SECRET_KEY",
+    "codegen_executes_python_tests": true,
+    "pattern_detector_placeholder": false,
+    "health_liveness_200": true
   },
   "verdicts": {
     "holds": [
@@ -52,21 +53,21 @@
       "entity_ontology",
       "docs_consistent",
       "apache_2",
-      "ide_core_workspace_terminal"
+      "ide_core_workspace_terminal",
+      "lint_vulns",
+      "registry_thread_safety"
     ],
     "partial": [
       "language_floors",
       "codegen_pipeline",
       "audit_log",
       "desktop_mobile_vr",
-      "lint_vulns",
-      "registry_thread_safety",
       "docker_compose",
-      "ci_cd_healthy"
+      "ci_cd_healthy",
+      "pattern_analysis"
     ],
     "inflated": [
-      "coverage_99",
-      "pattern_analysis"
+      "coverage_99"
     ],
     "false": [
       "production_ready",
@@ -75,11 +76,15 @@
     ]
   },
   "corrections": [
-    "a41e1f8 shipped IDE UI, production secret gate, and a failing bandit scan but canonical files still described aa7b439.",
-    "Independent pytest of a41e1f8: 1558 passed, 1 skipped. src 23876/18542. cov 7194/7364. 71 routes.",
-    "CI 33201115573 failed (bandit B104). Unit-test matrix 3.9-3.12 succeeded. CD 33201115545 failed (test-docker /health 503).",
-    "Compose no longer defaults SECRET_KEY. Production refuses placeholders. .env.example still has a placeholder.",
-    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY badge. Stale."
+    "/health is a liveness probe (always 200). Simulation is lazily started. CD curls /health and /api/ide/health; host workspace dirs are chmod 777 in the workflow.",
+    "Bandit B104 on run_server is # nosec with a reason. pip-audit replaced safety || true and is clean on this pin.",
+    "Audit events HMAC-SHA256-sign the content hash when MO_AUDIT_HMAC_KEY or a non-placeholder SECRET_KEY is set. Still not a ledger.",
+    "Analyzers walk the AST. They are not 23+/SOLID/17-smell products.",
+    "Python codegen writes identity bodies (no TODO) and actually runs pytest on the generated suite.",
+    "SQL floor now has schema.sql. Department runtime remains Python. 28 toy directories.",
+    "PWA: manifest.json + sw.js. No WebXR.",
+    "MO_IDE_TOKEN gates /api/ide/* except /api/ide/health. Required when FLASK_ENV=production.",
+    "Independent pytest: 1567 passed, 1 skipped. src 24441/19058. cov 7493/7749 (96.70%). 74 routes."
   ],
-  "commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231"
+  "commit": "pending-this-pin"
 }

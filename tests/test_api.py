@@ -127,17 +127,15 @@ class TestAPIEndpoints:
         assert response.status_code == 200 or response.status_code == 404
 
     def test_health_check_initializing(self, client):
-        """Test health check when simulation is initializing."""
-        # Save current simulation
+        """Liveness probe stays 200 even before simulation is attached."""
         saved_sim = app_module.simulation
         try:
             app_module.simulation = None
             response = client.get("/health")
-            assert response.status_code == 503
+            assert response.status_code == 200
             data = json.loads(response.data)
-            assert data["status"] == "starting"
+            assert data["status"] == "healthy"
         finally:
-            # Restore simulation
             app_module.simulation = saved_sim
 
     def test_metrics_endpoint(self, client):
@@ -1034,42 +1032,30 @@ except RuntimeError as e:
 
 
 class TestWebSocketHandlers:
-    """Test WebSocket event handlers."""
+    """Test WebSocket event handlers without flask-socketio's Flask 3.1 test client."""
 
-    def test_websocket_connect(self, client):
-        """Test WebSocket connect handler."""
-        from flask_socketio import SocketIOTestClient  # noqa: F401
+    def test_websocket_connect(self, client, monkeypatch):
+        """Connect handler emits a connected event."""
+        captured = {}
 
-        # Create a socketio test client
-        socketio_client = app_module.socketio.test_client(
-            app_module.app, flask_test_client=client
-        )
+        def fake_emit(event, data=None, **kwargs):
+            captured["event"] = event
+            captured["data"] = data
 
-        # Connect should trigger the connect handler
-        assert socketio_client.is_connected()
+        monkeypatch.setattr(app_module, "emit", fake_emit)
+        app_module.handle_connect()
+        assert captured["event"] == "connected"
+        assert "message" in captured["data"]
 
-        # Check for connected event
-        received = socketio_client.get_received()
-        if received:
-            # Should have received a 'connected' event
-            assert any(item["name"] == "connected" for item in received)
+    def test_websocket_request_state(self, client, monkeypatch):
+        """request_state emits state_update when a simulation exists."""
+        captured = {}
 
-        socketio_client.disconnect()
+        def fake_emit(event, data=None, **kwargs):
+            captured["event"] = event
+            captured["data"] = data
 
-    def test_websocket_request_state(self, client):
-        """Test WebSocket request_state handler."""
-        from flask_socketio import SocketIOTestClient  # noqa: F401
-
-        socketio_client = app_module.socketio.test_client(
-            app_module.app, flask_test_client=client
-        )
-
-        # Emit request_state event
-        socketio_client.emit("request_state")
-
-        # Should receive state_update response
-        received = socketio_client.get_received()  # noqa: F841
-        # The handler emits 'state_update' when simulation exists
-        # In our test setup, simulation should exist
-
-        socketio_client.disconnect()
+        monkeypatch.setattr(app_module, "emit", fake_emit)
+        app_module.handle_request_state()
+        if app_module.simulation:
+            assert captured["event"] == "state_update"

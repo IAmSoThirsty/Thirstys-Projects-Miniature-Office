@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Optional
 
 from flask import Flask, jsonify, request
 
@@ -33,9 +34,35 @@ def _require_real_secret() -> None:
         )
 
 
+def _ide_token() -> Optional[str]:
+    token = os.getenv("MO_IDE_TOKEN")
+    if token:
+        return token
+    if os.getenv("FLASK_ENV") == "production":
+        raise RuntimeError(
+            "MO_IDE_TOKEN must be set when FLASK_ENV=production so /api/ide/* is not open"
+        )
+    return None
+
+
+def _require_ide_token():
+    expected = os.getenv("MO_IDE_TOKEN")
+    if not expected:
+        return None
+    provided = request.headers.get("X-MO-Token") or request.headers.get(
+        "Authorization", ""
+    ).replace("Bearer ", "", 1)
+    if provided != expected:
+        return jsonify({"error": "IDE token required"}), 401
+    return None
+
+
 def register_ide_routes(app: Flask) -> None:
     @app.route("/api/ide/workspace", methods=["GET"])
     def ide_workspace_info():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         ws = get_workspace()
         info = ws.info()
         info["tree"] = ws.tree(".", depth=5)
@@ -43,6 +70,9 @@ def register_ide_routes(app: Flask) -> None:
 
     @app.route("/api/ide/files", methods=["GET"])
     def ide_list_or_read():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         ws = get_workspace()
         rel = request.args.get("path", ".")
         try:
@@ -57,6 +87,9 @@ def register_ide_routes(app: Flask) -> None:
 
     @app.route("/api/ide/files", methods=["PUT"])
     def ide_write():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         payload = request.get_json(silent=True) or {}
         rel = payload.get("path")
         content = payload.get("content")
@@ -80,6 +113,9 @@ def register_ide_routes(app: Flask) -> None:
 
     @app.route("/api/ide/mkdir", methods=["POST"])
     def ide_mkdir():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         payload = request.get_json(silent=True) or {}
         rel = payload.get("path")
         if not rel:
@@ -91,6 +127,9 @@ def register_ide_routes(app: Flask) -> None:
 
     @app.route("/api/ide/files", methods=["DELETE"])
     def ide_delete():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         payload = request.get_json(silent=True) or {}
         rel = payload.get("path") or request.args.get("path")
         confirm = bool(payload.get("confirm", False))
@@ -111,6 +150,9 @@ def register_ide_routes(app: Flask) -> None:
 
     @app.route("/api/ide/terminal", methods=["POST"])
     def ide_terminal():
+        denied = _require_ide_token()
+        if denied:
+            return denied
         payload = request.get_json(silent=True) or {}
         argv = payload.get("argv")
         command = payload.get("command")
@@ -152,6 +194,7 @@ def register_ide_routes(app: Flask) -> None:
                 "workspace": info,
                 "audit_events": len(audit.graph.events),
                 "audit_chain_ok": audit.verify_chain(),
+                "audit_hmac": audit.signed(),
                 "persist_path": str(audit.persist_path) if audit.persist_path else None,
                 "data_dir": os.getenv("MO_DATA_DIR"),
             }
@@ -161,6 +204,7 @@ def register_ide_routes(app: Flask) -> None:
 def configure_ide_defaults() -> None:
     """Attach process workspace and optional persisted audit log."""
     _require_real_secret()
+    _ide_token()
     workspace_root = os.getenv("MO_WORKSPACE")
     if workspace_root:
         get_workspace(Path(workspace_root)).seed_if_empty()
