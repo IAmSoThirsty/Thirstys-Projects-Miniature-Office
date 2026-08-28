@@ -1,7 +1,9 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "parent_commit": "6196f8afb941351c8fb435e5ea68199add48b0ae",
-  "repair": "wire IDE routes + optional unsigned audit JSONL",
+  "measured_commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231",
+  "measured_short": "a41e1f8",
+  "parent_code": "aa7b439e2f4929d3a540bb0e1f7c69cfb2287f6b",
+  "parent_merge": "6196f8afb941351c8fb435e5ea68199add48b0ae",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
@@ -14,27 +16,34 @@
     "total": 19
   },
   "measured": {
-    "src_python_lines_total": 23858,
-    "src_python_lines_noncomment": 18527,
+    "src_python_lines_total": 23876,
+    "src_python_lines_noncomment": 18542,
     "src_python_files": 53,
     "code_civilization_lines": 1364,
     "code_civilization_bytes": 50430,
     "pytest_passed": 1558,
     "pytest_skipped": 1,
     "pytest_collected": 1559,
+    "pytest_seconds": 11.64,
     "def_test_grep": 1591,
     "flask_routes": 71,
     "app_py_routes": 64,
     "ide_routes": 7,
     "floor_directories": 28,
-    "fresh_cov_statements": 7356,
-    "fresh_cov_covered": 7192,
-    "fresh_cov_percent": 97.8,
-    "ci_run_6196f8a": 33197912388,
-    "ci_6196f8a_conclusion": "failure",
-    "last_green_docs_pin": "f560d651bb9eb8708f49f60440a370d36fdd384d",
-    "prior_ci_run_27d7fdf": 33189144183,
-    "prior_cd_run_27d7fdf": 33189144211
+    "fresh_cov_statements": 7364,
+    "fresh_cov_covered": 7194,
+    "fresh_cov_percent": 97.69,
+    "editor_ui": true,
+    "compose_default_secret_key": false,
+    "bandit_can_fail": true,
+    "safety_or_true": true,
+    "ci_run_a41e1f8": 33201115573,
+    "ci_a41e1f8_conclusion": "failure",
+    "ci_unit_tests": "success",
+    "bandit_finding": "B104 hardcoded_bind_all_interfaces src/server/app.py:1533",
+    "cd_run_a41e1f8": 33201115545,
+    "cd_a41e1f8_conclusion": "failure",
+    "cd_failure": "test-docker curls /health (503); compose healthchecks /api/ide/health; workspace PermissionError welcome.txt"
   },
   "verdicts": {
     "holds": [
@@ -66,10 +75,11 @@
     ]
   },
   "corrections": [
-    "PR #15 (6196f8a) added workspace/terminal/ide_routes files but did not call register_ide_routes(app) and did not give AuditLog persist_path. Independent pytest: 5 failed, 1553 passed. CI run 33197912388 failed.",
-    "This repair registers the 7 /api/ide/* routes, adds unsigned JSONL persist, and re-measures. Independent pytest: 1558 passed, 1 skipped.",
-    "Score is now 6/8/2/3 of 19. CI/CD moved to Partial. IDE core added as Holds.",
+    "a41e1f8 shipped IDE UI, production secret gate, and a failing bandit scan but canonical files still described aa7b439.",
+    "Independent pytest of a41e1f8: 1558 passed, 1 skipped. src 23876/18542. cov 7194/7364. 71 routes.",
+    "CI 33201115573 failed (bandit B104). Unit-test matrix 3.9-3.12 succeeded. CD 33201115545 failed (test-docker /health 503).",
+    "Compose no longer defaults SECRET_KEY. Production refuses placeholders. .env.example still has a placeholder.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY badge. Stale."
   ],
-  "commit": "aa7b439e2f4929d3a540bb0e1f7c69cfb2287f6b"
+  "commit": "a41e1f866cad6452c678495e23f6cf9d97ec6231"
 }

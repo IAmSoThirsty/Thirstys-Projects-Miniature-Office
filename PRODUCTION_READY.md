@@ -9,10 +9,11 @@ Facts that contradict this file:
 - Application state is in-memory
 - Code generation writes `TODO` bodies and does not run tests
 - `coverage.json` omits `design_analyzer.py` and `src/core/integrated_specs/`
-- Compose `SECRET_KEY` defaults to `change-this-secret-key`
+- Compose no longer defaults `SECRET_KEY`; production refuses placeholders; `.env.example` still has one
 - There is no authentication
+- CI and CD are **not** green on `a41e1f8` (bandit B104; CD `/health` 503)
 
-CI and CD are green as of `8132127`. That does not make this certificate true.
+A green CI on an older commit does not make this certificate true.
 
 The original text is kept below as a historical artifact. Do not cite it.
 

@@ -3,11 +3,11 @@
 Canonical prose remains [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). This file is the
 score that must sum.
 
-**Parent measured:** `6196f8a` (PR #15 merge — IDE files present, routes unhooked, CI red)  
-**This repair:** `aa7b439` — wires `register_ide_routes`, optional unsigned JSONL persist  
+**Measured commit:** `a41e1f8` (`a41e1f866cad6452c678495e23f6cf9d97ec6231`)  
+**Parent code:** IDE UI + secret gate + bandit-can-fail, landed on `aa7b439` wiring  
 **Status:** experimental prototype — not production-ready  
 **Rule:** a claim is true only if the tree implements it.  
-**Independent pytest of this tree:** **1,558 passed / 1 skipped** (7.14s). `src/` **23,858** lines / **18,527** non-comment; **71** `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **7,192 / 7,356** (97.8% of imported statements). CI [33197912388](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33197912388) **failed** on `6196f8a`. Last green: `f560d651`.
+**Independent pytest of `a41e1f8`:** **1,558 passed / 1 skipped** (11.64s). `src/` **23,876** lines / **18,542** non-comment; **71** `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **7,194 / 7,364** (97.69% of imported statements). CI [33201115573](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115573) **failed** (bandit B104). CD [33201115545](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33201115545) **failed** (`/health` 503).
 
 ## Score
 
@@ -15,39 +15,39 @@ score that must sum.
 | --- | --- | --- | --- | --- |
 | 6 | 8 | 2 | 3 | 19 |
 
-`6 + 8 + 2 + 3 = 19`. The previous 18-row score (`6 / 7 / 2 / 3`) described `27d7fdf`. PR #15 added a 19th headline (real IDE core) and moved CI/CD from Holds to Partial because `6196f8a` is red.
+`6 + 8 + 2 + 3 = 19`.
 
 ## Verdicts (must match the audit table)
 
 **Holds (6)**
 
-- Tests passing (1,558 passed, 1 skipped on this tree)
+- Tests passing (1,558 passed, 1 skipped on `a41e1f8`)
 - 45+ API endpoints (71 routes)
 - Formal entity ontology (7 types, 8 relations)
-- Canonical docs consistent
+- Canonical docs consistent (this pin of `a41e1f8`)
 - Apache 2.0
-- Real workspace / editor API / terminal (jailed FS, no-shell argv, 7 `/api/ide/*` routes)
+- Real workspace / editor API / terminal (jailed FS, no-shell argv, 7 `/api/ide/*` routes, browser file-tree/editor/terminal UI)
 
 **Partial (8)**
 
 - 30+ native language floors (28 toy dirs; SQL is Python)
 - Complete codegen → tested artifact (TODO templates)
 - Cryptographic immutable audit log (unsigned JSONL optional; in-memory otherwise)
-- Desktop / mobile / VR (browser only; no WebXR, no PWA)
-- 0 lint / 0 vulns (`|| true` on security jobs)
+- Desktop / mobile / VR (browser UI exists; no WebXR, no PWA)
+- 0 lint / 0 vulns (lint clean; bandit fails B104; safety `|| true`)
 - Registry thread-safe via GIL (actually `RLock`; 4 gunicorn workers)
-- Docker / compose (files exist; placeholder `SECRET_KEY`)
-- CI / CD healthy (red on `6196f8a`; this repair not yet Actions-green)
+- Docker / compose (files exist; no compose default `SECRET_KEY`; CD probe fails; volume not writable by image user)
+- CI / CD healthy (unit tests green; security red; CD red)
 
 **Inflated (2)**
 
-- 99% coverage (97.8% of imported statements; `integrated_specs/` omitted)
+- 99% coverage (97.69% of imported statements; `integrated_specs/` omitted)
 - 23+ patterns / SOLID / smells (placeholder analyzers)
 
 **False (3)**
 
 - Production ready
-- 18,285 `src/` lines (measured 23,858 / 18,527 non-comment)
+- 18,285 `src/` lines (measured 23,876 / 18,542 non-comment)
 - `code_civilization.py` is 49,741 lines (it is 1,364; bytes were counted as lines)
 
 VR is **Partial**, not Holds: there is no WebXR and no PWA.
@@ -61,6 +61,6 @@ Ecosystem claim [EC-013](https://www.thirstysystems.com/claims) still pins `LIMI
 - Template codegen with `TODO` bodies; generated tests are not executed
 - 28 toy floors; SQL floor is Python
 - Unsigned audit chain (JSONL is not a signature)
-- Security CI uses `|| true`
-- Compose `SECRET_KEY` placeholder
+- Safety CI uses `|| true`; bandit fails on expected bind-all-interfaces
 - IDE HTTP API has no auth
+- CD compose test curls the wrong path and the workspace volume is not writable
