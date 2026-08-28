@@ -24,13 +24,10 @@ What device do you have?
 │   └─ Want app-like experience?
 │       └─ Add to Home Screen from browser! (Acts like an app)
 │
-└─ 🥽 VR Headset (Quest/PSVR/PC VR)
+└─ Headset browser
     │
-    ├─ Quest (standalone)
-    │   └─ Open Quest Browser → Navigate to http://[server-ip]:5000
-    │
-    └─ PC VR
-        └─ Use Desktop view in VR → Open browser to http://localhost:5000
+    └─ Same as a phone: open the headset’s web browser to http://[server-ip]:5000
+       There is no WebXR / native VR client. You get the Flask HTML UI.
 ```
 
 ---
@@ -155,28 +152,9 @@ Look for an address like `192.168.1.100`
 
 ---
 
-## 🥽 VR - Step by Step
+## Headset browsers
 
-### Meta Quest (Quest 2, Quest 3, Quest Pro)
-
-1. **Start the server on your computer** (see Desktop steps)
-2. **Find your computer's IP address** (see Mobile steps)
-3. **Put on your Quest headset**
-4. **Open the Browser app**
-5. **Navigate to**: `http://192.168.1.100:5000`
-   (Replace with your computer's IP)
-6. 🎉 You're in VR!
-
-**Pro Tip**: Bookmark the page in Quest Browser for quick access!
-
-### PC VR (Steam VR, Virtual Desktop)
-
-1. **Start the server on your PC** (see Desktop steps)
-2. **Put on your VR headset**
-3. **Open Steam's Desktop view** or Virtual Desktop
-4. **Open any web browser** in the desktop view
-5. **Go to**: `http://localhost:5000`
-6. 🎉 You're in!
+There is no WebXR session and no VR-native UI. A Quest (or other) browser can load `http://[server-ip]:5000` the same way a phone can. That is still the Flask HTML page.
 
 ---
 
@@ -255,11 +233,10 @@ Once you're in:
 
 - **Bookmark it**: Save the URL for quick access
 - **Keep server running**: Access from multiple devices simultaneously
-- **Mobile home screen**: Acts like a native app
-- **VR bookmarks**: Quick access in VR browser
-- **Share access**: Give others your IP to collaborate
+- **Share access**: Give others your IP on the same LAN
 - **Use Docker**: Easiest setup with zero configuration
 
 ---
 
-Enjoy building your cognitive civilization! 🏛️✨
+This is a Flask prototype, not a production IDE.
+

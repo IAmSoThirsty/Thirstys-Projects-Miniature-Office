@@ -7,7 +7,7 @@ import hashlib
 import json
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set
 
@@ -39,7 +39,7 @@ class AuditEvent:
 
     event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     event_type: EventType = EventType.AGENT_ACTION
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     actor_id: Optional[str] = None  # Entity that caused the event
     target_id: Optional[str] = None  # Entity affected by the event
     data: Dict[str, Any] = field(default_factory=dict)
@@ -214,17 +214,23 @@ class AuditLog:
     def get_events_by_type(self, event_type: EventType) -> List[AuditEvent]:
         """Get all events of a specific type"""
         event_ids = self._type_index.get(event_type, [])
-        return [self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)]
+        return [
+            self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)
+        ]
 
     def get_events_by_actor(self, actor_id: str) -> List[AuditEvent]:
         """Get all events performed by a specific actor"""
         event_ids = self._actor_index.get(actor_id, [])
-        return [self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)]
+        return [
+            self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)
+        ]
 
     def get_events_by_target(self, target_id: str) -> List[AuditEvent]:
         """Get all events affecting a specific target"""
         event_ids = self._target_index.get(target_id, [])
-        return [self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)]
+        return [
+            self.graph.get_event(eid) for eid in event_ids if self.graph.get_event(eid)
+        ]
 
     def get_change_lineage(self, target_id: str) -> List[AuditEvent]:
         """

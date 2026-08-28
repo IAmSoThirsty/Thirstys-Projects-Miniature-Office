@@ -5,7 +5,7 @@ Implements Codex Sections 2.2 (Consensus Bands) and 3.1 (Teams & Roles)
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set
 
@@ -95,13 +95,19 @@ class Agent(Entity):
         get_audit_log().log_event(
             EventType.ENTITY_CREATED,
             target_id=self.entity_id,
-            data={"entity_type": "agent", "role": role.value, "department_id": department_id},
+            data={
+                "entity_type": "agent",
+                "role": role.value,
+                "department_id": department_id,
+            },
         )
 
     def assign_task(self, task: Task) -> bool:
         """Assign a task to this agent"""
         # Check capability match
-        if not self.capabilities.can_handle_task(task.metadata.get("required_capabilities", {})):
+        if not self.capabilities.can_handle_task(
+            task.metadata.get("required_capabilities", {})
+        ):
             return False
 
         self.current_task_id = task.entity_id
@@ -109,7 +115,10 @@ class Agent(Entity):
         self.status = "working"
 
         get_audit_log().log_event(
-            EventType.AGENT_ACTION, actor_id=self.entity_id, target_id=task.entity_id, data={"action": "task_assigned"}
+            EventType.AGENT_ACTION,
+            actor_id=self.entity_id,
+            target_id=task.entity_id,
+            data={"action": "task_assigned"},
         )
 
         return True
@@ -129,7 +138,9 @@ class Agent(Entity):
             self.current_task_id = None
             self.status = "idle"
 
-    def perform_action(self, action: str, target_id: Optional[str] = None, data: Optional[Dict] = None):
+    def perform_action(
+        self, action: str, target_id: Optional[str] = None, data: Optional[Dict] = None
+    ):
         """Perform a generic action and log it"""
         get_audit_log().log_event(
             EventType.AGENT_ACTION,
@@ -163,7 +174,7 @@ class ConsensusVote:
     vote: bool  # True = approve, False = reject
     weight: float = 1.0
     reasoning: str = ""
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 @dataclass
@@ -181,9 +192,13 @@ class ConsensusDecision:
     override_log: Optional[str] = None  # Nothing silently overrides
     decided_at: Optional[datetime] = None
 
-    def add_vote(self, agent_id: str, vote: bool, weight: float = 1.0, reasoning: str = ""):
+    def add_vote(
+        self, agent_id: str, vote: bool, weight: float = 1.0, reasoning: str = ""
+    ):
         """Add a vote to the consensus"""
-        consensus_vote = ConsensusVote(agent_id=agent_id, vote=vote, weight=weight, reasoning=reasoning)
+        consensus_vote = ConsensusVote(
+            agent_id=agent_id, vote=vote, weight=weight, reasoning=reasoning
+        )
         self.votes.append(consensus_vote)
 
     def calculate_outcome(self) -> bool:
@@ -199,7 +214,7 @@ class ConsensusDecision:
 
         approval_ratio = approve_weight / total_weight if total_weight > 0 else 0
         self.outcome = approval_ratio >= self.threshold
-        self.decided_at = datetime.utcnow()
+        self.decided_at = datetime.now(timezone.utc)
 
         return self.outcome
 
@@ -230,7 +245,12 @@ class ConsensusDecision:
             "subject": self.subject,
             "target_id": self.target_id,
             "votes": [
-                {"agent_id": v.agent_id, "vote": v.vote, "weight": v.weight, "reasoning": v.reasoning}
+                {
+                    "agent_id": v.agent_id,
+                    "vote": v.vote,
+                    "weight": v.weight,
+                    "reasoning": v.reasoning,
+                }
                 for v in self.votes
             ],
             "threshold": self.threshold,
@@ -249,9 +269,13 @@ class ConsensusSystem:
     def __init__(self):
         self.decisions: Dict[str, ConsensusDecision] = {}
 
-    def initiate_consensus(self, subject: str, target_id: str, threshold: float = 0.66) -> ConsensusDecision:
+    def initiate_consensus(
+        self, subject: str, target_id: str, threshold: float = 0.66
+    ) -> ConsensusDecision:
         """Start a new consensus decision process"""
-        decision = ConsensusDecision(subject=subject, target_id=target_id, threshold=threshold)
+        decision = ConsensusDecision(
+            subject=subject, target_id=target_id, threshold=threshold
+        )
         self.decisions[decision.decision_id] = decision
         return decision
 

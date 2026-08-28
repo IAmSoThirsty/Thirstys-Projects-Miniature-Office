@@ -2,7 +2,6 @@
 
 from datetime import datetime, timedelta
 
-
 from src.core.expanded_autonomy import (
     ConversationTheme,
     EmployeeSpotlight,
@@ -140,7 +139,11 @@ class TestSandboxBranch:
     def test_kill(self):
         """Test killing sandbox."""
         sandbox = SandboxBranch(
-            branch_id="sb-006", name="Bad", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-006",
+            name="Bad",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.kill("human-1")
@@ -151,7 +154,11 @@ class TestSandboxBranch:
     def test_add_code_file(self):
         """Test adding code files to sandbox."""
         sandbox = SandboxBranch(
-            branch_id="sb-007", name="Code", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-007",
+            name="Code",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.add_code_file("main.py", "print('hello')")
@@ -197,7 +204,11 @@ class TestSandboxBranch:
     def test_add_collaborator_duplicate(self):
         """Test adding duplicate collaborator."""
         sandbox = SandboxBranch(
-            branch_id="sb-010", name="Dup", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-010",
+            name="Dup",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.add_collaborator("floor-2")
@@ -208,7 +219,11 @@ class TestSandboxBranch:
     def test_verify_sandbox_isolation_clean(self):
         """Test verifying clean sandbox isolation."""
         sandbox = SandboxBranch(
-            branch_id="sb-011", name="Clean", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-011",
+            name="Clean",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         is_valid, violations = sandbox.verify_sandbox_isolation()
@@ -219,7 +234,11 @@ class TestSandboxBranch:
     def test_verify_sandbox_isolation_touches_production(self):
         """Test detecting production touch violation."""
         sandbox = SandboxBranch(
-            branch_id="sb-012", name="Bad", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-012",
+            name="Bad",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.touches_production = True
@@ -232,7 +251,11 @@ class TestSandboxBranch:
     def test_verify_sandbox_isolation_auto_merge(self):
         """Test detecting auto-merge violation."""
         sandbox = SandboxBranch(
-            branch_id="sb-013", name="Bad", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-013",
+            name="Bad",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.auto_merge_enabled = True
@@ -245,7 +268,11 @@ class TestSandboxBranch:
     def test_verify_sandbox_isolation_production_resources(self):
         """Test detecting production resource usage."""
         sandbox = SandboxBranch(
-            branch_id="sb-014", name="Bad", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="Test"
+            branch_id="sb-014",
+            name="Bad",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="Test",
         )
 
         sandbox.sandbox_resources_used["production_database"] = 10.0
@@ -290,7 +317,10 @@ class TestSandboxManager:
         manager = SandboxManager(manager_id="sm-002")
 
         sandbox_id = manager.create_sandbox(
-            name="Test Widget", owner_floor="floor-1", project_type=ProjectType.WIDGET, description="A test widget"
+            name="Test Widget",
+            owner_floor="floor-1",
+            project_type=ProjectType.WIDGET,
+            description="A test widget",
         )
 
         assert sandbox_id == "sandbox-1"
@@ -302,9 +332,15 @@ class TestSandboxManager:
         """Test creating multiple sandboxes."""
         manager = SandboxManager(manager_id="sm-003")
 
-        id1 = manager.create_sandbox("Widget 1", "floor-1", ProjectType.WIDGET, "Test 1")
-        id2 = manager.create_sandbox("Widget 2", "floor-2", ProjectType.UTILITY, "Test 2")
-        id3 = manager.create_sandbox("Widget 3", "floor-3", ProjectType.PROTOTYPE, "Test 3")
+        id1 = manager.create_sandbox(
+            "Widget 1", "floor-1", ProjectType.WIDGET, "Test 1"
+        )
+        id2 = manager.create_sandbox(
+            "Widget 2", "floor-2", ProjectType.UTILITY, "Test 2"
+        )
+        id3 = manager.create_sandbox(
+            "Widget 3", "floor-3", ProjectType.PROTOTYPE, "Test 3"
+        )
 
         assert len(manager.sandboxes) == 3
         assert id1 == "sandbox-1"
@@ -316,7 +352,9 @@ class TestSandboxManager:
         manager = SandboxManager(manager_id="sm-004")
 
         id1 = manager.create_sandbox("Widget 1", "floor-1", ProjectType.WIDGET, "Test")
-        id2 = manager.create_sandbox("Widget 2", "floor-2", ProjectType.WIDGET, "Test")  # noqa: F841
+        id2 = manager.create_sandbox(
+            "Widget 2", "floor-2", ProjectType.WIDGET, "Test"
+        )  # noqa: F841
         id3 = manager.create_sandbox("Widget 3", "floor-3", ProjectType.WIDGET, "Test")
 
         # Flag one for promotion
@@ -408,7 +446,9 @@ class TestTechGossipCategory:
         assert TechGossipCategory.AI_DEVELOPMENTS.value == "ai_developments"
         assert TechGossipCategory.LANGUAGE_RELEASES.value == "language_releases"
         assert TechGossipCategory.FRAMEWORK_UPDATES.value == "framework_updates"
-        assert TechGossipCategory.HARDWARE_BREAKTHROUGHS.value == "hardware_breakthroughs"
+        assert (
+            TechGossipCategory.HARDWARE_BREAKTHROUGHS.value == "hardware_breakthroughs"
+        )
         assert TechGossipCategory.SECURITY_INCIDENTS.value == "security_incidents"
         assert TechGossipCategory.INDUSTRY_DRAMA.value == "industry_drama"
         assert TechGossipCategory.RESEARCH_PAPERS.value == "research_papers"
@@ -537,8 +577,12 @@ class TestTechGossipBoard:
         """Test posting multiple gossip items."""
         board = TechGossipBoard(board_id="tgb-003")
 
-        id1 = board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"])
-        id2 = board.post_gossip(TechGossipCategory.LANGUAGE_RELEASES, "Rust 2.0", "Test", ["a2"])
+        id1 = board.post_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"]
+        )
+        id2 = board.post_gossip(
+            TechGossipCategory.LANGUAGE_RELEASES, "Rust 2.0", "Test", ["a2"]
+        )
 
         assert len(board.gossip_items) == 2
         assert id1 == "gossip-1"
@@ -549,7 +593,9 @@ class TestTechGossipBoard:
         board = TechGossipBoard(board_id="tgb-004")
 
         board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, "Topic 1", "Test", ["a1"])
-        board.post_gossip(TechGossipCategory.LANGUAGE_RELEASES, "Topic 2", "Test", ["a2"])
+        board.post_gossip(
+            TechGossipCategory.LANGUAGE_RELEASES, "Topic 2", "Test", ["a2"]
+        )
         board.post_gossip(TechGossipCategory.STARTUP_NEWS, "Topic 3", "Test", ["a3"])
 
         trending = board.get_trending_topics(limit=2)
@@ -563,7 +609,9 @@ class TestTechGossipBoard:
 
         board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"])
         board.post_gossip(TechGossipCategory.LANGUAGE_RELEASES, "Rust", "Test", ["a2"])
-        board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "More news", ["a3"])
+        board.post_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "More news", ["a3"]
+        )
 
         trending = board.get_trending_topics()
 
@@ -609,7 +657,9 @@ class TestTechGossipBoard:
         """Test water cooler summary with gossip."""
         board = TechGossipBoard(board_id="tgb-009")
 
-        id1 = board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"])
+        id1 = board.post_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"]
+        )
         board.gossip_items[id1].add_interested_agent("a2")
         board.gossip_items[id1].spark_debate()
 
@@ -626,7 +676,9 @@ class TestTechGossipBoard:
 
         # Post 25 different topics
         for i in range(25):
-            board.post_gossip(TechGossipCategory.AI_DEVELOPMENTS, f"Topic {i}", "Test", ["a1"])
+            board.post_gossip(
+                TechGossipCategory.AI_DEVELOPMENTS, f"Topic {i}", "Test", ["a1"]
+            )
 
         assert len(board.trending_topics) == 20
 
@@ -650,7 +702,9 @@ class TestLoungeConversation:
     def test_spark_initiative(self):
         """Test sparking initiative from conversation."""
         conv = LoungeConversation(
-            conversation_id="conv-002", participants=["agent-1"], themes=[ConversationTheme.BRAINSTORMING]
+            conversation_id="conv-002",
+            participants=["agent-1"],
+            themes=[ConversationTheme.BRAINSTORMING],
         )
 
         conv.spark_initiative("New Widget")
@@ -662,7 +716,9 @@ class TestLoungeConversation:
     def test_link_sandbox(self):
         """Test linking sandbox to conversation."""
         conv = LoungeConversation(
-            conversation_id="conv-003", participants=["agent-1"], themes=[ConversationTheme.TECHNICAL]
+            conversation_id="conv-003",
+            participants=["agent-1"],
+            themes=[ConversationTheme.TECHNICAL],
         )
 
         conv.link_sandbox("sandbox-1")
@@ -687,7 +743,9 @@ class TestLoungeWorkBleed:
         """Test starting a conversation."""
         bleed = LoungeWorkBleed()
 
-        conv_id = bleed.start_conversation(participants=["agent-1", "agent-2"], themes=[ConversationTheme.TECHNICAL])
+        conv_id = bleed.start_conversation(
+            participants=["agent-1", "agent-2"], themes=[ConversationTheme.TECHNICAL]
+        )
 
         assert conv_id == "conv-1"
         assert len(bleed.conversations) == 1
@@ -697,7 +755,9 @@ class TestLoungeWorkBleed:
         """Test lounge to sandbox transition."""
         bleed = LoungeWorkBleed()
 
-        conv_id = bleed.start_conversation(["agent-1"], [ConversationTheme.BRAINSTORMING])
+        conv_id = bleed.start_conversation(
+            ["agent-1"], [ConversationTheme.BRAINSTORMING]
+        )
         bleed.transition_to_sandbox(conv_id, "sandbox-1", "New Widget")
 
         assert len(bleed.lounge_to_sandbox_transitions) == 1
@@ -725,7 +785,9 @@ class TestLoungeWorkBleed:
         """Test blocking production transition."""
         bleed = LoungeWorkBleed()
 
-        bleed.block_production_transition("conv-1", "deploy_to_prod", "Lounge conversations cannot deploy")
+        bleed.block_production_transition(
+            "conv-1", "deploy_to_prod", "Lounge conversations cannot deploy"
+        )
 
         assert len(bleed.lounge_to_production_blocks) == 1
 
@@ -739,7 +801,10 @@ class TestLoungeWorkBleed:
         bleed = LoungeWorkBleed()
 
         gossip_id = bleed.post_tech_gossip(
-            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Coming soon", ["agent-1", "agent-2"]
+            TechGossipCategory.AI_DEVELOPMENTS,
+            "GPT-5",
+            "Coming soon",
+            ["agent-1", "agent-2"],
         )
 
         assert gossip_id != ""
@@ -750,7 +815,9 @@ class TestLoungeWorkBleed:
         """Test getting water cooler buzz."""
         bleed = LoungeWorkBleed()
 
-        bleed.post_tech_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["agent-1"])
+        bleed.post_tech_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["agent-1"]
+        )
 
         buzz = bleed.get_water_cooler_buzz()
 
@@ -761,8 +828,12 @@ class TestLoungeWorkBleed:
         """Test getting hot AI gossip."""
         bleed = LoungeWorkBleed()
 
-        bleed.post_tech_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"])
-        bleed.post_tech_gossip(TechGossipCategory.LANGUAGE_RELEASES, "Rust", "Test", ["a2"])
+        bleed.post_tech_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"]
+        )
+        bleed.post_tech_gossip(
+            TechGossipCategory.LANGUAGE_RELEASES, "Rust", "Test", ["a2"]
+        )
 
         hot_ai = bleed.get_hot_ai_gossip()
 
@@ -773,8 +844,12 @@ class TestLoungeWorkBleed:
         """Test getting trending tech topics."""
         bleed = LoungeWorkBleed()
 
-        bleed.post_tech_gossip(TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"])
-        bleed.post_tech_gossip(TechGossipCategory.LANGUAGE_RELEASES, "Rust", "Test", ["a2"])
+        bleed.post_tech_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "GPT-5", "Test", ["a1"]
+        )
+        bleed.post_tech_gossip(
+            TechGossipCategory.LANGUAGE_RELEASES, "Rust", "Test", ["a2"]
+        )
 
         trending = bleed.get_trending_tech_topics(limit=5)
 
@@ -1017,7 +1092,12 @@ class TestEmployeeSpotlight:
 
     def test_spotlight_creation(self):
         """Test creating employee spotlight."""
-        spotlight = EmployeeSpotlight(spotlight_id="es-001", agent_id="agent-1", floor_id="floor-1", month="2026-01")
+        spotlight = EmployeeSpotlight(
+            spotlight_id="es-001",
+            agent_id="agent-1",
+            floor_id="floor-1",
+            month="2026-01",
+        )
 
         assert spotlight.spotlight_id == "es-001"
         assert spotlight.agent_id == "agent-1"
@@ -1027,7 +1107,12 @@ class TestEmployeeSpotlight:
 
     def test_add_sandbox_demo(self):
         """Test adding sandbox demos."""
-        spotlight = EmployeeSpotlight(spotlight_id="es-002", agent_id="agent-1", floor_id="floor-1", month="2026-01")
+        spotlight = EmployeeSpotlight(
+            spotlight_id="es-002",
+            agent_id="agent-1",
+            floor_id="floor-1",
+            month="2026-01",
+        )
 
         spotlight.add_sandbox_demo("sandbox-1")
         spotlight.add_sandbox_demo("sandbox-2")
@@ -1037,7 +1122,12 @@ class TestEmployeeSpotlight:
 
     def test_verify_no_power_granted_clean(self):
         """Test verifying no power granted."""
-        spotlight = EmployeeSpotlight(spotlight_id="es-003", agent_id="agent-1", floor_id="floor-1", month="2026-01")
+        spotlight = EmployeeSpotlight(
+            spotlight_id="es-003",
+            agent_id="agent-1",
+            floor_id="floor-1",
+            month="2026-01",
+        )
 
         is_valid, violations = spotlight.verify_no_power_granted()
 
@@ -1063,14 +1153,20 @@ class TestRollbackGuarantee:
         rollback = RollbackGuarantee(guarantee_id="rb-002")
 
         # Create some sandboxes
-        sandbox_manager.create_sandbox("Widget 1", "floor-1", ProjectType.WIDGET, "Test")
-        sandbox_manager.create_sandbox("Widget 2", "floor-2", ProjectType.WIDGET, "Test")
+        sandbox_manager.create_sandbox(
+            "Widget 1", "floor-1", ProjectType.WIDGET, "Test"
+        )
+        sandbox_manager.create_sandbox(
+            "Widget 2", "floor-2", ProjectType.WIDGET, "Test"
+        )
 
         # Create some reputations
         rep1 = reputation_system.get_or_create_reputation("agent-1")
         rep1.trust_score = 0.9
 
-        result = rollback.execute_full_rollback("human-1", "Testing rollback", sandbox_manager, reputation_system)
+        result = rollback.execute_full_rollback(
+            "human-1", "Testing rollback", sandbox_manager, reputation_system
+        )
 
         assert result["sandboxes_collapsed"] == 2
         assert result["reputations_reset"] == 1
@@ -1125,7 +1221,9 @@ class TestExpandedAutonomyModel:
         )
 
         # Start conversation
-        conv_id = model.lounge_work_bleed.start_conversation(["agent-1", "agent-2"], [ConversationTheme.BRAINSTORMING])
+        conv_id = model.lounge_work_bleed.start_conversation(
+            ["agent-1", "agent-2"], [ConversationTheme.BRAINSTORMING]
+        )
 
         # Create sandbox from it
         sandbox_id = model.create_sandbox_from_lounge(
@@ -1146,7 +1244,9 @@ class TestExpandedAutonomyModel:
             rollback_guarantee=RollbackGuarantee(guarantee_id="rb-001"),
         )
 
-        sandbox_id = model.sandbox_manager.create_sandbox("Widget", "floor-1", ProjectType.WIDGET, "Test")
+        sandbox_id = model.sandbox_manager.create_sandbox(
+            "Widget", "floor-1", ProjectType.WIDGET, "Test"
+        )
 
         model.flag_sandbox_for_promotion(sandbox_id, "agent-1", "Ready for production")
 
@@ -1181,7 +1281,9 @@ class TestExpandedAutonomyModel:
             rollback_guarantee=RollbackGuarantee(guarantee_id="rb-001"),
         )
 
-        sandbox_id = model.sandbox_manager.create_sandbox("Widget", "floor-1", ProjectType.WIDGET, "Test")
+        sandbox_id = model.sandbox_manager.create_sandbox(
+            "Widget", "floor-1", ProjectType.WIDGET, "Test"
+        )
 
         model.human_promote_sandbox(sandbox_id, "human-1", "directive-001")
 
@@ -1233,7 +1335,9 @@ class TestExpandedAutonomyModel:
             rollback_guarantee=RollbackGuarantee(guarantee_id="rb-001"),
         )
 
-        sandbox_id = model.sandbox_manager.create_sandbox("Widget", "floor-1", ProjectType.WIDGET, "Test")
+        sandbox_id = model.sandbox_manager.create_sandbox(
+            "Widget", "floor-1", ProjectType.WIDGET, "Test"
+        )
 
         # Manually set status without directive (shouldn't happen normally)
         sandbox = model.sandbox_manager.sandboxes[sandbox_id]
@@ -1274,10 +1378,14 @@ class TestExpandedAutonomyModel:
         )
 
         # Create active sandbox
-        model.sandbox_manager.create_sandbox("Widget", "floor-1", ProjectType.WIDGET, "Test")
+        model.sandbox_manager.create_sandbox(
+            "Widget", "floor-1", ProjectType.WIDGET, "Test"
+        )
 
         # Start conversation
-        model.lounge_work_bleed.start_conversation(["agent-1"], [ConversationTheme.TECHNICAL])
+        model.lounge_work_bleed.start_conversation(
+            ["agent-1"], [ConversationTheme.TECHNICAL]
+        )
 
         conditions = model.verify_stop_conditions()
 
@@ -1314,8 +1422,12 @@ class TestExpandedAutonomyModel:
         )
 
         # Add some activity
-        model.sandbox_manager.create_sandbox("Widget", "floor-1", ProjectType.WIDGET, "Test")
-        model.lounge_work_bleed.start_conversation(["agent-1"], [ConversationTheme.TECHNICAL])
+        model.sandbox_manager.create_sandbox(
+            "Widget", "floor-1", ProjectType.WIDGET, "Test"
+        )
+        model.lounge_work_bleed.start_conversation(
+            ["agent-1"], [ConversationTheme.TECHNICAL]
+        )
 
         report = model.generate_status_report()
 
@@ -1403,7 +1515,9 @@ class TestEdgeCases:
         bleed.tech_gossip_board = None
 
         # Test post_tech_gossip returns empty string
-        result = bleed.post_tech_gossip(TechGossipCategory.AI_DEVELOPMENTS, "Test", "Test", ["agent-1"])
+        result = bleed.post_tech_gossip(
+            TechGossipCategory.AI_DEVELOPMENTS, "Test", "Test", ["agent-1"]
+        )
         assert result == ""
 
         # Test get_water_cooler_buzz returns fallback message
@@ -1437,7 +1551,12 @@ class TestEdgeCases:
 
     def test_employee_spotlight_all_violations(self):
         """Test all employee spotlight violation paths."""
-        spotlight = EmployeeSpotlight(spotlight_id="es-001", agent_id="agent-1", floor_id="floor-1", month="2026-01")
+        spotlight = EmployeeSpotlight(
+            spotlight_id="es-001",
+            agent_id="agent-1",
+            floor_id="floor-1",
+            month="2026-01",
+        )
 
         # Manually trigger all violations (shouldn't normally happen)
         spotlight.grants_authority = True

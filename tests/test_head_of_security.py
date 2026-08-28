@@ -8,17 +8,17 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from src.core.head_of_security import SecurityAction  # noqa: F401
+from src.core.head_of_security import SecurityPolicy  # noqa: F401
+from src.core.head_of_security import ThreatModel  # noqa: F401
 from src.core.head_of_security import (
     BlockedDelivery,
     HeadOfSecurity,
     Lockdown,
     Permission,
     PermissionType,
-    SecurityAction,  # noqa: F401
     SecurityAudit,
-    SecurityPolicy,  # noqa: F401
     ThreatLevel,
-    ThreatModel,  # noqa: F401
     get_head_of_security,
 )
 
@@ -45,7 +45,10 @@ class TestThreatModel:
         assert result["description"] == "Potential SQL injection vulnerability"
         assert result["threat_level"] == "high"
         assert result["affected_entities"] == ["database", "api"]
-        assert result["mitigations"] == ["Use parameterized queries", "Input validation"]
+        assert result["mitigations"] == [
+            "Use parameterized queries",
+            "Input validation",
+        ]
         assert result["residual_risk"] == "Low after mitigations"
 
 
@@ -184,7 +187,12 @@ class TestSecurityAudit:
     def test_security_audit_to_dict_complete(self):
         """Test SecurityAudit.to_dict() when audit is complete"""
         completed = datetime.now()
-        audit = SecurityAudit(audit_id="AUDIT002", audit_type="full_system", scope=["all"], completed_at=completed)
+        audit = SecurityAudit(
+            audit_id="AUDIT002",
+            audit_type="full_system",
+            scope=["all"],
+            completed_at=completed,
+        )
 
         result = audit.to_dict()
 
@@ -198,7 +206,10 @@ class TestLockdown:
     def test_lockdown_is_active_when_not_lifted(self):
         """Test Lockdown.is_active() returns True when not lifted"""
         lockdown = Lockdown(
-            lockdown_id="LOCK001", scope="building", reason="Security breach", threat_level=ThreatLevel.CRITICAL
+            lockdown_id="LOCK001",
+            scope="building",
+            reason="Security breach",
+            threat_level=ThreatLevel.CRITICAL,
         )
 
         assert lockdown.is_active() is True
@@ -353,7 +364,10 @@ class TestHeadOfSecurity:
         mock_audit.return_value = mock_log
 
         permission = security_head.grant_tool_access(
-            entity_id="dev_456", tool_name="database", justification="Temporary DB access", expires_in_hours=24
+            entity_id="dev_456",
+            tool_name="database",
+            justification="Temporary DB access",
+            expires_in_hours=24,
         )
 
         assert permission.expires_at is not None
@@ -380,7 +394,9 @@ class TestHeadOfSecurity:
         mock_log.reset_mock()
 
         # Now revoke it
-        result = security_head.revoke_access(permission_id=permission_id, reason="Deployment complete")
+        result = security_head.revoke_access(
+            permission_id=permission_id, reason="Deployment complete"
+        )
 
         assert result is True
         assert security_head.permissions[permission_id].granted is False
@@ -397,7 +413,9 @@ class TestHeadOfSecurity:
         mock_log = Mock()
         mock_audit.return_value = mock_log
 
-        result = security_head.revoke_access(permission_id="nonexistent_perm", reason="Test")
+        result = security_head.revoke_access(
+            permission_id="nonexistent_perm", reason="Test"
+        )
 
         assert result is False
         # Audit log should not be called
@@ -428,7 +446,11 @@ class TestHeadOfSecurity:
         mock_log.log_event.assert_called_once()
         call_args = mock_log.log_event.call_args
         assert call_args[1]["data"]["action"] == "approve_unsafe_operation"
-        assert call_args[1]["data"]["mitigations"] == ["Bounds checking", "Mutex locks", "Error handling"]
+        assert call_args[1]["data"]["mitigations"] == [
+            "Bounds checking",
+            "Mutex locks",
+            "Error handling",
+        ]
 
     @patch("src.core.audit.get_audit_log")
     def test_trigger_full_audit(self, mock_audit, security_head):
@@ -458,7 +480,9 @@ class TestHeadOfSecurity:
         mock_audit.return_value = mock_log
 
         lockdown = security_head.trigger_floor_lockdown(
-            floor_id="floor_5", reason="Suspected intrusion", threat_level=ThreatLevel.HIGH
+            floor_id="floor_5",
+            reason="Suspected intrusion",
+            threat_level=ThreatLevel.HIGH,
         )
 
         assert lockdown.scope == "floor:floor_5"
@@ -481,7 +505,8 @@ class TestHeadOfSecurity:
         mock_audit.return_value = mock_log
 
         audit = security_head.trigger_cross_floor_review(
-            floor_ids=["floor_1", "floor_2", "floor_3"], concern="Data leak between floors"
+            floor_ids=["floor_1", "floor_2", "floor_3"],
+            concern="Data leak between floors",
         )
 
         assert audit.audit_type == "cross_floor"
@@ -505,12 +530,20 @@ class TestHeadOfSecurity:
         block = security_head.block_delivery(
             artifact_id="artifact_999",
             reason="Contains malware",
-            required_mitigations=["Remove malicious code", "Security scan", "Code review"],
+            required_mitigations=[
+                "Remove malicious code",
+                "Security scan",
+                "Code review",
+            ],
         )
 
         assert block.artifact_id == "artifact_999"
         assert block.reason == "Contains malware"
-        assert block.required_mitigations == ["Remove malicious code", "Security scan", "Code review"]
+        assert block.required_mitigations == [
+            "Remove malicious code",
+            "Security scan",
+            "Code review",
+        ]
         assert block.is_blocked() is True
         assert block.block_id in security_head.blocked_deliveries
 
@@ -527,7 +560,9 @@ class TestHeadOfSecurity:
         mock_log = Mock()
         mock_audit.return_value = mock_log
 
-        result = security_head.invalidate_artifact(artifact_id="artifact_666", security_reason="Critical security flaw")
+        result = security_head.invalidate_artifact(
+            artifact_id="artifact_666", security_reason="Critical security flaw"
+        )
 
         assert result is True
 
@@ -570,7 +605,11 @@ class TestHeadOfSecurity:
         result = security_head.force_rearchitecture(
             artifact_id="artifact_unsafe",
             safety_issue="Insecure architecture",
-            required_changes=["Add encryption", "Implement access control", "Isolate components"],
+            required_changes=[
+                "Add encryption",
+                "Implement access control",
+                "Isolate components",
+            ],
         )
 
         assert result is True
@@ -623,7 +662,10 @@ class TestHeadOfSecurity:
             {
                 "event_type": "security_event",
                 "target_id": "entity_rejected",
-                "data": {"action": "block_delivery", "reason": "Security vulnerability detected"},
+                "data": {
+                    "action": "block_delivery",
+                    "reason": "Security vulnerability detected",
+                },
             }
         ]
 
@@ -683,14 +725,18 @@ class TestHeadOfSecurity:
 
     def test_validate_absolute_limits_allowed_action(self, security_head):
         """Test validating an allowed action"""
-        is_allowed, reason = security_head.validate_absolute_limits("trigger security audit")
+        is_allowed, reason = security_head.validate_absolute_limits(
+            "trigger security audit"
+        )
 
         assert is_allowed is True
         assert reason is None
 
     def test_validate_absolute_limits_forbidden_change_intent(self, security_head):
         """Test validating forbidden action: change intent"""
-        is_allowed, reason = security_head.validate_absolute_limits("change intent of user request")
+        is_allowed, reason = security_head.validate_absolute_limits(
+            "change intent of user request"
+        )
 
         assert is_allowed is False
         assert "change intent" in reason
@@ -698,21 +744,29 @@ class TestHeadOfSecurity:
 
     def test_validate_absolute_limits_forbidden_modify_code(self, security_head):
         """Test validating forbidden action: modify code"""
-        is_allowed, reason = security_head.validate_absolute_limits("modify code directly")
+        is_allowed, reason = security_head.validate_absolute_limits(
+            "modify code directly"
+        )
 
         assert is_allowed is False
         assert "modify code" in reason
 
     def test_validate_absolute_limits_forbidden_suppress_audit(self, security_head):
         """Test validating forbidden action: suppress audit"""
-        is_allowed, reason = security_head.validate_absolute_limits("suppress audit logs")
+        is_allowed, reason = security_head.validate_absolute_limits(
+            "suppress audit logs"
+        )
 
         assert is_allowed is False
         assert "suppress audit" in reason
 
-    def test_validate_absolute_limits_forbidden_override_constitution(self, security_head):
+    def test_validate_absolute_limits_forbidden_override_constitution(
+        self, security_head
+    ):
         """Test validating forbidden action: override constitution"""
-        is_allowed, reason = security_head.validate_absolute_limits("override constitution rules")
+        is_allowed, reason = security_head.validate_absolute_limits(
+            "override constitution rules"
+        )
 
         assert is_allowed is False
         assert "override constitution" in reason
@@ -721,7 +775,10 @@ class TestHeadOfSecurity:
         """Test getting active lockdowns"""
         # Add active lockdown
         lockdown1 = Lockdown(
-            lockdown_id="LOCK_ACTIVE", scope="floor:1", reason="Active threat", threat_level=ThreatLevel.HIGH
+            lockdown_id="LOCK_ACTIVE",
+            scope="floor:1",
+            reason="Active threat",
+            threat_level=ThreatLevel.HIGH,
         )
         security_head.lockdowns["LOCK_ACTIVE"] = lockdown1
 
@@ -745,7 +802,10 @@ class TestHeadOfSecurity:
         """Test getting blocked deliveries"""
         # Add blocked delivery
         block1 = BlockedDelivery(
-            block_id="BLOCK_ACTIVE", artifact_id="artifact_1", reason="Blocked", required_mitigations=["Fix it"]
+            block_id="BLOCK_ACTIVE",
+            artifact_id="artifact_1",
+            reason="Blocked",
+            required_mitigations=["Fix it"],
         )
         security_head.blocked_deliveries["BLOCK_ACTIVE"] = block1
 
@@ -772,7 +832,9 @@ class TestHeadOfSecurity:
         mock_audit.return_value = mock_log
 
         # Add active permission
-        perm1 = security_head.grant_tool_access(entity_id="entity_1", tool_name="tool_1", justification="Needed")  # noqa: F841
+        perm1 = security_head.grant_tool_access(
+            entity_id="entity_1", tool_name="tool_1", justification="Needed"
+        )  # noqa: F841
 
         # Add inactive permission (expired)
         perm2 = Permission(
@@ -820,10 +882,20 @@ class TestHeadOfSecurity:
     def test_to_dict(self, security_head):
         """Test exporting Head of Security state"""
         # Add some test data
-        lockdown = Lockdown(lockdown_id="LOCK1", scope="floor:1", reason="Test", threat_level=ThreatLevel.LOW)
+        lockdown = Lockdown(
+            lockdown_id="LOCK1",
+            scope="floor:1",
+            reason="Test",
+            threat_level=ThreatLevel.LOW,
+        )
         security_head.lockdowns["LOCK1"] = lockdown
 
-        block = BlockedDelivery(block_id="BLOCK1", artifact_id="art1", reason="Test", required_mitigations=[])
+        block = BlockedDelivery(
+            block_id="BLOCK1",
+            artifact_id="art1",
+            reason="Test",
+            required_mitigations=[],
+        )
         security_head.blocked_deliveries["BLOCK1"] = block
 
         result = security_head.to_dict()

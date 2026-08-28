@@ -1,12 +1,10 @@
 # 🎉 EASY ACCESS SUMMARY
 
-## The Miniature Office is Now Accessible From EVERYWHERE!
+## The Miniature Office is a local Flask app you open in a browser
 
 ### ✅ What We Added
 
-You asked: *"Does it have a phone installer? Desktop? VR? I want to be able to go to the app and start it"*
-
-**Answer: YES to all!** Here's what's now available:
+Desktop installers and a browser UI exist. There is no phone-native installer and no VR/WebXR client. A phone on the same network can open the Flask URL.
 
 ---
 

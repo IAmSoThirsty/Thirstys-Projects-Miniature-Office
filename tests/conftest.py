@@ -99,7 +99,9 @@ def sample_agent():
     """Create a sample agent for testing."""
     from src.agents.agent import Agent, AgentRole
 
-    agent = Agent("agent-test-001", "Test Agent", AgentRole.BUILDER, {"python", "testing"})
+    agent = Agent(
+        "agent-test-001", "Test Agent", AgentRole.BUILDER, {"python", "testing"}
+    )
     return agent
 
 
@@ -108,5 +110,7 @@ def sample_task():
     """Create a sample task for testing."""
     from src.core.mission import Task
 
-    task = Task("task-test-001", "Test Task", "A test task for unit testing", None, None)
+    task = Task(
+        "task-test-001", "Test Task", "A test task for unit testing", None, None
+    )
     return task

@@ -1,6 +1,7 @@
 """Integration tests for the Flask API."""
 
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -311,7 +312,9 @@ class TestAPIEndpoints:
         """Test Consigliere explain why blocked."""
         response = client.post(
             "/api/consigliere/explain",
-            data=json.dumps({"type": "why_blocked", "entity_id": "test-entity", "context": {}}),
+            data=json.dumps(
+                {"type": "why_blocked", "entity_id": "test-entity", "context": {}}
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -319,7 +322,9 @@ class TestAPIEndpoints:
     def test_consigliere_explain_why_blocked_missing_entity(self, client):
         """Test Consigliere explain without entity_id."""
         response = client.post(
-            "/api/consigliere/explain", data=json.dumps({"type": "why_blocked"}), content_type="application/json"
+            "/api/consigliere/explain",
+            data=json.dumps({"type": "why_blocked"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -335,7 +340,9 @@ class TestAPIEndpoints:
     def test_consigliere_explain_why_decision_missing_entity(self, client):
         """Test Consigliere explain decision without entity_id."""
         response = client.post(
-            "/api/consigliere/explain", data=json.dumps({"type": "why_decision"}), content_type="application/json"
+            "/api/consigliere/explain",
+            data=json.dumps({"type": "why_decision"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -343,7 +350,9 @@ class TestAPIEndpoints:
         """Test Consigliere explain what options."""
         response = client.post(
             "/api/consigliere/explain",
-            data=json.dumps({"type": "what_options", "situation": "need to implement feature"}),
+            data=json.dumps(
+                {"type": "what_options", "situation": "need to implement feature"}
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -351,14 +360,18 @@ class TestAPIEndpoints:
     def test_consigliere_explain_what_options_missing_situation(self, client):
         """Test Consigliere explain options without situation."""
         response = client.post(
-            "/api/consigliere/explain", data=json.dumps({"type": "what_options"}), content_type="application/json"
+            "/api/consigliere/explain",
+            data=json.dumps({"type": "what_options"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
     def test_consigliere_explain_unknown_type(self, client):
         """Test Consigliere explain with unknown type."""
         response = client.post(
-            "/api/consigliere/explain", data=json.dumps({"type": "unknown_type"}), content_type="application/json"
+            "/api/consigliere/explain",
+            data=json.dumps({"type": "unknown_type"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -373,7 +386,11 @@ class TestAPIEndpoints:
 
     def test_consigliere_translate_missing_text(self, client):
         """Test Consigliere translation without text."""
-        response = client.post("/api/consigliere/translate", data=json.dumps({}), content_type="application/json")
+        response = client.post(
+            "/api/consigliere/translate",
+            data=json.dumps({}),
+            content_type="application/json",
+        )
         assert response.status_code == 400
 
     def test_consigliere_preview(self, client):
@@ -387,14 +404,24 @@ class TestAPIEndpoints:
 
     def test_consigliere_preview_missing_action(self, client):
         """Test Consigliere preview without action."""
-        response = client.post("/api/consigliere/preview", data=json.dumps({}), content_type="application/json")
+        response = client.post(
+            "/api/consigliere/preview",
+            data=json.dumps({}),
+            content_type="application/json",
+        )
         assert response.status_code == 400
 
     def test_consigliere_draft(self, client):
         """Test Consigliere draft directive."""
         response = client.post(
             "/api/consigliere/draft",
-            data=json.dumps({"goal": "implement authentication", "language": "python", "constraints": []}),
+            data=json.dumps(
+                {
+                    "goal": "implement authentication",
+                    "language": "python",
+                    "constraints": [],
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -412,7 +439,13 @@ class TestAPIEndpoints:
         """Test Consigliere command manager."""
         response = client.post(
             "/api/consigliere/command/manager",
-            data=json.dumps({"manager_id": "mgr-001", "directive": "prioritize security", "priority": "high"}),
+            data=json.dumps(
+                {
+                    "manager_id": "mgr-001",
+                    "directive": "prioritize security",
+                    "priority": "high",
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -445,7 +478,9 @@ class TestAPIEndpoints:
         """Test Consigliere command agent without params."""
         response = client.post(
             "/api/consigliere/command/agent",
-            data=json.dumps({"agent_id": "agent-001", "new_directive": "focus on testing"}),
+            data=json.dumps(
+                {"agent_id": "agent-001", "new_directive": "focus on testing"}
+            ),
             content_type="application/json",
         )
         assert response.status_code == 400
@@ -455,7 +490,10 @@ class TestAPIEndpoints:
         response = client.post(
             "/api/consigliere/coordinate",
             data=json.dumps(
-                {"floor_ids": ["floor-python", "floor-javascript"], "coordination_plan": "sync API contracts"}
+                {
+                    "floor_ids": ["floor-python", "floor-javascript"],
+                    "coordination_plan": "sync API contracts",
+                }
             ),
             content_type="application/json",
         )
@@ -490,7 +528,11 @@ class TestAPIEndpoints:
 
     def test_consigliere_assess_missing_request(self, client):
         """Test Consigliere assess without request."""
-        response = client.post("/api/consigliere/assess", data=json.dumps({}), content_type="application/json")
+        response = client.post(
+            "/api/consigliere/assess",
+            data=json.dumps({}),
+            content_type="application/json",
+        )
         assert response.status_code == 400
 
     def test_get_security_state(self, client):
@@ -519,7 +561,9 @@ class TestAPIEndpoints:
     def test_security_grant_missing_params(self, client):
         """Test granting security permission without params."""
         response = client.post(
-            "/api/security/grant", data=json.dumps({"entity_id": "agent-001"}), content_type="application/json"
+            "/api/security/grant",
+            data=json.dumps({"entity_id": "agent-001"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -527,7 +571,9 @@ class TestAPIEndpoints:
         """Test revoking security permission."""
         response = client.post(
             "/api/security/revoke",
-            data=json.dumps({"permission_id": "perm-001", "reason": "no longer needed"}),
+            data=json.dumps(
+                {"permission_id": "perm-001", "reason": "no longer needed"}
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -535,7 +581,9 @@ class TestAPIEndpoints:
     def test_security_revoke_missing_params(self, client):
         """Test revoking security permission without params."""
         response = client.post(
-            "/api/security/revoke", data=json.dumps({"permission_id": "perm-001"}), content_type="application/json"
+            "/api/security/revoke",
+            data=json.dumps({"permission_id": "perm-001"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -553,7 +601,11 @@ class TestAPIEndpoints:
         response = client.post(
             "/api/security/audit",
             data=json.dumps(
-                {"type": "cross_floor", "scope": ["floor-python", "floor-rust"], "reason": "contract review"}
+                {
+                    "type": "cross_floor",
+                    "scope": ["floor-python", "floor-rust"],
+                    "reason": "contract review",
+                }
             ),
             content_type="application/json",
         )
@@ -562,7 +614,9 @@ class TestAPIEndpoints:
     def test_security_audit_unknown_type(self, client):
         """Test security audit with unknown type."""
         response = client.post(
-            "/api/security/audit", data=json.dumps({"type": "unknown_audit_type"}), content_type="application/json"
+            "/api/security/audit",
+            data=json.dumps({"type": "unknown_audit_type"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -570,7 +624,13 @@ class TestAPIEndpoints:
         """Test triggering building lockdown."""
         response = client.post(
             "/api/security/lockdown",
-            data=json.dumps({"scope": "building", "reason": "security incident", "threat_level": "high"}),
+            data=json.dumps(
+                {
+                    "scope": "building",
+                    "reason": "security incident",
+                    "threat_level": "high",
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -579,7 +639,13 @@ class TestAPIEndpoints:
         """Test triggering floor lockdown."""
         response = client.post(
             "/api/security/lockdown",
-            data=json.dumps({"scope": "floor:floor-python", "reason": "suspicious activity", "threat_level": "medium"}),
+            data=json.dumps(
+                {
+                    "scope": "floor:floor-python",
+                    "reason": "suspicious activity",
+                    "threat_level": "medium",
+                }
+            ),
             content_type="application/json",
         )
         assert response.status_code == 200
@@ -588,7 +654,9 @@ class TestAPIEndpoints:
         """Test lockdown with invalid scope."""
         response = client.post(
             "/api/security/lockdown",
-            data=json.dumps({"scope": "invalid-scope", "reason": "test", "threat_level": "low"}),
+            data=json.dumps(
+                {"scope": "invalid-scope", "reason": "test", "threat_level": "low"}
+            ),
             content_type="application/json",
         )
         assert response.status_code == 400
@@ -596,7 +664,9 @@ class TestAPIEndpoints:
     def test_security_lockdown_missing_params(self, client):
         """Test lockdown without required params."""
         response = client.post(
-            "/api/security/lockdown", data=json.dumps({"scope": "building"}), content_type="application/json"
+            "/api/security/lockdown",
+            data=json.dumps({"scope": "building"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -618,7 +688,9 @@ class TestAPIEndpoints:
     def test_security_block_missing_params(self, client):
         """Test blocking delivery without params."""
         response = client.post(
-            "/api/security/block", data=json.dumps({"artifact_id": "artifact-001"}), content_type="application/json"
+            "/api/security/block",
+            data=json.dumps({"artifact_id": "artifact-001"}),
+            content_type="application/json",
         )
         assert response.status_code == 400
 
@@ -952,11 +1024,13 @@ except RuntimeError as e:
             [sys.executable, "-c", test_code],
             capture_output=True,
             text=True,
-            cwd="/home/runner/work/Thirstys-Projects-Miniature-Office/Thirstys-Projects-Miniature-Office",
+            cwd=str(Path(__file__).resolve().parents[1]),
         )
 
         # Check that the subprocess correctly raised the error
-        assert "CORRECTLY_RAISED_ERROR" in result.stdout or "SECRET_KEY" in result.stderr
+        assert (
+            "CORRECTLY_RAISED_ERROR" in result.stdout or "SECRET_KEY" in result.stderr
+        )
 
 
 class TestWebSocketHandlers:
@@ -967,7 +1041,9 @@ class TestWebSocketHandlers:
         from flask_socketio import SocketIOTestClient  # noqa: F401
 
         # Create a socketio test client
-        socketio_client = app_module.socketio.test_client(app_module.app, flask_test_client=client)
+        socketio_client = app_module.socketio.test_client(
+            app_module.app, flask_test_client=client
+        )
 
         # Connect should trigger the connect handler
         assert socketio_client.is_connected()
@@ -984,7 +1060,9 @@ class TestWebSocketHandlers:
         """Test WebSocket request_state handler."""
         from flask_socketio import SocketIOTestClient  # noqa: F401
 
-        socketio_client = app_module.socketio.test_client(app_module.app, flask_test_client=client)
+        socketio_client = app_module.socketio.test_client(
+            app_module.app, flask_test_client=client
+        )
 
         # Emit request_state event
         socketio_client.emit("request_state")

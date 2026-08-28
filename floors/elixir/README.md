@@ -1,3 +1,5 @@
+> **Measured status:** this directory now contains `lib/department_floor*.ex` so the Mix project has modules. It is a prototype, not a fault-tolerant OTP product.
+
 # Floor 22 - Elixir Jurisdiction
 
 **Language:** Elixir  

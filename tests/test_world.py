@@ -2,9 +2,17 @@
 
 import json
 
-
 from src.agents.agent import Agent, AgentRole, Manager
-from src.core.world import Floor, FloorSchema, Office, OfficeSchema, World, WorldSchema, create_world, get_world
+from src.core.world import (
+    Floor,
+    FloorSchema,
+    Office,
+    OfficeSchema,
+    World,
+    WorldSchema,
+    create_world,
+    get_world,
+)
 from src.departments.department import Department
 
 
@@ -13,14 +21,22 @@ class TestOfficeSchema:
 
     def test_schema_to_dict(self):
         """Test schema serialization."""
-        schema = OfficeSchema(officeId="office-001", roles=["agent-001", "agent-002"], manager="manager-001")
+        schema = OfficeSchema(
+            officeId="office-001",
+            roles=["agent-001", "agent-002"],
+            manager="manager-001",
+        )
         data = schema.to_dict()
         assert data["officeId"] == "office-001"
         assert len(data["roles"]) == 2
 
     def test_schema_from_dict(self):
         """Test schema deserialization."""
-        data = {"officeId": "office-001", "roles": ["agent-001"], "manager": "manager-001"}
+        data = {
+            "officeId": "office-001",
+            "roles": ["agent-001"],
+            "manager": "manager-001",
+        }
         schema = OfficeSchema.from_dict(data)
         assert schema.officeId == "office-001"
 
@@ -172,14 +188,22 @@ class TestWorldSchema:
 
     def test_schema_to_dict(self):
         """Test schema serialization."""
-        schema = WorldSchema(worldId="world-001", name="Test World", floors=[], supplyStore={}, time=0)
+        schema = WorldSchema(
+            worldId="world-001", name="Test World", floors=[], supplyStore={}, time=0
+        )
         data = schema.to_dict()
         assert data["worldId"] == "world-001"
         assert data["name"] == "Test World"
 
     def test_schema_from_dict(self):
         """Test schema deserialization."""
-        data = {"worldId": "world-001", "name": "Test World", "floors": [], "supplyStore": {}, "time": 0}
+        data = {
+            "worldId": "world-001",
+            "name": "Test World",
+            "floors": [],
+            "supplyStore": {},
+            "time": 0,
+        }
         schema = WorldSchema.from_dict(data)
         assert schema.worldId == "world-001"
 
@@ -268,7 +292,9 @@ class TestWorld:
 
     def test_from_schema(self):
         """Test creating world from schema."""
-        schema = WorldSchema(worldId="world-001", name="Test World", floors=[], supplyStore={}, time=5)
+        schema = WorldSchema(
+            worldId="world-001", name="Test World", floors=[], supplyStore={}, time=5
+        )
         world = World.from_schema(schema)
         assert world.world_id == "world-001"
         assert world.time == 5
@@ -276,7 +302,13 @@ class TestWorld:
     def test_from_json(self):
         """Test creating world from JSON."""
         json_str = json.dumps(
-            {"worldId": "world-001", "name": "Test World", "floors": [], "supplyStore": {}, "time": 0}
+            {
+                "worldId": "world-001",
+                "name": "Test World",
+                "floors": [],
+                "supplyStore": {},
+                "time": 0,
+            }
         )
         world = World.from_json(json_str)
         assert world.world_id == "world-001"

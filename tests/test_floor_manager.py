@@ -31,7 +31,9 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = None  # Process is running
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         assert floor_process.floor_number == 1
         assert floor_process.language == "python"
@@ -41,7 +43,9 @@ class TestFloorProcess:
         """Test all FloorProcess attributes are set correctly"""
         mock_process = Mock()
 
-        floor_process = FloorProcess(floor_number=5, language="rust", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=5, language="rust", process=mock_process
+        )
 
         assert floor_process.floor_number == 5
         assert floor_process.language == "rust"
@@ -61,7 +65,9 @@ class TestFloorProcess:
         response_data = {"result": "success"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         result = floor_process.send_request("get_info")
 
@@ -91,7 +97,9 @@ class TestFloorProcess:
         response_data = {"status": "analyzed", "issues": []}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=2, language="rust", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=2, language="rust", process=mock_process
+        )
 
         params = {"code": "fn main() {}", "operation": "analyze"}
         result = floor_process.send_request("process_code", params)
@@ -117,9 +125,14 @@ class TestFloorProcess:
         response_data = {"processed": True}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=3, language="go", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=3, language="go", process=mock_process
+        )
 
-        params = {"nested": {"key": "value", "list": [1, 2, 3]}, "array": ["a", "b", "c"]}
+        params = {
+            "nested": {"key": "value", "list": [1, 2, 3]},
+            "array": ["a", "b", "c"],
+        }
         result = floor_process.send_request("complex_method", params)
 
         written_data = mock_stdin.write.call_args[0][0].decode()
@@ -133,7 +146,9 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = None  # None means running
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         assert floor_process.is_running() is True
 
@@ -142,7 +157,9 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = 0  # Return code means terminated
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         assert floor_process.is_running() is False
 
@@ -155,7 +172,9 @@ class TestFloorProcess:
         mock_process.poll.return_value = None  # Process is running
         mock_process.wait.return_value = None
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         floor_process.stop()
 
@@ -173,7 +192,9 @@ class TestFloorProcess:
         mock_process = Mock()
         mock_process.poll.return_value = 0  # Already stopped
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         floor_process.stop()
 
@@ -190,7 +211,9 @@ class TestFloorProcess:
         mock_process.poll.return_value = None  # Process is running
         mock_process.wait.side_effect = subprocess.TimeoutExpired("test", 5)
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         floor_process.stop()
 
@@ -584,7 +607,10 @@ class TestMultiLanguageFloorManager:
 
         # Mock multiple running floors
         mock_floor1 = Mock()
-        mock_floor1.send_request.return_value = {"language": "python", "floor_number": 1}
+        mock_floor1.send_request.return_value = {
+            "language": "python",
+            "floor_number": 1,
+        }
 
         mock_floor2 = Mock()
         mock_floor2.send_request.return_value = {"language": "rust", "floor_number": 2}
@@ -628,7 +654,9 @@ class TestMultiLanguageFloorManager:
         """Test that all configured floors have unique floor numbers"""
         manager = MultiLanguageFloorManager()
 
-        floor_numbers = [config["floor_number"] for config in manager.floor_configs.values()]
+        floor_numbers = [
+            config["floor_number"] for config in manager.floor_configs.values()
+        ]
 
         assert len(floor_numbers) == len(set(floor_numbers))
 
@@ -841,8 +869,12 @@ class TestFloorUniformity:
     def test_floor_numbers_are_unique(self):
         """Test each floor has a unique floor number"""
         manager = MultiLanguageFloorManager()
-        floor_numbers = [config["floor_number"] for config in manager.floor_configs.values()]
-        assert len(floor_numbers) == len(set(floor_numbers)), "Floor numbers are not unique"
+        floor_numbers = [
+            config["floor_number"] for config in manager.floor_configs.values()
+        ]
+        assert len(floor_numbers) == len(
+            set(floor_numbers)
+        ), "Floor numbers are not unique"
 
 
 class TestEdgeCases:
@@ -860,7 +892,9 @@ class TestEdgeCases:
         response_data = {"result": "ok"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         # Empty dict is falsy, so params won't be included
         result = floor_process.send_request("test", {})
@@ -876,7 +910,9 @@ class TestEdgeCases:
         """Test floor process can have floor number 0"""
         mock_process = Mock()
 
-        floor_process = FloorProcess(floor_number=0, language="test", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=0, language="test", process=mock_process
+        )
 
         assert floor_process.floor_number == 0
 
@@ -966,7 +1002,9 @@ class TestProcessCommunication:
         response_data = {"result": "ok"}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         params = {"unicode": "こんにちは", "special": "test\n\t"}
         floor_process.send_request("test", params)
@@ -992,7 +1030,9 @@ class TestProcessCommunication:
         response_data = {"message": "Success! 🎉", "data": [1, 2, 3]}
         mock_stdout.readline.return_value = (json.dumps(response_data) + "\n").encode()
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         result = floor_process.send_request("test")
 
@@ -1008,12 +1048,17 @@ class TestProcessCommunication:
         mock_process.poll.return_value = None
         mock_process.wait.return_value = None
 
-        floor_process = FloorProcess(floor_number=1, language="python", process=mock_process)
+        floor_process = FloorProcess(
+            floor_number=1, language="python", process=mock_process
+        )
 
         floor_process.stop()
 
         # Verify order of calls
-        calls = [call[0] for call in [mock_stdin.close.call_args, mock_process.terminate.call_args]]  # noqa: F841,F811
+        calls = [
+            call[0]
+            for call in [mock_stdin.close.call_args, mock_process.terminate.call_args]
+        ]  # noqa: F841,F811
 
         # stdin.close should be called before terminate
         assert mock_stdin.close.called

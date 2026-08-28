@@ -172,7 +172,9 @@ class TestDraftDirective:
     def test_draft_creation(self):
         """Test creating a draft directive"""
         draft = DraftDirective(
-            draft_text="Build feature X", rationale="User needs it", expected_outcome="Feature implemented"
+            draft_text="Build feature X",
+            rationale="User needs it",
+            expected_outcome="Feature implemented",
         )
         assert draft.draft_text == "Build feature X"
         assert draft.rationale == "User needs it"
@@ -223,14 +225,18 @@ class TestConsigliere:
     def test_issue_directive_to_manager_without_human(self):
         """Test directive issuance requires human instruction"""
         consigliere = Consigliere()
-        result = consigliere.issue_directive_to_manager("manager-1", "Do something", issued_by_human=False)
+        result = consigliere.issue_directive_to_manager(
+            "manager-1", "Do something", issued_by_human=False
+        )
         assert not result["success"]
         assert "explicit human instruction" in result["error"]
 
     def test_issue_directive_to_nonexistent_manager(self):
         """Test directive to non-existent manager"""
         consigliere = Consigliere()
-        result = consigliere.issue_directive_to_manager("nonexistent-manager", "Do something", issued_by_human=True)
+        result = consigliere.issue_directive_to_manager(
+            "nonexistent-manager", "Do something", issued_by_human=True
+        )
         assert not result["success"]
         assert "not found" in result["error"]
 
@@ -252,7 +258,9 @@ class TestConsigliere:
     def test_update_agent_directive_without_human(self):
         """Test agent directive update requires human instruction"""
         consigliere = Consigliere()
-        result = consigliere.update_agent_directive("agent-1", "New directive", "Justification", issued_by_human=False)
+        result = consigliere.update_agent_directive(
+            "agent-1", "New directive", "Justification", issued_by_human=False
+        )
         assert not result["success"]
         assert "explicit human instruction" in result["error"]
 
@@ -270,7 +278,9 @@ class TestConsigliere:
         from src.agents.agent import Agent, AgentRole
 
         consigliere = Consigliere()
-        agent = Agent("agent-1", "Test Agent", AgentRole.BUILDER, "dept-1")  # noqa: F841
+        agent = Agent(
+            "agent-1", "Test Agent", AgentRole.BUILDER, "dept-1"
+        )  # noqa: F841
 
         result = consigliere.update_agent_directive(
             "agent-1", "Updated directive", "Requirements changed", issued_by_human=True
@@ -306,7 +316,9 @@ class TestConsigliere:
     def test_tell_human_impossible(self):
         """Test telling human something is impossible"""
         consigliere = Consigliere()
-        result = consigliere.tell_human_impossible("Build perpetual motion machine", "Violates laws of physics")
+        result = consigliere.tell_human_impossible(
+            "Build perpetual motion machine", "Violates laws of physics"
+        )
         assert not result["feasible"]
         assert result["request"] == "Build perpetual motion machine"
         assert "laws of physics" in result["reason"]
@@ -316,7 +328,9 @@ class TestConsigliere:
         """Test impossible with alternatives"""
         consigliere = Consigliere()
         result = consigliere.tell_human_impossible(
-            "Instant deployment", "Build takes time", alternatives=["Use cached build", "Deploy incrementally"]
+            "Instant deployment",
+            "Build takes time",
+            alternatives=["Use cached build", "Deploy incrementally"],
         )
         assert not result["feasible"]
         assert len(result["alternatives"]) == 2
@@ -326,7 +340,9 @@ class TestConsigliere:
         """Test telling human something is feasible"""
         consigliere = Consigliere()
         result = consigliere.tell_human_feasible(
-            "Add logging", "Use standard logging module", {"agent_time": 2, "testing": 1}
+            "Add logging",
+            "Use standard logging module",
+            {"agent_time": 2, "testing": 1},
         )
         assert result["feasible"]
         assert result["request"] == "Add logging"
@@ -376,7 +392,9 @@ class TestConsigliere:
 
         # Log a decision
         get_audit_log().log_event(
-            EventType.TASK_STATE_CHANGED, actor_id="manager-1", data={"decision": "decision-123", "action": "approved"}
+            EventType.TASK_STATE_CHANGED,
+            actor_id="manager-1",
+            data={"decision": "decision-123", "action": "approved"},
         )
 
         exp = consigliere.explain_why_decision("decision-123")
@@ -423,7 +441,9 @@ class TestConsigliere:
     def test_translate_civilization_to_human_basic(self):
         """Test basic civilization to human translation"""
         consigliere = Consigliere()
-        trans = consigliere.translate_civilization_to_human("Task state: BLOCKED, preconditions unmet")
+        trans = consigliere.translate_civilization_to_human(
+            "Task state: BLOCKED, preconditions unmet"
+        )
         assert trans.translation_type == TranslationType.CIVILIZATION_TO_HUMAN
         assert trans.original == "Task state: BLOCKED, preconditions unmet"
         assert len(consigliere.translation_history) == 1
@@ -431,7 +451,9 @@ class TestConsigliere:
     def test_translate_civilization_to_human_with_terms(self):
         """Test translation with technical terms"""
         consigliere = Consigliere()
-        trans = consigliere.translate_civilization_to_human("Cognitive Contract established with Floor Python")
+        trans = consigliere.translate_civilization_to_human(
+            "Cognitive Contract established with Floor Python"
+        )
         assert trans.translation_type == TranslationType.CIVILIZATION_TO_HUMAN
         assert "Cognitive Contract" in trans.translated
         assert "Cognitive Contract" in trans.glossary
@@ -472,7 +494,9 @@ class TestConsigliere:
     def test_prepare_draft_directive_basic(self):
         """Test preparing a basic draft directive"""
         consigliere = Consigliere()
-        draft = consigliere.prepare_draft_directive("Build authentication system", "Python")
+        draft = consigliere.prepare_draft_directive(
+            "Build authentication system", "Python"
+        )
         assert "Python" in draft.draft_text
         assert "Build authentication system" in draft.draft_text
         assert "Python" in draft.rationale
@@ -494,13 +518,17 @@ class TestConsigliere:
         assert "Must be thread-safe" in draft.draft_text
         # Should not have "no constraints" warning
         no_constraint_warning = any("No constraints" in w for w in draft.warnings)
-        assert not no_constraint_warning or len(draft.warnings) == 1  # Only brief goal warning
+        assert (
+            not no_constraint_warning or len(draft.warnings) == 1
+        )  # Only brief goal warning
         assert len(consigliere.draft_history) == 1
 
     def test_prepare_clarification_prompt(self):
         """Test preparing clarification prompt"""
         consigliere = Consigliere()
-        prompt = consigliere.prepare_clarification_prompt("Authentication method not specified")
+        prompt = consigliere.prepare_clarification_prompt(
+            "Authentication method not specified"
+        )
         assert "Authentication method not specified" in prompt
         assert "Clarification Needed" in prompt
         assert "Exact expected behavior" in prompt

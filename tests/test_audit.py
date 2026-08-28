@@ -10,7 +10,12 @@ class TestAuditLog:
 
     def test_log_event(self, audit_log):
         """Test logging a basic event."""
-        event = audit_log.log_event(EventType.ENTITY_CREATED, "system", "test-entity-001", {"name": "Test Entity"})
+        event = audit_log.log_event(
+            EventType.ENTITY_CREATED,
+            "system",
+            "test-entity-001",
+            {"name": "Test Entity"},
+        )
 
         assert event is not None
         assert event.event_type == EventType.ENTITY_CREATED
@@ -20,7 +25,9 @@ class TestAuditLog:
 
     def test_event_hash_immutability(self, audit_log):
         """Test that event hashes are calculated correctly."""
-        event = audit_log.log_event(EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"})
+        event = audit_log.log_event(
+            EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"}
+        )
 
         assert event._hash is not None
         assert len(event._hash) == 64  # SHA-256 produces 64 hex chars
@@ -67,7 +74,9 @@ class TestAuditEvent:
 
     def test_event_serialization(self, audit_log):
         """Test event to_dict serialization."""
-        event = audit_log.log_event(EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"})
+        event = audit_log.log_event(
+            EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"}
+        )
 
         event_dict = event.to_dict()
 
@@ -81,7 +90,9 @@ class TestAuditEvent:
 
     def test_event_integrity_verification(self, audit_log):
         """Test event integrity verification."""
-        event = audit_log.log_event(EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"})
+        event = audit_log.log_event(
+            EventType.AGENT_ACTION, "actor-001", "target-001", {"key": "value"}
+        )
         assert event.verify_integrity()
 
 
@@ -114,8 +125,12 @@ class TestCausalityGraph:
     def test_get_children(self, audit_log):
         """Test getting child events."""
         parent = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "parent", {})
-        child1 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "child1", {}, [parent.event_id])
-        child2 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "child2", {}, [parent.event_id])
+        child1 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "child1", {}, [parent.event_id]
+        )
+        child2 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "child2", {}, [parent.event_id]
+        )
 
         children = audit_log.graph.get_children(parent.event_id)
         assert len(children) == 2
@@ -132,8 +147,12 @@ class TestCausalityGraph:
     def test_get_lineage(self, audit_log):
         """Test getting event lineage."""
         root = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "root", {})
-        middle = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "middle", {}, [root.event_id])
-        leaf = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "leaf", {}, [middle.event_id])
+        middle = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "middle", {}, [root.event_id]
+        )
+        leaf = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "leaf", {}, [middle.event_id]
+        )
 
         lineage = audit_log.graph.get_lineage(leaf.event_id)
         assert len(lineage) == 3
@@ -146,7 +165,11 @@ class TestCausalityGraph:
         parent1 = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "p1", {})
         parent2 = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "p2", {})
         child = audit_log.log_event(
-            EventType.ENTITY_UPDATED, "actor", "child", {}, [parent1.event_id, parent2.event_id]
+            EventType.ENTITY_UPDATED,
+            "actor",
+            "child",
+            {},
+            [parent1.event_id, parent2.event_id],
         )
 
         lineage = audit_log.graph.get_lineage(child.event_id)
@@ -164,9 +187,15 @@ class TestCausalityGraph:
     def test_get_descendants(self, audit_log):
         """Test getting all descendants."""
         root = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "root", {})
-        child1 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "child1", {}, [root.event_id])
-        child2 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "child2", {}, [root.event_id])
-        grandchild = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "grandchild", {}, [child1.event_id])
+        child1 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "child1", {}, [root.event_id]
+        )
+        child2 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "child2", {}, [root.event_id]
+        )
+        grandchild = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "grandchild", {}, [child1.event_id]
+        )
 
         descendants = audit_log.graph.get_descendants(root.event_id)
         assert len(descendants) == 3
@@ -184,11 +213,19 @@ class TestCausalityGraph:
     def test_get_descendants_with_revisit(self, audit_log):
         """Test descendants with diamond pattern (revisit protection)."""
         root = audit_log.log_event(EventType.ENTITY_CREATED, "actor", "root", {})
-        mid1 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "mid1", {}, [root.event_id])
-        mid2 = audit_log.log_event(EventType.ENTITY_UPDATED, "actor", "mid2", {}, [root.event_id])
+        mid1 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "mid1", {}, [root.event_id]
+        )
+        mid2 = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "actor", "mid2", {}, [root.event_id]
+        )
         # Both mid nodes point to same child (diamond pattern)
         child = audit_log.log_event(
-            EventType.ENTITY_UPDATED, "actor", "child", {}, [mid1.event_id, mid2.event_id]
+            EventType.ENTITY_UPDATED,
+            "actor",
+            "child",
+            {},
+            [mid1.event_id, mid2.event_id],
         )  # noqa: F841
 
         descendants = audit_log.graph.get_descendants(root.event_id)

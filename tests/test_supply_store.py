@@ -2,7 +2,14 @@
 
 from src.agents.agent import Agent, AgentRole
 from src.departments.department import Department
-from src.tools.supply_store import CheckoutRecord, SupplyStore, Tool, ToolMetadata, ToolTag, get_supply_store
+from src.tools.supply_store import (
+    CheckoutRecord,
+    SupplyStore,
+    Tool,
+    ToolMetadata,
+    ToolTag,
+    get_supply_store,
+)
 
 
 class TestToolMetadata:
@@ -10,7 +17,9 @@ class TestToolMetadata:
 
     def test_metadata_creation(self):
         """Test creating tool metadata."""
-        metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0.0", trust_score=0.8, security_rating=4)
+        metadata = ToolMetadata(
+            tag=ToolTag.COMPILER, version="1.0.0", trust_score=0.8, security_rating=4
+        )
         assert metadata.tag == ToolTag.COMPILER
         assert metadata.version == "1.0.0"
         assert metadata.trust_score == 0.8
@@ -25,13 +34,17 @@ class TestToolMetadata:
 
     def test_metadata_with_capabilities(self):
         """Test metadata with capabilities."""
-        metadata = ToolMetadata(tag=ToolTag.SDK, version="2.0", capabilities={"build", "test", "deploy"})
+        metadata = ToolMetadata(
+            tag=ToolTag.SDK, version="2.0", capabilities={"build", "test", "deploy"}
+        )
         assert len(metadata.capabilities) == 3
         assert "build" in metadata.capabilities
 
     def test_metadata_to_dict(self):
         """Test serializing metadata."""
-        metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0", capabilities={"compile", "optimize"})
+        metadata = ToolMetadata(
+            tag=ToolTag.COMPILER, version="1.0", capabilities={"compile", "optimize"}
+        )
         data = metadata.to_dict()
         assert data["tag"] == "compiler"
         assert data["version"] == "1.0"
@@ -64,7 +77,9 @@ class TestCheckoutRecord:
 
     def test_record_creation(self):
         """Test creating a checkout record."""
-        record = CheckoutRecord(tool_id="tool-001", agent_id="agent-001", justification="Need to compile")
+        record = CheckoutRecord(
+            tool_id="tool-001", agent_id="agent-001", justification="Need to compile"
+        )
         assert record.tool_id == "tool-001"
         assert record.agent_id == "agent-001"
         assert record.checked_in_at is None
@@ -99,7 +114,9 @@ class TestSupplyStore:
         """Test checking out a tool."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0")
         tool = Tool("tool-001", "GCC", metadata)
@@ -115,7 +132,9 @@ class TestSupplyStore:
         """Test checking out unavailable tool."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0")
         tool = Tool("tool-001", "GCC", metadata)
@@ -135,9 +154,13 @@ class TestSupplyStore:
         """Test checking out tool requiring justification."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
-        metadata = ToolMetadata(tag=ToolTag.MCP_SERVER, version="1.0", requires_justification=True)
+        metadata = ToolMetadata(
+            tag=ToolTag.MCP_SERVER, version="1.0", requires_justification=True
+        )
         tool = Tool("tool-001", "MCP Server", metadata)
         store.add_tool(tool)
 
@@ -153,7 +176,9 @@ class TestSupplyStore:
         """Test checking in a tool."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0")
         tool = Tool("tool-001", "GCC", metadata)
@@ -177,7 +202,9 @@ class TestSupplyStore:
         """Test checking in already checked in tool."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0")
         tool = Tool("tool-001", "GCC", metadata)
@@ -192,7 +219,9 @@ class TestSupplyStore:
         """Test getting available tools."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         tool1 = Tool("tool-001", "GCC", ToolMetadata(ToolTag.COMPILER, "1.0"))
         tool2 = Tool("tool-002", "Clang", ToolMetadata(ToolTag.COMPILER, "2.0"))
@@ -225,8 +254,16 @@ class TestSupplyStore:
     def test_get_tools_by_capability(self):
         """Test getting tools by capability."""
         store = SupplyStore()
-        tool1 = Tool("tool-001", "Tool1", ToolMetadata(ToolTag.SDK, "1.0", capabilities={"build", "test"}))
-        tool2 = Tool("tool-002", "Tool2", ToolMetadata(ToolTag.SDK, "2.0", capabilities={"deploy"}))
+        tool1 = Tool(
+            "tool-001",
+            "Tool1",
+            ToolMetadata(ToolTag.SDK, "1.0", capabilities={"build", "test"}),
+        )
+        tool2 = Tool(
+            "tool-002",
+            "Tool2",
+            ToolMetadata(ToolTag.SDK, "2.0", capabilities={"deploy"}),
+        )
         store.add_tool(tool1)
         store.add_tool(tool2)
 
@@ -240,7 +277,9 @@ class TestSupplyStore:
         """Test getting agent checkouts."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         tool1 = Tool("tool-001", "Tool1", ToolMetadata(ToolTag.COMPILER, "1.0"))
         tool2 = Tool("tool-002", "Tool2", ToolMetadata(ToolTag.LINTER, "2.0"))
@@ -274,7 +313,9 @@ class TestSupplyStore:
         """Test checking in tool that was removed from store."""
         store = SupplyStore()
         dept = Department("dept-001", "Engineering", "Python")
-        agent = Agent("agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id)  # noqa: F841
+        agent = Agent(
+            "agent-001", "Test Agent", AgentRole.BUILDER, dept.entity_id
+        )  # noqa: F841
 
         metadata = ToolMetadata(tag=ToolTag.COMPILER, version="1.0")
         tool = Tool("tool-001", "GCC", metadata)

@@ -112,7 +112,9 @@ class TestPixelRepresentation:
     def test_pixel_creation(self):
         """Test basic pixel creation."""
         pixel = PixelRepresentation(
-            representation_id="pixel-001", color=PixelColor.PYTHON_ORANGE, accessory=PixelAccessory.HARD_HAT
+            representation_id="pixel-001",
+            color=PixelColor.PYTHON_ORANGE,
+            accessory=PixelAccessory.HARD_HAT,
         )
 
         assert pixel.representation_id == "pixel-001"
@@ -123,7 +125,9 @@ class TestPixelRepresentation:
     def test_to_visual_description(self):
         """Test visual description generation."""
         pixel = PixelRepresentation(
-            representation_id="pixel-002", color=PixelColor.RUST_RED, accessory=PixelAccessory.WRENCH
+            representation_id="pixel-002",
+            color=PixelColor.RUST_RED,
+            accessory=PixelAccessory.WRENCH,
         )
 
         description = pixel.to_visual_description()
@@ -147,7 +151,9 @@ class TestPixelRepresentation:
     def test_add_reputation_marker(self):
         """Test adding reputation marker."""
         pixel = PixelRepresentation(
-            representation_id="pixel-004", color=PixelColor.PYTHON_ORANGE, accessory=PixelAccessory.HARD_HAT
+            representation_id="pixel-004",
+            color=PixelColor.PYTHON_ORANGE,
+            accessory=PixelAccessory.HARD_HAT,
         )
 
         pixel.add_reputation_marker(ReputationVisual.SILVER_STAR)
@@ -157,7 +163,9 @@ class TestPixelRepresentation:
     def test_add_duplicate_reputation_marker(self):
         """Test that duplicate markers are not added."""
         pixel = PixelRepresentation(
-            representation_id="pixel-005", color=PixelColor.C_BLUE, accessory=PixelAccessory.TEST_TUBE
+            representation_id="pixel-005",
+            color=PixelColor.C_BLUE,
+            accessory=PixelAccessory.TEST_TUBE,
         )
 
         pixel.add_reputation_marker(ReputationVisual.BRONZE_STAR)
@@ -180,7 +188,9 @@ class TestPixelRepresentation:
     def test_remove_nonexistent_marker(self):
         """Test removing marker that doesn't exist."""
         pixel = PixelRepresentation(
-            representation_id="pixel-007", color=PixelColor.SHELL_GRAY, accessory=PixelAccessory.CLIPBOARD
+            representation_id="pixel-007",
+            color=PixelColor.SHELL_GRAY,
+            accessory=PixelAccessory.CLIPBOARD,
         )
 
         # Should not raise error
@@ -200,7 +210,9 @@ class TestAgentEmbodiment:
     def sample_pixel(self):
         """Create a sample pixel representation."""
         return PixelRepresentation(
-            representation_id="pixel-test", color=PixelColor.PYTHON_ORANGE, accessory=PixelAccessory.HARD_HAT
+            representation_id="pixel-test",
+            color=PixelColor.PYTHON_ORANGE,
+            accessory=PixelAccessory.HARD_HAT,
         )
 
     @pytest.fixture
@@ -233,12 +245,16 @@ class TestAgentEmbodiment:
 
     def test_update_state(self, sample_embodiment):
         """Test updating agent state."""
-        sample_embodiment.update_state(AgentOffDutyState.SOCIALIZING, "Chatting in lounge")
+        sample_embodiment.update_state(
+            AgentOffDutyState.SOCIALIZING, "Chatting in lounge"
+        )
 
         assert sample_embodiment.current_state == AgentOffDutyState.SOCIALIZING
         assert len(sample_embodiment.recent_activities) == 1
         assert sample_embodiment.recent_activities[0]["state"] == "socializing"
-        assert sample_embodiment.recent_activities[0]["activity"] == "Chatting in lounge"
+        assert (
+            sample_embodiment.recent_activities[0]["activity"] == "Chatting in lounge"
+        )
 
     def test_update_state_activity_limit(self, sample_embodiment):
         """Test that recent activities are limited to 50."""
@@ -317,7 +333,9 @@ class TestResidentialDistrict:
     def sample_embodiment(self):
         """Create a sample embodiment for testing."""
         pixel = PixelRepresentation(
-            representation_id="pixel-test", color=PixelColor.PYTHON_ORANGE, accessory=PixelAccessory.HARD_HAT
+            representation_id="pixel-test",
+            color=PixelColor.PYTHON_ORANGE,
+            accessory=PixelAccessory.HARD_HAT,
         )
         return AgentEmbodiment(
             embodiment_id="emb-001",
@@ -371,7 +389,9 @@ class TestResidentialDistrict:
         # Add multiple residents with different stats
         for i in range(3):
             pixel = PixelRepresentation(
-                representation_id=f"pixel-{i}", color=PixelColor.PYTHON_ORANGE, accessory=PixelAccessory.HARD_HAT
+                representation_id=f"pixel-{i}",
+                color=PixelColor.PYTHON_ORANGE,
+                accessory=PixelAccessory.HARD_HAT,
             )
             embodiment = AgentEmbodiment(
                 embodiment_id=f"emb-{i}",
@@ -417,7 +437,11 @@ class TestWorkshopStudio:
 
     def test_start_project(self, sample_workshop):
         """Test starting a sandbox project."""
-        sample_workshop.start_project(embodiment_id="emb-001", project_type="widget", description="Test widget project")
+        sample_workshop.start_project(
+            embodiment_id="emb-001",
+            project_type="widget",
+            description="Test widget project",
+        )
 
         assert len(sample_workshop.active_projects) == 1
         project = sample_workshop.active_projects[0]
@@ -479,7 +503,9 @@ class TestCityLounge:
     def test_create_cultural_artifact(self, sample_lounge):
         """Test creating cultural artifact."""
         sample_lounge.create_cultural_artifact(
-            artifact_type="story", title="The Great Refactoring", content="Once upon a time..."
+            artifact_type="story",
+            title="The Great Refactoring",
+            content="Once upon a time...",
         )
 
         assert len(sample_lounge.cultural_artifacts) == 1
@@ -593,7 +619,10 @@ class TestTransitGate:
     def test_cross_gate(self, sample_gate):
         """Test crossing gate."""
         result = sample_gate.cross_gate(
-            agent_id="agent-001", from_zone="residential", to_zone="office", crossing_by="directive-001"
+            agent_id="agent-001",
+            from_zone="residential",
+            to_zone="office",
+            crossing_by="directive-001",
         )
 
         assert result is True
@@ -700,7 +729,9 @@ class TestCityFirewall:
     def test_block_decision_crossing(self, sample_firewall):
         """Test blocking decision crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="decision", source_agent="agent-001", attempted_action="Make production decision"
+            crossing_type="decision",
+            source_agent="agent-001",
+            attempted_action="Make production decision",
         )
 
         assert blocked is True
@@ -711,7 +742,9 @@ class TestCityFirewall:
     def test_block_agreement_crossing(self, sample_firewall):
         """Test blocking agreement crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="agreement", source_agent="agent-002", attempted_action="Form production agreement"
+            crossing_type="agreement",
+            source_agent="agent-002",
+            attempted_action="Form production agreement",
         )
 
         assert blocked is True
@@ -720,7 +753,9 @@ class TestCityFirewall:
     def test_block_consensus_crossing(self, sample_firewall):
         """Test blocking consensus crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="consensus", source_agent="agent-003", attempted_action="Build consensus for production"
+            crossing_type="consensus",
+            source_agent="agent-003",
+            attempted_action="Build consensus for production",
         )
 
         assert blocked is True
@@ -729,7 +764,9 @@ class TestCityFirewall:
     def test_block_momentum_crossing(self, sample_firewall):
         """Test blocking momentum crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="momentum", source_agent="agent-004", attempted_action="Create production momentum"
+            crossing_type="momentum",
+            source_agent="agent-004",
+            attempted_action="Create production momentum",
         )
 
         assert blocked is True
@@ -738,7 +775,9 @@ class TestCityFirewall:
     def test_block_social_pressure_crossing(self, sample_firewall):
         """Test blocking social pressure crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="social_pressure", source_agent="agent-005", attempted_action="Apply social pressure"
+            crossing_type="social_pressure",
+            source_agent="agent-005",
+            attempted_action="Apply social pressure",
         )
 
         assert blocked is True
@@ -747,7 +786,9 @@ class TestCityFirewall:
     def test_allow_legitimate_crossing(self, sample_firewall):
         """Test allowing legitimate crossing."""
         blocked, message = sample_firewall.block_city_to_production_crossing(
-            crossing_type="user_directive", source_agent="agent-006", attempted_action="Execute user directive"
+            crossing_type="user_directive",
+            source_agent="agent-006",
+            attempted_action="Execute user directive",
         )
 
         assert blocked is False
@@ -757,7 +798,9 @@ class TestCityFirewall:
     def test_record_firewall_violation(self, sample_firewall):
         """Test recording firewall violation."""
         sample_firewall.record_firewall_violation(
-            agent_id="agent-007", crossing_type="decision", description="Attempted unauthorized decision"
+            agent_id="agent-007",
+            crossing_type="decision",
+            description="Attempted unauthorized decision",
         )
 
         assert len(sample_firewall.violations) == 1
@@ -772,7 +815,9 @@ class TestCityFirewall:
         # Add multiple violations
         for i in range(15):
             sample_firewall.record_firewall_violation(
-                agent_id=f"agent-{i}", crossing_type="decision", description=f"Violation {i}"
+                agent_id=f"agent-{i}",
+                crossing_type="decision",
+                description=f"Violation {i}",
             )
 
         recent = sample_firewall.get_recent_violations(limit=5)
@@ -848,7 +893,10 @@ class TestOffDutyCity:
         visual_decay = VisualDecay(decay_id="decay-test")
 
         return OffDutyCity(
-            city_id="city-test", zone_manager=zone_manager, city_firewall=city_firewall, visual_decay=visual_decay
+            city_id="city-test",
+            zone_manager=zone_manager,
+            city_firewall=city_firewall,
+            visual_decay=visual_decay,
         )
 
     def test_city_creation(self, sample_city):
@@ -889,7 +937,9 @@ class TestOffDutyCity:
 
         embodiment = sample_city.population[embodiment_id]
         assert embodiment.pixel_representation.color == PixelColor.RUST_RED
-        assert embodiment.pixel_representation.accessory == PixelAccessory.MAGNIFYING_GLASS
+        assert (
+            embodiment.pixel_representation.accessory == PixelAccessory.MAGNIFYING_GLASS
+        )
 
     def test_add_agent_javascript_tester(self, sample_city):
         """Test adding JavaScript tester agent."""
@@ -908,17 +958,27 @@ class TestOffDutyCity:
     def test_add_agent_go_security(self, sample_city):
         """Test adding Go security agent."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-004", agent_name="Go Security", floor_origin="floor-go", role="security", reputation_level=0
+            agent_id="agent-004",
+            agent_name="Go Security",
+            floor_origin="floor-go",
+            role="security",
+            reputation_level=0,
         )
 
         embodiment = sample_city.population[embodiment_id]
         assert embodiment.pixel_representation.color == PixelColor.GO_CYAN
-        assert embodiment.pixel_representation.accessory == PixelAccessory.SAFETY_GOGGLES
+        assert (
+            embodiment.pixel_representation.accessory == PixelAccessory.SAFETY_GOGGLES
+        )
 
     def test_add_agent_c_architect(self, sample_city):
         """Test adding C architect agent."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-005", agent_name="C Architect", floor_origin="floor-c", role="architect", reputation_level=0
+            agent_id="agent-005",
+            agent_name="C Architect",
+            floor_origin="floor-c",
+            role="architect",
+            reputation_level=0,
         )
 
         embodiment = sample_city.population[embodiment_id]
@@ -928,7 +988,11 @@ class TestOffDutyCity:
     def test_add_agent_sql_manager(self, sample_city):
         """Test adding SQL manager agent."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-006", agent_name="SQL Manager", floor_origin="floor-sql", role="manager", reputation_level=0
+            agent_id="agent-006",
+            agent_name="SQL Manager",
+            floor_origin="floor-sql",
+            role="manager",
+            reputation_level=0,
         )
 
         embodiment = sample_city.population[embodiment_id]
@@ -973,7 +1037,10 @@ class TestOffDutyCity:
         )
 
         embodiment = sample_city.population[embodiment_id]
-        assert ReputationVisual.BRONZE_STAR in embodiment.pixel_representation.reputation_markers
+        assert (
+            ReputationVisual.BRONZE_STAR
+            in embodiment.pixel_representation.reputation_markers
+        )
         assert len(embodiment.pixel_representation.reputation_markers) == 1
 
     def test_add_agent_with_silver_star(self, sample_city):
@@ -987,7 +1054,10 @@ class TestOffDutyCity:
         )
 
         embodiment = sample_city.population[embodiment_id]
-        assert ReputationVisual.SILVER_STAR in embodiment.pixel_representation.reputation_markers
+        assert (
+            ReputationVisual.SILVER_STAR
+            in embodiment.pixel_representation.reputation_markers
+        )
         assert len(embodiment.pixel_representation.reputation_markers) == 1
 
     def test_add_agent_with_golden_star(self, sample_city):
@@ -1001,16 +1071,24 @@ class TestOffDutyCity:
         )
 
         embodiment = sample_city.population[embodiment_id]
-        assert ReputationVisual.GOLDEN_STAR in embodiment.pixel_representation.reputation_markers
+        assert (
+            ReputationVisual.GOLDEN_STAR
+            in embodiment.pixel_representation.reputation_markers
+        )
         assert len(embodiment.pixel_representation.reputation_markers) == 1
 
     def test_agent_visit_lounge(self, sample_city):
         """Test agent visiting lounge."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-012", agent_name="Social Agent", floor_origin="floor-python", role="builder"
+            agent_id="agent-012",
+            agent_name="Social Agent",
+            floor_origin="floor-python",
+            role="builder",
         )
 
-        sample_city.agent_visit_lounge(embodiment_id=embodiment_id, conversation_topics=["testing", "refactoring"])
+        sample_city.agent_visit_lounge(
+            embodiment_id=embodiment_id, conversation_topics=["testing", "refactoring"]
+        )
 
         embodiment = sample_city.population[embodiment_id]
         assert embodiment.current_state == AgentOffDutyState.SOCIALIZING
@@ -1020,16 +1098,23 @@ class TestOffDutyCity:
     def test_agent_visit_lounge_nonexistent(self, sample_city):
         """Test nonexistent agent visiting lounge."""
         # Should not raise error
-        sample_city.agent_visit_lounge(embodiment_id="emb-999", conversation_topics=["testing"])
+        sample_city.agent_visit_lounge(
+            embodiment_id="emb-999", conversation_topics=["testing"]
+        )
 
     def test_agent_visit_workshop(self, sample_city):
         """Test agent visiting workshop."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-013", agent_name="Tinkering Agent", floor_origin="floor-rust", role="builder"
+            agent_id="agent-013",
+            agent_name="Tinkering Agent",
+            floor_origin="floor-rust",
+            role="builder",
         )
 
         sample_city.agent_visit_workshop(
-            embodiment_id=embodiment_id, project_type="widget", project_description="Building a test widget"
+            embodiment_id=embodiment_id,
+            project_type="widget",
+            project_description="Building a test widget",
         )
 
         embodiment = sample_city.population[embodiment_id]
@@ -1040,15 +1125,22 @@ class TestOffDutyCity:
     def test_agent_visit_workshop_nonexistent(self, sample_city):
         """Test nonexistent agent visiting workshop."""
         # Should not raise error
-        sample_city.agent_visit_workshop(embodiment_id="emb-999", project_type="widget", project_description="Test")
+        sample_city.agent_visit_workshop(
+            embodiment_id="emb-999", project_type="widget", project_description="Test"
+        )
 
     def test_agent_visit_archives(self, sample_city):
         """Test agent visiting archives."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-014", agent_name="Historian Agent", floor_origin="floor-go", role="reviewer"
+            agent_id="agent-014",
+            agent_name="Historian Agent",
+            floor_origin="floor-go",
+            role="reviewer",
         )
 
-        sample_city.agent_visit_archives(embodiment_id=embodiment_id, purpose="Research legacy patterns")
+        sample_city.agent_visit_archives(
+            embodiment_id=embodiment_id, purpose="Research legacy patterns"
+        )
 
         embodiment = sample_city.population[embodiment_id]
         assert embodiment.current_state == AgentOffDutyState.REFLECTING
@@ -1063,11 +1155,16 @@ class TestOffDutyCity:
     def test_agent_attend_plaza(self, sample_city):
         """Test agent attending plaza ceremony."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-015", agent_name="Ceremony Agent", floor_origin="floor-c", role="manager"
+            agent_id="agent-015",
+            agent_name="Ceremony Agent",
+            floor_origin="floor-c",
+            role="manager",
         )
 
         sample_city.agent_attend_plaza(
-            embodiment_id=embodiment_id, ceremony_type="employee_of_month", ceremony_details="Monthly recognition"
+            embodiment_id=embodiment_id,
+            ceremony_type="employee_of_month",
+            ceremony_details="Monthly recognition",
         )
 
         embodiment = sample_city.population[embodiment_id]
@@ -1078,16 +1175,26 @@ class TestOffDutyCity:
     def test_agent_attend_plaza_nonexistent(self, sample_city):
         """Test nonexistent agent attending plaza."""
         # Should not raise error
-        sample_city.agent_attend_plaza(embodiment_id="emb-999", ceremony_type="ceremony", ceremony_details="Details")
+        sample_city.agent_attend_plaza(
+            embodiment_id="emb-999",
+            ceremony_type="ceremony",
+            ceremony_details="Details",
+        )
 
     def test_cross_transit_gate(self, sample_city):
         """Test agent crossing transit gate."""
         embodiment_id = sample_city.add_agent_to_city(
-            agent_id="agent-016", agent_name="Transit Agent", floor_origin="floor-sql", role="builder"
+            agent_id="agent-016",
+            agent_name="Transit Agent",
+            floor_origin="floor-sql",
+            role="builder",
         )
 
         result = sample_city.cross_transit_gate(
-            embodiment_id=embodiment_id, destination="office", crossing_by="directive-001", reason="Work assignment"
+            embodiment_id=embodiment_id,
+            destination="office",
+            crossing_by="directive-001",
+            reason="Work assignment",
         )
 
         assert result["success"] is True
@@ -1101,7 +1208,10 @@ class TestOffDutyCity:
     def test_cross_transit_gate_nonexistent(self, sample_city):
         """Test nonexistent agent crossing gate."""
         result = sample_city.cross_transit_gate(
-            embodiment_id="emb-999", destination="office", crossing_by="directive-001", reason="Test"
+            embodiment_id="emb-999",
+            destination="office",
+            crossing_by="directive-001",
+            reason="Test",
         )
 
         assert result["success"] is False
@@ -1121,9 +1231,15 @@ class TestOffDutyCity:
     def test_get_city_stats_with_agents(self, sample_city):
         """Test city stats with multiple agents."""
         # Add agents
-        emb1 = sample_city.add_agent_to_city("agent-1", "Agent 1", "floor-python", "builder")
-        emb2 = sample_city.add_agent_to_city("agent-2", "Agent 2", "floor-rust", "reviewer")
-        emb3 = sample_city.add_agent_to_city("agent-3", "Agent 3", "floor-go", "tester")  # noqa: F841
+        emb1 = sample_city.add_agent_to_city(
+            "agent-1", "Agent 1", "floor-python", "builder"
+        )
+        emb2 = sample_city.add_agent_to_city(
+            "agent-2", "Agent 2", "floor-rust", "reviewer"
+        )
+        emb3 = sample_city.add_agent_to_city(
+            "agent-3", "Agent 3", "floor-go", "tester"
+        )  # noqa: F841
 
         # Have one visit lounge
         sample_city.agent_visit_lounge(emb1, ["testing"])
@@ -1140,7 +1256,9 @@ class TestOffDutyCity:
     def test_generate_city_report(self, sample_city):
         """Test generating city report."""
         # Add some agents and activities
-        emb1 = sample_city.add_agent_to_city("agent-1", "Agent 1", "floor-python", "builder")
+        emb1 = sample_city.add_agent_to_city(
+            "agent-1", "Agent 1", "floor-python", "builder"
+        )
         sample_city.agent_visit_lounge(emb1, ["testing"])
 
         report = sample_city.generate_city_report()
@@ -1207,7 +1325,10 @@ class TestOffDutyCityIntegration:
         visual_decay = VisualDecay(decay_id="decay-int")
 
         city = OffDutyCity(
-            city_id="city-int", zone_manager=zone_manager, city_firewall=city_firewall, visual_decay=visual_decay
+            city_id="city-int",
+            zone_manager=zone_manager,
+            city_firewall=city_firewall,
+            visual_decay=visual_decay,
         )
 
         # Add multiple agents from different floors
@@ -1245,7 +1366,9 @@ class TestOffDutyCityIntegration:
         assert embodiment.current_zone == CityZone.LOUNGE
 
         # Visit workshop
-        populated_city.agent_visit_workshop(embodiment_id, "refactoring", "Code cleanup")
+        populated_city.agent_visit_workshop(
+            embodiment_id, "refactoring", "Code cleanup"
+        )
         assert embodiment.current_state == AgentOffDutyState.TINKERING
         assert embodiment.current_zone == CityZone.WORKSHOP
 
@@ -1255,12 +1378,16 @@ class TestOffDutyCityIntegration:
         assert embodiment.current_zone == CityZone.ARCHIVES
 
         # Attend ceremony
-        populated_city.agent_attend_plaza(embodiment_id, "recognition", "Award ceremony")
+        populated_city.agent_attend_plaza(
+            embodiment_id, "recognition", "Award ceremony"
+        )
         assert embodiment.current_state == AgentOffDutyState.ATTENDING_CEREMONY
         assert embodiment.current_zone == CityZone.PLAZA
 
         # Cross gate
-        result = populated_city.cross_transit_gate(embodiment_id, "office", "directive-001", "Work")
+        result = populated_city.cross_transit_gate(
+            embodiment_id, "office", "directive-001", "Work"
+        )
         assert result["success"] is True
 
     def test_multiple_agents_interacting(self, populated_city):
@@ -1275,7 +1402,8 @@ class TestOffDutyCityIntegration:
 
         # Start a conversation
         conv_id = populated_city.zone_manager.lounge.start_conversation(
-            participants=[f"embodiment-agent-int-{i}" for i in range(3)], topics=["testing", "best practices"]
+            participants=[f"embodiment-agent-int-{i}" for i in range(3)],
+            topics=["testing", "best practices"],
         )
 
         assert conv_id is not None
@@ -1287,13 +1415,19 @@ class TestOffDutyCityIntegration:
         decay = populated_city.visual_decay
 
         # Test decay at different time points
-        factor_0 = decay.decay_reputation_visual("agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 0, 1000)
+        factor_0 = decay.decay_reputation_visual(
+            "agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 0, 1000
+        )
         assert factor_0 == 1.0
 
-        factor_500 = decay.decay_reputation_visual("agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 500, 1000)
+        factor_500 = decay.decay_reputation_visual(
+            "agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 500, 1000
+        )
         assert 0.6 < factor_500 < 0.8
 
-        factor_2000 = decay.decay_reputation_visual("agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 2000, 1000)
+        factor_2000 = decay.decay_reputation_visual(
+            "agent-int-0", ReputationVisual.GOLDEN_STAR, 0, 2000, 1000
+        )
         assert factor_2000 < 0.3
         assert decay.should_archive(factor_2000, 0.5)
 
@@ -1301,11 +1435,19 @@ class TestOffDutyCityIntegration:
         """Test firewall blocks all unauthorized crossing types."""
         firewall = populated_city.city_firewall
 
-        blocked_types = ["decision", "agreement", "consensus", "momentum", "social_pressure"]
+        blocked_types = [
+            "decision",
+            "agreement",
+            "consensus",
+            "momentum",
+            "social_pressure",
+        ]
 
         for crossing_type in blocked_types:
             blocked, msg = firewall.block_city_to_production_crossing(
-                crossing_type=crossing_type, source_agent="agent-int-0", attempted_action=f"Attempt {crossing_type}"
+                crossing_type=crossing_type,
+                source_agent="agent-int-0",
+                attempted_action=f"Attempt {crossing_type}",
             )
             assert blocked is True
             assert crossing_type in msg
@@ -1339,7 +1481,9 @@ class TestOffDutyCityIntegration:
         plaza = populated_city.zone_manager.plaza
 
         plaza.host_ceremony(
-            ceremony_type="award", details="Excellence in testing", honorees=["agent-int-0", "agent-int-1"]
+            ceremony_type="award",
+            details="Excellence in testing",
+            honorees=["agent-int-0", "agent-int-1"],
         )
 
         ceremony = plaza.ceremonies[0]

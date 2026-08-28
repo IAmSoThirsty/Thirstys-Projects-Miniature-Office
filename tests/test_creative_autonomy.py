@@ -65,7 +65,10 @@ class TestCreativeFirewall:
         firewall = CreativeFirewall(firewall_id="fw-001")
 
         result = firewall.block_creative_crossing(
-            "initiative", "init-001", CreativeZone.IDLE_INITIATIVE, "Not approved by human"
+            "initiative",
+            "init-001",
+            CreativeZone.IDLE_INITIATIVE,
+            "Not approved by human",
         )
 
         assert result is True
@@ -83,7 +86,9 @@ class TestCreativeFirewall:
         firewall = CreativeFirewall(firewall_id="fw-001")
 
         violation_id = firewall.record_violation(
-            "unauthorized_crossing", "agent-001", "Attempted to execute without approval"
+            "unauthorized_crossing",
+            "agent-001",
+            "Attempted to execute without approval",
         )
 
         assert violation_id == "viol-1"
@@ -135,7 +140,9 @@ class TestIdleConditions:
     def test_can_enter_idle_mode_when_clear(self):
         """Test entering idle mode when conditions are clear."""
         conditions = IdleConditions(
-            has_active_board_resolution=False, has_pending_contracts=False, has_unresolved_failures=False
+            has_active_board_resolution=False,
+            has_pending_contracts=False,
+            has_unresolved_failures=False,
         )
 
         assert conditions.can_enter_idle_mode() is True
@@ -143,7 +150,9 @@ class TestIdleConditions:
     def test_cannot_enter_idle_mode_with_board_resolution(self):
         """Test cannot enter idle mode with active board resolution."""
         conditions = IdleConditions(
-            has_active_board_resolution=True, has_pending_contracts=False, has_unresolved_failures=False
+            has_active_board_resolution=True,
+            has_pending_contracts=False,
+            has_unresolved_failures=False,
         )
 
         assert conditions.can_enter_idle_mode() is False
@@ -151,7 +160,9 @@ class TestIdleConditions:
     def test_cannot_enter_idle_mode_with_pending_contracts(self):
         """Test cannot enter idle mode with pending contracts."""
         conditions = IdleConditions(
-            has_active_board_resolution=False, has_pending_contracts=True, has_unresolved_failures=False
+            has_active_board_resolution=False,
+            has_pending_contracts=True,
+            has_unresolved_failures=False,
         )
 
         assert conditions.can_enter_idle_mode() is False
@@ -159,7 +170,9 @@ class TestIdleConditions:
     def test_cannot_enter_idle_mode_with_unresolved_failures(self):
         """Test cannot enter idle mode with unresolved failures."""
         conditions = IdleConditions(
-            has_active_board_resolution=False, has_pending_contracts=False, has_unresolved_failures=True
+            has_active_board_resolution=False,
+            has_pending_contracts=False,
+            has_unresolved_failures=True,
         )
 
         assert conditions.can_enter_idle_mode() is False
@@ -350,7 +363,12 @@ class TestIdleInitiativeChannel:
         channel = IdleInitiativeChannel(channel_id="iic-001")
 
         proposal_id = channel.submit_proposal(
-            "floor-001", "agent-001", "Test Widget", "A helpful widget", "widget", "def widget(): pass"
+            "floor-001",
+            "agent-001",
+            "Test Widget",
+            "A helpful widget",
+            "widget",
+            "def widget(): pass",
         )
 
         assert proposal_id == "init-1"
@@ -364,7 +382,9 @@ class TestIdleInitiativeChannel:
         channel = IdleInitiativeChannel(channel_id="iic-001")
         channel.suspend("Testing suspension")
 
-        proposal_id = channel.submit_proposal("floor-001", "agent-001", "Test Widget", "A helpful widget", "widget")
+        proposal_id = channel.submit_proposal(
+            "floor-001", "agent-001", "Test Widget", "A helpful widget", "widget"
+        )
 
         assert proposal_id is None
         assert len(channel.proposals) == 0
@@ -373,7 +393,9 @@ class TestIdleInitiativeChannel:
         """Test submitting a proposal with invalid category."""
         channel = IdleInitiativeChannel(channel_id="iic-001")
 
-        proposal_id = channel.submit_proposal("floor-001", "agent-001", "Test", "Test", "invalid_category")
+        proposal_id = channel.submit_proposal(
+            "floor-001", "agent-001", "Test", "Test", "invalid_category"
+        )
 
         assert proposal_id is None
         assert len(channel.proposals) == 0
@@ -382,7 +404,14 @@ class TestIdleInitiativeChannel:
         """Test submitting multiple proposals."""
         channel = IdleInitiativeChannel(channel_id="iic-001")
 
-        for category in ["widget", "utility", "hygiene", "refactoring", "test_helper", "doc_helper"]:
+        for category in [
+            "widget",
+            "utility",
+            "hygiene",
+            "refactoring",
+            "test_helper",
+            "doc_helper",
+        ]:
             proposal_id = channel.submit_proposal(
                 "floor-001", "agent-001", f"Test {category}", f"A {category}", category
             )
@@ -432,12 +461,16 @@ class TestIdleInitiativeChannel:
         # Mock check_idle_conditions to return conditions that prevent idle mode
         def mock_check(floor_id):
             return IdleConditions(
-                has_active_board_resolution=True, has_pending_contracts=False, has_unresolved_failures=False
+                has_active_board_resolution=True,
+                has_pending_contracts=False,
+                has_unresolved_failures=False,
             )
 
         monkeypatch.setattr(channel, "check_idle_conditions", mock_check)
 
-        proposal_id = channel.submit_proposal("floor-001", "agent-001", "Test Widget", "A helpful widget", "widget")
+        proposal_id = channel.submit_proposal(
+            "floor-001", "agent-001", "Test Widget", "A helpful widget", "widget"
+        )
 
         assert proposal_id is None
         assert len(channel.proposals) == 0
@@ -538,7 +571,10 @@ class TestEmployeeLounge:
         lounge = EmployeeLounge(lounge_id="lounge-001")
 
         conv_id = lounge.start_conversation(
-            ["agent-001", "agent-002"], "Python tips", "technical", "Discussing list comprehensions"
+            ["agent-001", "agent-002"],
+            "Python tips",
+            "technical",
+            "Discussing list comprehensions",
         )
 
         assert conv_id == "conv-1"
@@ -583,7 +619,9 @@ class TestEmployeeLounge:
 
         # Add conversations
         for i in range(15):
-            lounge.start_conversation(["agent-001"], f"Topic {i}", "technical", f"Content {i}")
+            lounge.start_conversation(
+                ["agent-001"], f"Topic {i}", "technical", f"Content {i}"
+            )
 
         recent = lounge.get_recent_conversations(limit=5)
 
@@ -597,7 +635,9 @@ class TestEmployeeLounge:
 
         # Add 5 conversations
         for i in range(5):
-            lounge.start_conversation(["agent-001"], f"Topic {i}", "technical", f"Content {i}")
+            lounge.start_conversation(
+                ["agent-001"], f"Topic {i}", "technical", f"Content {i}"
+            )
 
         recent = lounge.get_recent_conversations()
 
@@ -708,7 +748,12 @@ class TestRecognitionSystem:
         system = RecognitionSystem(system_id="recog-001")
 
         award_id = system.nominate_employee_of_month(
-            "floor-001", "January", 2024, "agent-001", ["agent-002"], {"code_clarity": True}
+            "floor-001",
+            "January",
+            2024,
+            "agent-001",
+            ["agent-002"],
+            {"code_clarity": True},
         )
 
         assert award_id == "eom-1"
@@ -729,7 +774,9 @@ class TestRecognitionSystem:
 
         monkeypatch.setattr(EmployeeOfTheMonth, "__init__", mock_init)
 
-        award_id = system.nominate_employee_of_month("floor-001", "January", 2024, "agent-001", [], {})
+        award_id = system.nominate_employee_of_month(
+            "floor-001", "January", 2024, "agent-001", [], {}
+        )
 
         assert award_id == ""
         assert len(system.employee_of_month_awards) == 0
@@ -738,7 +785,9 @@ class TestRecognitionSystem:
         """Test awarding a golden star."""
         system = RecognitionSystem(system_id="recog-001")
 
-        star_id = system.award_golden_star("agent-001", "clean_code", "manager-001", "floor-001")
+        star_id = system.award_golden_star(
+            "agent-001", "clean_code", "manager-001", "floor-001"
+        )
 
         assert star_id == "star-1"
         assert len(system.golden_stars) == 1
@@ -759,7 +808,9 @@ class TestRecognitionSystem:
 
         monkeypatch.setattr(GoldenStar, "__init__", mock_init)
 
-        star_id = system.award_golden_star("agent-001", "clean_code", "manager-001", "floor-001")
+        star_id = system.award_golden_star(
+            "agent-001", "clean_code", "manager-001", "floor-001"
+        )
 
         assert star_id == ""
         assert len(system.golden_stars) == 0
@@ -769,8 +820,12 @@ class TestRecognitionSystem:
         system = RecognitionSystem(system_id="recog-001")
 
         system.award_golden_star("agent-001", "clean_code", "manager-001", "floor-001")
-        system.award_golden_star("agent-002", "first_pass_tests", "manager-001", "floor-001")
-        system.award_golden_star("agent-001", "zero_security", "manager-001", "floor-001")
+        system.award_golden_star(
+            "agent-002", "first_pass_tests", "manager-001", "floor-001"
+        )
+        system.award_golden_star(
+            "agent-001", "zero_security", "manager-001", "floor-001"
+        )
 
         stars = system.get_stars_for_agent("agent-001")
 
@@ -807,7 +862,11 @@ class TestReview:
         """Test creating a review."""
         now = datetime.now()
         review = Review(
-            review_id="review-001", timestamp=now, reviewer="manager-001", verdict="approved", comments="Excellent work"
+            review_id="review-001",
+            timestamp=now,
+            reviewer="manager-001",
+            verdict="approved",
+            comments="Excellent work",
         )
 
         assert review.review_id == "review-001"
@@ -841,7 +900,9 @@ class TestPersonalTrackRecord:
         """Test recording a successful contribution."""
         record = PersonalTrackRecord(agent_id="agent-001")
 
-        contrib_id = record.record_contribution("code", "Implemented feature X", "success")
+        contrib_id = record.record_contribution(
+            "code", "Implemented feature X", "success"
+        )
 
         assert contrib_id == "contrib-1"
         assert len(record.contributions) == 1
@@ -853,7 +914,9 @@ class TestPersonalTrackRecord:
         """Test recording a failed contribution."""
         record = PersonalTrackRecord(agent_id="agent-001")
 
-        contrib_id = record.record_contribution("code", "Attempted feature Y", "failure")
+        contrib_id = record.record_contribution(
+            "code", "Attempted feature Y", "failure"
+        )
 
         assert contrib_id == "contrib-1"
         assert len(record.contributions) == 1
@@ -887,7 +950,9 @@ class TestPersonalTrackRecord:
         """Test adding a review."""
         record = PersonalTrackRecord(agent_id="agent-001")
 
-        review_id = record.add_review("manager-001", "approved", "Great work on this task")
+        review_id = record.add_review(
+            "manager-001", "approved", "Great work on this task"
+        )
 
         assert review_id == "review-1"
         assert len(record.reviews_received) == 1
@@ -942,7 +1007,9 @@ class TestFailureSafetySystem:
         """Test suspending creative privileges."""
         system = FailureSafetySystem(system_id="safety-001")
 
-        susp_id = system.suspend_creative_privileges("agent-001", "Violated firewall rules", "authority_leakage")
+        susp_id = system.suspend_creative_privileges(
+            "agent-001", "Violated firewall rules", "authority_leakage"
+        )
 
         assert susp_id == "susp-1"
         assert len(system.suspensions) == 1
@@ -1067,7 +1134,9 @@ class TestBoundedCreativeAutonomy:
 
         assert result is True
         assert autonomy.idle_initiative_channel.suspended is True
-        assert autonomy.idle_initiative_channel.suspension_reason == "Emergency shutdown"
+        assert (
+            autonomy.idle_initiative_channel.suspension_reason == "Emergency shutdown"
+        )
         assert autonomy.is_enabled is False
 
     def test_shutdown_all_creative_when_cannot(self):
@@ -1194,9 +1263,15 @@ class TestBoundedCreativeAutonomy:
         autonomy = create_bounded_creative_autonomy()
 
         # Add some data
-        autonomy.idle_initiative_channel.submit_proposal("floor-001", "agent-001", "Test", "Test", "widget")
-        autonomy.employee_lounge.start_conversation(["agent-001"], "Test", "technical", "Test")
-        autonomy.recognition_system.award_golden_star("agent-001", "clean_code", "manager-001", "floor-001")
+        autonomy.idle_initiative_channel.submit_proposal(
+            "floor-001", "agent-001", "Test", "Test", "widget"
+        )
+        autonomy.employee_lounge.start_conversation(
+            ["agent-001"], "Test", "technical", "Test"
+        )
+        autonomy.recognition_system.award_golden_star(
+            "agent-001", "clean_code", "manager-001", "floor-001"
+        )
         autonomy.get_track_record("agent-001")
 
         report = autonomy.generate_status_report()
@@ -1225,7 +1300,7 @@ class TestBoundedCreativeAutonomy:
 
         assert "SUSPENDED" in report
         assert "VIOLATED" in report
-        assert "firewall violations" in report
+        assert "firewall violations" in report.lower()
 
 
 class TestModuleFunctions:

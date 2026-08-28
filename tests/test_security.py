@@ -83,7 +83,9 @@ class TestValidateRequestSize:
         def test_endpoint():
             return jsonify({"status": "ok"})
 
-        with app.test_request_context("/test", method="POST", headers={"Content-Length": "500"}):
+        with app.test_request_context(
+            "/test", method="POST", headers={"Content-Length": "500"}
+        ):
             response = test_endpoint()
             data = response.get_json()
             assert data["status"] == "ok"
@@ -99,7 +101,9 @@ class TestValidateRequestSize:
 
         with app.test_client() as client:
             # Send large payload that exceeds limit
-            response = client.post("/test", data="x" * 2000, content_type="application/json")
+            response = client.post(
+                "/test", data="x" * 2000, content_type="application/json"
+            )
             assert response.status_code == 413
             data = response.get_json()
             assert "error" in data
@@ -130,12 +134,16 @@ class TestValidateRequestSize:
 
         with app.test_client() as client:
             # 10KB should pass (well under 16MB)
-            response = client.post("/test", data="x" * (10 * 1024), content_type="application/json")
+            response = client.post(
+                "/test", data="x" * (10 * 1024), content_type="application/json"
+            )
             data = response.get_json()
             assert data["status"] == "ok"
 
             # 20MB should fail
-            response = client.post("/test", data="x" * (20 * 1024 * 1024), content_type="application/json")
+            response = client.post(
+                "/test", data="x" * (20 * 1024 * 1024), content_type="application/json"
+            )
             assert response.status_code == 413
 
     def test_validate_request_size_custom_limit(self):
@@ -148,7 +156,9 @@ class TestValidateRequestSize:
             return jsonify({"status": "ok"})
 
         with app.test_client() as client:
-            response = client.post("/test", data="x" * 600, content_type="application/json")
+            response = client.post(
+                "/test", data="x" * 600, content_type="application/json"
+            )
             data = response.get_json()
             assert response.status_code == 413
             assert data["max_size"] == 500
@@ -166,7 +176,12 @@ class TestValidateJsonRequest:
         def test_endpoint():
             return jsonify({"status": "ok"})
 
-        with app.test_request_context("/test", method="POST", content_type="application/json", data='{"test": "data"}'):
+        with app.test_request_context(
+            "/test",
+            method="POST",
+            content_type="application/json",
+            data='{"test": "data"}',
+        ):
             response = test_endpoint()
             data = response.get_json()
             assert data["status"] == "ok"
@@ -180,7 +195,9 @@ class TestValidateJsonRequest:
         def test_endpoint():
             return jsonify({"status": "ok"})
 
-        with app.test_request_context("/test", method="POST", content_type="text/plain", data="plain text"):
+        with app.test_request_context(
+            "/test", method="POST", content_type="text/plain", data="plain text"
+        ):
             result = test_endpoint()
             if isinstance(result, tuple):
                 response, status_code = result
@@ -200,7 +217,12 @@ class TestValidateJsonRequest:
         def test_endpoint():
             return jsonify({"status": "ok"})
 
-        with app.test_request_context("/test", method="PUT", content_type="application/json", data='{"test": "data"}'):
+        with app.test_request_context(
+            "/test",
+            method="PUT",
+            content_type="application/json",
+            data='{"test": "data"}',
+        ):
             response = test_endpoint()
             data = response.get_json()
             assert data["status"] == "ok"
@@ -232,7 +254,10 @@ class TestValidateJsonRequest:
             return jsonify({"status": "ok"})
 
         with app.test_request_context(
-            "/test", method="PATCH", content_type="application/json", data='{"test": "data"}'
+            "/test",
+            method="PATCH",
+            content_type="application/json",
+            data='{"test": "data"}',
         ):
             response = test_endpoint()
             data = response.get_json()
@@ -247,7 +272,9 @@ class TestValidateJsonRequest:
         def test_endpoint():
             return jsonify({"status": "ok"})
 
-        with app.test_request_context("/test", method="PATCH", content_type="application/x-www-form-urlencoded"):
+        with app.test_request_context(
+            "/test", method="PATCH", content_type="application/x-www-form-urlencoded"
+        ):
             result = test_endpoint()
             if isinstance(result, tuple):
                 response, status_code = result
@@ -326,7 +353,10 @@ class TestConfigureCors:
 
         with app.test_client() as client:
             response = client.get("/test", headers={"Origin": "https://example.com"})
-            assert response.headers.get("Access-Control-Allow-Origin") == "https://example.com"
+            assert (
+                response.headers.get("Access-Control-Allow-Origin")
+                == "https://example.com"
+            )
 
     def test_configure_cors_specific_origin_denied(self):
         """Test CORS denies unlisted origin"""
@@ -340,12 +370,17 @@ class TestConfigureCors:
         with app.test_client() as client:
             response = client.get("/test", headers={"Origin": "https://evil.com"})
             # Origin header should not be set for disallowed origins
-            assert response.headers.get("Access-Control-Allow-Origin") != "https://evil.com"
+            assert (
+                response.headers.get("Access-Control-Allow-Origin")
+                != "https://evil.com"
+            )
 
     def test_configure_cors_multiple_origins(self):
         """Test CORS with multiple allowed origins"""
         app = Flask(__name__)
-        configure_cors(app, allowed_origins=["https://example.com", "https://app.example.com"])
+        configure_cors(
+            app, allowed_origins=["https://example.com", "https://app.example.com"]
+        )
 
         @app.route("/test")
         def test_endpoint():
@@ -353,10 +388,18 @@ class TestConfigureCors:
 
         with app.test_client() as client:
             response1 = client.get("/test", headers={"Origin": "https://example.com"})
-            assert response1.headers.get("Access-Control-Allow-Origin") == "https://example.com"
+            assert (
+                response1.headers.get("Access-Control-Allow-Origin")
+                == "https://example.com"
+            )
 
-            response2 = client.get("/test", headers={"Origin": "https://app.example.com"})
-            assert response2.headers.get("Access-Control-Allow-Origin") == "https://app.example.com"
+            response2 = client.get(
+                "/test", headers={"Origin": "https://app.example.com"}
+            )
+            assert (
+                response2.headers.get("Access-Control-Allow-Origin")
+                == "https://app.example.com"
+            )
 
     def test_configure_cors_allowed_methods(self):
         """Test CORS sets allowed methods"""
@@ -419,7 +462,10 @@ class TestConfigureCors:
 
         with app.test_client() as client:
             response = client.get("/test", headers={"Origin": "https://site1.com"})
-            assert response.headers.get("Access-Control-Allow-Origin") == "https://site1.com"
+            assert (
+                response.headers.get("Access-Control-Allow-Origin")
+                == "https://site1.com"
+            )
 
 
 class TestSanitizeInput:

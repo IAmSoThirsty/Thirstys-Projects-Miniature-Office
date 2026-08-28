@@ -76,7 +76,11 @@ class TestAgentRegistration:
     def test_agent_registration_creation(self):
         """Test basic agent registration creation"""
         agent_reg = AgentRegistration(
-            agent_id="agent-001", name="Test Agent", role="Builder", capabilities=["python", "testing"], floor="floor-1"
+            agent_id="agent-001",
+            name="Test Agent",
+            role="Builder",
+            capabilities=["python", "testing"],
+            floor="floor-1",
         )
 
         assert agent_reg.agent_id == "agent-001"
@@ -89,7 +93,11 @@ class TestAgentRegistration:
     def test_agent_registration_timestamp(self):
         """Test that registered_at is automatically set"""
         agent_reg = AgentRegistration(
-            agent_id="agent-002", name="Agent", role="Tester", capabilities=[], floor="floor-1"
+            agent_id="agent-002",
+            name="Agent",
+            role="Tester",
+            capabilities=[],
+            floor="floor-1",
         )
 
         # Verify it's a valid ISO format timestamp
@@ -117,7 +125,11 @@ class TestAgentRegistration:
     def test_agent_registration_empty_capabilities(self):
         """Test agent registration with no capabilities"""
         agent_reg = AgentRegistration(
-            agent_id="agent-004", name="Simple Agent", role="Observer", capabilities=[], floor="floor-1"
+            agent_id="agent-004",
+            name="Simple Agent",
+            role="Observer",
+            capabilities=[],
+            floor="floor-1",
         )
 
         assert agent_reg.capabilities == []
@@ -300,7 +312,11 @@ class TestGlobalRegistry:
     def test_register_floor_duplicate(self, registry):
         """Test that registering duplicate floor raises error"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         with pytest.raises(ValueError, match="already registered"):
@@ -314,10 +330,19 @@ class TestGlobalRegistry:
 
     def test_register_floor_multiple_services(self, registry):
         """Test registering floor with multiple services"""
-        services = [ServiceType.CODE_ANALYSIS, ServiceType.CODE_GENERATION, ServiceType.CODE_TESTING, ServiceType.BUILD]
+        services = [
+            ServiceType.CODE_ANALYSIS,
+            ServiceType.CODE_GENERATION,
+            ServiceType.CODE_TESTING,
+            ServiceType.BUILD,
+        ]
 
         floor = registry.register_floor(
-            floor_id="floor-multi", floor_number=10, language="python", domain="full-stack", services=services
+            floor_id="floor-multi",
+            floor_number=10,
+            language="python",
+            domain="full-stack",
+            services=services,
         )
 
         assert len(floor.services) == 4
@@ -330,7 +355,11 @@ class TestGlobalRegistry:
         """Test basic agent registration"""
         # First register a floor
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         agent = registry.register_agent(
@@ -357,16 +386,28 @@ class TestGlobalRegistry:
     def test_register_agent_duplicate(self, registry):
         """Test that registering duplicate agent raises error"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent One", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent One",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         with pytest.raises(ValueError, match="already registered"):
             registry.register_agent(
-                agent_id="agent-001", name="Agent Two", role="Tester", capabilities=["rust"], floor_id="floor-001"
+                agent_id="agent-001",
+                name="Agent Two",
+                role="Tester",
+                capabilities=["rust"],
+                floor_id="floor-001",
             )
 
     def test_register_agent_floor_not_found(self, registry):
@@ -383,15 +424,27 @@ class TestGlobalRegistry:
     def test_register_multiple_agents_to_floor(self, registry):
         """Test registering multiple agents to the same floor"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         agent1 = registry.register_agent(  # noqa: F841
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         agent2 = registry.register_agent(  # noqa: F841
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         floor = registry.floors["floor-001"]
@@ -402,7 +455,11 @@ class TestGlobalRegistry:
     def test_update_floor_status(self, registry):
         """Test updating floor status"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         floor = registry.floors["floor-001"]
@@ -424,7 +481,11 @@ class TestGlobalRegistry:
     def test_get_floor(self, registry):
         """Test getting floor by ID"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         floor = registry.get_floor("floor-001")
@@ -438,11 +499,19 @@ class TestGlobalRegistry:
     def test_get_agent(self, registry):
         """Test getting agent by ID"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         agent = registry.get_agent("agent-001")
@@ -472,7 +541,11 @@ class TestGlobalRegistry:
         )
 
         registry.register_floor(
-            floor_id="floor-rust", floor_number=3, language="rust", domain="systems", services=[ServiceType.BUILD]
+            floor_id="floor-rust",
+            floor_number=3,
+            language="rust",
+            domain="systems",
+            services=[ServiceType.BUILD],
         )
 
         # Case-insensitive search
@@ -508,7 +581,11 @@ class TestGlobalRegistry:
         )
 
         registry.register_floor(
-            floor_id="floor-003", floor_number=3, language="go", domain="web", services=[ServiceType.WEB_SERVICE]
+            floor_id="floor-003",
+            floor_number=3,
+            language="go",
+            domain="web",
+            services=[ServiceType.WEB_SERVICE],
         )
 
         analysis_floors = registry.find_floors_by_service(ServiceType.CODE_ANALYSIS)
@@ -545,7 +622,11 @@ class TestGlobalRegistry:
         # Leave floor-002 in INITIALIZING state
 
         registry.register_floor(
-            floor_id="floor-003", floor_number=3, language="go", domain="web", services=[ServiceType.CODE_ANALYSIS]
+            floor_id="floor-003",
+            floor_number=3,
+            language="go",
+            domain="web",
+            services=[ServiceType.CODE_ANALYSIS],
         )
         registry.update_floor_status("floor-003", FloorStatus.BUSY)
 
@@ -560,11 +641,19 @@ class TestGlobalRegistry:
         assert len(registry.get_all_floors()) == 0
 
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_floor(
-            floor_id="floor-002", floor_number=2, language="rust", domain="test", services=[ServiceType.BUILD]
+            floor_id="floor-002",
+            floor_number=2,
+            language="rust",
+            domain="test",
+            services=[ServiceType.BUILD],
         )
 
         all_floors = registry.get_all_floors()
@@ -577,15 +666,27 @@ class TestGlobalRegistry:
         assert len(registry.get_all_agents()) == 0
 
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         all_agents = registry.get_all_agents()
@@ -596,23 +697,43 @@ class TestGlobalRegistry:
     def test_get_agents_by_floor(self, registry):
         """Test getting agents for a specific floor"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_floor(
-            floor_id="floor-002", floor_number=2, language="rust", domain="test", services=[ServiceType.BUILD]
+            floor_id="floor-002",
+            floor_number=2,
+            language="rust",
+            domain="test",
+            services=[ServiceType.BUILD],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Python Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Python Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Python Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Python Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-003", name="Rust Agent", role="Builder", capabilities=["rust"], floor_id="floor-002"
+            agent_id="agent-003",
+            name="Rust Agent",
+            role="Builder",
+            capabilities=["rust"],
+            floor_id="floor-002",
         )
 
         floor1_agents = registry.get_agents_by_floor("floor-001")
@@ -640,11 +761,19 @@ class TestGlobalRegistry:
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         assert "floor-001" in registry.floors
@@ -669,15 +798,27 @@ class TestGlobalRegistry:
     def test_deregister_agent(self, registry):
         """Test deregistering an agent"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         floor = registry.floors["floor-001"]
@@ -701,11 +842,19 @@ class TestGlobalRegistry:
     def test_deregister_agent_floor_already_removed(self, registry):
         """Test deregistering agent when floor is already gone"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         # Manually remove floor (simulating unusual state)
@@ -742,12 +891,20 @@ class TestGlobalRegistry:
         registry.update_floor_status("floor-001", FloorStatus.READY)
 
         registry.register_floor(
-            floor_id="floor-002", floor_number=2, language="rust", domain="systems", services=[ServiceType.BUILD]
+            floor_id="floor-002",
+            floor_number=2,
+            language="rust",
+            domain="systems",
+            services=[ServiceType.BUILD],
         )
         registry.update_floor_status("floor-002", FloorStatus.READY)
 
         registry.register_floor(
-            floor_id="floor-003", floor_number=3, language="python", domain="ml", services=[ServiceType.DATA_PROCESSING]
+            floor_id="floor-003",
+            floor_number=3,
+            language="python",
+            domain="ml",
+            services=[ServiceType.DATA_PROCESSING],
         )
         # Leave in INITIALIZING state
 
@@ -762,11 +919,19 @@ class TestGlobalRegistry:
 
         # Register some agents
         registry.register_agent(
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         stats = registry.get_registry_stats()
@@ -819,7 +984,11 @@ class TestGlobalRegistry:
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         exported = registry.export_registry()
@@ -914,7 +1083,11 @@ class TestGlobalRegistry:
         """Test that import clears existing data"""
         # Add some data
         registry.register_floor(
-            floor_id="floor-old", floor_number=99, language="old", domain="old", services=[ServiceType.BUILD]
+            floor_id="floor-old",
+            floor_number=99,
+            language="old",
+            domain="old",
+            services=[ServiceType.BUILD],
         )
 
         assert len(registry.floors) == 1
@@ -987,7 +1160,11 @@ class TestGlobalRegistryThreadSafety:
 
         # Register floor first
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         results = []
@@ -1167,11 +1344,19 @@ class TestEdgeCases:
     def test_empty_capabilities_list(self, registry):
         """Test agent with empty capabilities"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         agent = registry.register_agent(
-            agent_id="agent-001", name="Simple Agent", role="Observer", capabilities=[], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Simple Agent",
+            role="Observer",
+            capabilities=[],
+            floor_id="floor-001",
         )
 
         assert agent.capabilities == []
@@ -1179,7 +1364,11 @@ class TestEdgeCases:
     def test_empty_services_list(self, registry):
         """Test floor with no services"""
         floor = registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[],
         )
 
         assert floor.services == []
@@ -1187,7 +1376,11 @@ class TestEdgeCases:
     def test_multiple_status_updates(self, registry):
         """Test multiple status updates in sequence"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         statuses = [
@@ -1207,15 +1400,27 @@ class TestEdgeCases:
     def test_get_agents_by_floor_with_removed_agents(self, registry):
         """Test getting agents when some have been removed from registry"""
         registry.register_floor(
-            floor_id="floor-001", floor_number=1, language="python", domain="test", services=[ServiceType.CODE_TESTING]
+            floor_id="floor-001",
+            floor_number=1,
+            language="python",
+            domain="test",
+            services=[ServiceType.CODE_TESTING],
         )
 
         registry.register_agent(
-            agent_id="agent-001", name="Agent 1", role="Builder", capabilities=["python"], floor_id="floor-001"
+            agent_id="agent-001",
+            name="Agent 1",
+            role="Builder",
+            capabilities=["python"],
+            floor_id="floor-001",
         )
 
         registry.register_agent(
-            agent_id="agent-002", name="Agent 2", role="Tester", capabilities=["testing"], floor_id="floor-001"
+            agent_id="agent-002",
+            name="Agent 2",
+            role="Tester",
+            capabilities=["testing"],
+            floor_id="floor-001",
         )
 
         # Manually remove one agent from registry (simulating inconsistent state)
@@ -1231,7 +1436,11 @@ class TestEdgeCases:
         all_services = [service for service in ServiceType]
 
         floor = registry.register_floor(
-            floor_id="floor-all-services", floor_number=1, language="python", domain="full-stack", services=all_services
+            floor_id="floor-all-services",
+            floor_number=1,
+            language="python",
+            domain="full-stack",
+            services=all_services,
         )
 
         assert len(floor.services) == len(ServiceType)

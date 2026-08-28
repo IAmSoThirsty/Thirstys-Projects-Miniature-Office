@@ -22,7 +22,11 @@ class TestIntent:
 
     def test_intent_creation(self):
         """Test creating an intent."""
-        intent = Intent(goal="Build feature X", constraints=["Must be secure"], non_goals=["Don't support legacy API"])
+        intent = Intent(
+            goal="Build feature X",
+            constraints=["Must be secure"],
+            non_goals=["Don't support legacy API"],
+        )
         assert intent.goal == "Build feature X"
         assert len(intent.constraints) == 1
         assert len(intent.non_goals) == 1
@@ -41,7 +45,9 @@ class TestDesignRationale:
     def test_rationale_creation(self):
         """Test creating design rationale."""
         rationale = DesignRationale(
-            assumptions=["Assumption 1"], tradeoffs=["Tradeoff 1"], alternatives_rejected=["Alternative A"]
+            assumptions=["Assumption 1"],
+            tradeoffs=["Tradeoff 1"],
+            alternatives_rejected=["Alternative A"],
         )
         assert len(rationale.assumptions) == 1
 
@@ -57,7 +63,9 @@ class TestStakeholders:
 
     def test_stakeholders_creation(self):
         """Test creating stakeholders."""
-        stakeholders = Stakeholders(departments=["dept-001"], managers=["mgr-001"], agents=["agent-001"])
+        stakeholders = Stakeholders(
+            departments=["dept-001"], managers=["mgr-001"], agents=["agent-001"]
+        )
         assert len(stakeholders.departments) == 1
 
     def test_stakeholders_to_dict(self):
@@ -72,7 +80,9 @@ class TestRiskProfile:
 
     def test_risk_profile_creation(self):
         """Test creating risk profile."""
-        profile = RiskProfile(severity=Severity.HIGH, failure_modes=["Mode 1", "Mode 2"])
+        profile = RiskProfile(
+            severity=Severity.HIGH, failure_modes=["Mode 1", "Mode 2"]
+        )
         assert profile.severity == Severity.HIGH
         assert len(profile.failure_modes) == 2
 
@@ -99,7 +109,9 @@ class TestContractChallenge:
 
     def test_challenge_to_dict(self):
         """Test serializing challenge."""
-        challenge = ContractChallenge(challenger_id="agent-001", contract_id="contract-001", reason="Test")
+        challenge = ContractChallenge(
+            challenger_id="agent-001", contract_id="contract-001", reason="Test"
+        )
         data = challenge.to_dict()
         assert "challenge_id" in data
 
@@ -110,7 +122,9 @@ class TestRevocationJustification:
     def test_justification_creation(self):
         """Test creating justification."""
         justification = RevocationJustification(
-            reason="Requirements changed", impact_analysis="Minimal impact", affected_tasks=["task-001"]
+            reason="Requirements changed",
+            impact_analysis="Minimal impact",
+            affected_tasks=["task-001"],
         )
         assert justification.reason == "Requirements changed"
         assert not justification.meta_office_approval
@@ -128,7 +142,12 @@ class TestCognitiveContract:
     def test_contract_creation(self):
         """Test creating a contract."""
         intent = Intent(goal="Build feature")
-        contract = CognitiveContract(contract_id="contract-001", issued_at_tick=0, issuer="user-001", intent=intent)
+        contract = CognitiveContract(
+            contract_id="contract-001",
+            issued_at_tick=0,
+            issuer="user-001",
+            intent=intent,
+        )
         assert contract.entity_id == "contract-001"
         assert contract.status == ContractStatus.DRAFT
         assert contract.binding_level == BindingLevel.MANDATORY
@@ -220,7 +239,9 @@ class TestCognitiveContract:
         intent = Intent(goal="Test")
         contract = CognitiveContract("c-001", 0, "user", intent)
 
-        challenge = contract.challenge("agent-001", "Outdated assumptions", ["Evidence 1", "Evidence 2"])
+        challenge = contract.challenge(
+            "agent-001", "Outdated assumptions", ["Evidence 1", "Evidence 2"]
+        )
 
         assert challenge is not None
         assert len(contract.challenges) == 1
@@ -234,7 +255,9 @@ class TestCognitiveContract:
         contract.transition_to(ContractStatus.RATIFIED)
         contract.transition_to(ContractStatus.ACTIVE)
 
-        justification = RevocationJustification(reason="Test", impact_analysis="None", meta_office_approval=False)
+        justification = RevocationJustification(
+            reason="Test", impact_analysis="None", meta_office_approval=False
+        )
 
         result = contract.revoke(justification, "meta-office-001")
         assert not result
@@ -248,7 +271,9 @@ class TestCognitiveContract:
         contract.transition_to(ContractStatus.ACTIVE)
 
         justification = RevocationJustification(
-            reason="Requirements changed", impact_analysis="Minimal", meta_office_approval=True
+            reason="Requirements changed",
+            impact_analysis="Minimal",
+            meta_office_approval=True,
         )
 
         result = contract.revoke(justification, "meta-office-001")
@@ -270,7 +295,9 @@ class TestCognitiveContract:
 
     def test_validate_task_scope_within_intent(self):
         """Test validating task scope within intent."""
-        intent = Intent(goal="Build authentication system", non_goals=["Don't handle payments"])
+        intent = Intent(
+            goal="Build authentication system", non_goals=["Don't handle payments"]
+        )
         contract = CognitiveContract("c-001", 0, "user", intent)
 
         result = contract.validate_task_scope("Implement login flow")
@@ -278,7 +305,9 @@ class TestCognitiveContract:
 
     def test_validate_task_scope_against_non_goals(self):
         """Test validating task scope against non-goals."""
-        intent = Intent(goal="Build authentication", non_goals=["payment processing integration"])
+        intent = Intent(
+            goal="Build authentication", non_goals=["payment processing integration"]
+        )
         contract = CognitiveContract("c-001", 0, "user", intent)
 
         result = contract.validate_task_scope("payment processing integration")
@@ -403,15 +432,21 @@ class TestContractRegistry:
     def test_submit_challenge(self):
         """Test submitting a challenge."""
         registry = ContractRegistry()
-        challenge = ContractChallenge(challenger_id="agent-001", contract_id="c-001", reason="Test")
+        challenge = ContractChallenge(
+            challenger_id="agent-001", contract_id="c-001", reason="Test"
+        )
         registry.submit_challenge(challenge)
         assert len(registry.challenges_pending) == 1
 
     def test_get_pending_challenges(self):
         """Test getting pending challenges."""
         registry = ContractRegistry()
-        challenge1 = ContractChallenge(challenger_id="agent-001", contract_id="c-001", reason="Test")
-        challenge2 = ContractChallenge(challenger_id="agent-002", contract_id="c-002", reason="Test")
+        challenge1 = ContractChallenge(
+            challenger_id="agent-001", contract_id="c-001", reason="Test"
+        )
+        challenge2 = ContractChallenge(
+            challenger_id="agent-002", contract_id="c-002", reason="Test"
+        )
         challenge2.status = "accepted"
 
         registry.submit_challenge(challenge1)

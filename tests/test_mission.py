@@ -66,7 +66,9 @@ class TestDirective:
 
     def test_directive_creation(self):
         """Test creating a directive."""
-        directive = Directive("dir-001", "Test Directive", DirectiveLevel.USER_INTENT, "Test description")
+        directive = Directive(
+            "dir-001", "Test Directive", DirectiveLevel.USER_INTENT, "Test description"
+        )
         assert directive.entity_id == "dir-001"
         assert directive.name == "Test Directive"
         assert directive.level == DirectiveLevel.USER_INTENT
@@ -266,7 +268,11 @@ class TestDecisionTranscript:
 
     def test_transcript_to_dict(self):
         """Test serializing transcript to dict."""
-        transcript = DecisionTranscript(task_id="task-001", participants=["agent-001"], decisions_made=["Decision 1"])
+        transcript = DecisionTranscript(
+            task_id="task-001",
+            participants=["agent-001"],
+            decisions_made=["Decision 1"],
+        )
         data = transcript.to_dict()
         assert data["task_id"] == "task-001"
         assert "transcript_id" in data
@@ -288,7 +294,11 @@ class TestMeetingSystem:
         task.set_ambiguity_score(0.8)
 
         transcript = system.hold_meeting(
-            task, ["agent-001", "agent-002"], "Unclear scope", ["Narrow scope to X"], "Scope clarified"
+            task,
+            ["agent-001", "agent-002"],
+            "Unclear scope",
+            ["Narrow scope to X"],
+            "Scope clarified",
         )
 
         assert transcript is not None
@@ -301,7 +311,9 @@ class TestMeetingSystem:
         system = MeetingSystem()
         task = Task("task-001", "Test")
 
-        transcript = system.hold_meeting(task, ["agent-001"], "Issue", ["Decision"], "Resolved")
+        transcript = system.hold_meeting(
+            task, ["agent-001"], "Issue", ["Decision"], "Resolved"
+        )
 
         retrieved = system.get_transcript(transcript.transcript_id)
         assert retrieved is not None

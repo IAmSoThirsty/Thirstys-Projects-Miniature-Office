@@ -1,3 +1,6 @@
+> **Historical document — not current status.**
+> This file was written as a completion certificate. Canonical measured status is [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) (audited 28 Aug 2026, updated when the tree changed). Do not cite this file as evidence that a feature shipped.
+
 # TASK TIMELINE - Complete Achievement Record
 
 **Project**: Thirsty's Projects - Miniature Office (Civilization-Tier Cognitive IDE)  

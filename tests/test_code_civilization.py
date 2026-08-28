@@ -4,8 +4,8 @@ Tests for Code-Authoring Civilization pipeline
 
 import pytest
 
+from src.core.code_civilization import CodeAuthoringCivilization  # noqa: F401
 from src.core.code_civilization import (
-    CodeAuthoringCivilization,  # noqa: F401
     CodeDirective,
     InputType,
     ProgrammingLanguage,
@@ -205,7 +205,10 @@ def some_function(x):
         review = civilization._internal_review(impl)
 
         assert review.approved is False
-        assert any("docstring" in v.lower() or "documentation" in v.lower() for v in review.violations)
+        assert any(
+            "docstring" in v.lower() or "documentation" in v.lower()
+            for v in review.violations
+        )
 
 
 class TestTestingMandate:
@@ -315,7 +318,10 @@ class TestEndToEndPipeline:
             output = civilization.process_directive(directive_id)  # noqa: F841
 
         # Verify error message mentions rejection
-        assert "rejection" in str(exc_info.value).lower() or "empty" in str(exc_info.value).lower()
+        assert (
+            "rejection" in str(exc_info.value).lower()
+            or "empty" in str(exc_info.value).lower()
+        )
 
 
 class TestPurposeConstitution:
@@ -328,7 +334,9 @@ class TestPurposeConstitution:
         # Test forbidden actions
         assert not PurposeConstitution.is_action_legal("Speculative features", True)
         assert not PurposeConstitution.is_action_legal("Self-initiated projects", True)
-        assert not PurposeConstitution.is_action_legal("Adding helpful side quests", True)
+        assert not PurposeConstitution.is_action_legal(
+            "Adding helpful side quests", True
+        )
         assert not PurposeConstitution.is_action_legal("Unrelated optimizations", True)
 
     def test_is_action_legal_not_advancing_correctness(self):
@@ -372,7 +380,11 @@ class TestPurposeConstitution:
             requested_outcome=RequestedOutcome.EXTEND,
             constraints=[],
         )
-        context = {"code_directive": directive, "target_artifact": "code", "action": "Speculative features"}
+        context = {
+            "code_directive": directive,
+            "target_artifact": "code",
+            "action": "Speculative features",
+        }
         assert not PurposeConstitution.validate_purpose_compliance(context)
 
 
@@ -443,7 +455,9 @@ class TestDataclassSerialization:
         """Test ArchitecturalDecision serialization"""
         from src.core.code_civilization import ArchitecturalDecision
 
-        arch = ArchitecturalDecision(invariants=["Type hints"], rejected_reason=None, approved=True)
+        arch = ArchitecturalDecision(
+            invariants=["Type hints"], rejected_reason=None, approved=True
+        )
         data = arch.to_dict()
         assert data["invariants"] == ["Type hints"]
         assert data["rejected_reason"] is None
@@ -462,7 +476,9 @@ class TestDataclassSerialization:
         """Test ReviewDecision serialization"""
         from src.core.code_civilization import ReviewDecision
 
-        review = ReviewDecision(approved=True, violations=[], recommendations=["Add tests"])
+        review = ReviewDecision(
+            approved=True, violations=[], recommendations=["Add tests"]
+        )
         data = review.to_dict()
         assert data["approved"] is True
         assert data["violations"] == []
@@ -472,7 +488,12 @@ class TestDataclassSerialization:
         """Test TestSuite serialization"""
         from src.core.code_civilization import TestSuite
 
-        suite = TestSuite(test_code="def test(): pass", test_count=5, coverage_percent=85.5, all_pass=True)
+        suite = TestSuite(
+            test_code="def test(): pass",
+            test_count=5,
+            coverage_percent=85.5,
+            all_pass=True,
+        )
         data = suite.to_dict()
         assert data["test_code"] == "def test(): pass"
         assert data["test_count"] == 5
@@ -483,7 +504,9 @@ class TestDataclassSerialization:
         """Test ManagerSeal serialization"""
         from src.core.code_civilization import ManagerSeal
 
-        seal = ManagerSeal(contract_satisfied=True, tests_pass=True, no_unresolved_dissent=True)
+        seal = ManagerSeal(
+            contract_satisfied=True, tests_pass=True, no_unresolved_dissent=True
+        )
         seal.seal()
         data = seal.to_dict()
         assert data["contract_satisfied"] is True
@@ -495,8 +518,15 @@ class TestDataclassSerialization:
         """Test CodeOutput serialization"""
         from src.core.code_civilization import CodeOutput, ManagerSeal, TestSuite
 
-        suite = TestSuite(test_code="def test(): pass", test_count=1, coverage_percent=100.0, all_pass=True)
-        seal = ManagerSeal(contract_satisfied=True, tests_pass=True, no_unresolved_dissent=True)
+        suite = TestSuite(
+            test_code="def test(): pass",
+            test_count=1,
+            coverage_percent=100.0,
+            all_pass=True,
+        )
+        seal = ManagerSeal(
+            contract_satisfied=True, tests_pass=True, no_unresolved_dissent=True
+        )
         output = CodeOutput(
             directive_id="test",
             final_code="def func(): pass",
@@ -785,7 +815,9 @@ class TestFunctionExtraction:
     def test_extract_function_name_from_text(self):
         """Test extracting function name from natural language"""
         civilization = get_code_civilization()
-        name = civilization._extract_function_name("Create a function validate_email for emails")
+        name = civilization._extract_function_name(
+            "Create a function validate_email for emails"
+        )
         assert name == "validate_email"
 
     def test_extract_function_name_returns_none(self):
@@ -898,7 +930,7 @@ function oldStyle() {
 
         long_line = "x = " + "a" * 130  # noqa: F841
         impl = ImplementationOutput(
-            code='''
+            code=f'''
 def func():
     """Function with long line."""
     {long_line}
@@ -1037,7 +1069,9 @@ public class Test {
 
         civilization = get_code_civilization()
 
-        impl = ImplementationOutput(code="# Just a comment\n", files_modified=["empty.py"])
+        impl = ImplementationOutput(
+            code="# Just a comment\n", files_modified=["empty.py"]
+        )
 
         tests = civilization._testing_mandate(impl)
         assert tests.coverage_percent == 0.0
@@ -1097,7 +1131,9 @@ class TestProcessDirectiveErrors:
         def failing_review(impl):
             from src.core.code_civilization import ReviewDecision
 
-            return ReviewDecision(approved=False, violations=["Critical violation"], recommendations=[])
+            return ReviewDecision(
+                approved=False, violations=["Critical violation"], recommendations=[]
+            )
 
         civilization._internal_review = failing_review
 
@@ -1173,7 +1209,9 @@ class TestSubmitDirective:
         with pytest.raises(ValueError) as exc_info:
             civilization.submit_directive(directive)
 
-        PurposeConstitution.validate_purpose_compliance = staticmethod(original_validate)
+        PurposeConstitution.validate_purpose_compliance = staticmethod(
+            original_validate
+        )
         assert "violates Purpose Constitution" in str(exc_info.value)
 
 
@@ -1185,9 +1223,14 @@ class TestCodeOutputFormatting:
         from src.core.code_civilization import CodeOutput, ManagerSeal, TestSuite
 
         suite = TestSuite(
-            test_code="def test(): pass", test_count=1, coverage_percent=100.0, all_pass=False  # Tests don't pass
+            test_code="def test(): pass",
+            test_count=1,
+            coverage_percent=100.0,
+            all_pass=False,  # Tests don't pass
         )
-        seal = ManagerSeal(contract_satisfied=True, tests_pass=False, no_unresolved_dissent=True)  # Fails
+        seal = ManagerSeal(
+            contract_satisfied=True, tests_pass=False, no_unresolved_dissent=True
+        )  # Fails
         output = CodeOutput(
             directive_id="fail-001",
             final_code="def func(): pass",

@@ -2,7 +2,7 @@
 
 ## ✅ Supported Platforms
 
-Miniature Office is a **web-based application** that runs everywhere!
+Miniature Office is a **Flask web app**. Desktop and mobile browsers can load it. That is not the same as a native or VR product.
 
 ### 🖥️ Desktop Operating Systems
 

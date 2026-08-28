@@ -36,8 +36,14 @@ class TestPrimitiveAxiom:
 
     def test_axiom_values(self):
         """Test axiom string values"""
-        assert PrimitiveAxiom.INTENT_PRECEDES_EXECUTION.value == "intent_precedes_execution"
-        assert PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION.value == "authority_precedes_action"
+        assert (
+            PrimitiveAxiom.INTENT_PRECEDES_EXECUTION.value
+            == "intent_precedes_execution"
+        )
+        assert (
+            PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION.value
+            == "authority_precedes_action"
+        )
 
 
 class TestOntologicalLayer:
@@ -91,7 +97,9 @@ class TestInviolableLaw:
     def test_inviolable_law_creation(self):
         """Test creating an inviolable law"""
         law = InviolableLaw(
-            law_id="law-a1", principle="No action without intent", rationale="Prevents autonomous goal formation"
+            law_id="law-a1",
+            principle="No action without intent",
+            rationale="Prevents autonomous goal formation",
         )
 
         assert law.law_id == "law-a1"
@@ -101,7 +109,9 @@ class TestInviolableLaw:
     def test_inviolable_law_to_dict(self):
         """Test inviolable law serialization"""
         law = InviolableLaw(
-            law_id="law-a2", principle="Authority precedes action", rationale="Maintains accountability"
+            law_id="law-a2",
+            principle="Authority precedes action",
+            rationale="Maintains accountability",
         )
 
         result = law.to_dict()
@@ -145,7 +155,9 @@ class TestAuthorityRelation:
 
     def test_relation_creation(self):
         """Test creating authority relation"""
-        relation = AuthorityRelation(from_node="human", to_node="meta_office", relation_type="oversees")
+        relation = AuthorityRelation(
+            from_node="human", to_node="meta_office", relation_type="oversees"
+        )
 
         assert relation.from_node == "human"
         assert relation.to_node == "meta_office"
@@ -158,7 +170,9 @@ class TestAuthorityRelation:  # noqa: F811
     def test_relation_creation(self):
         """Test creating authority relation"""
         relation = AuthorityRelation(
-            from_node=AuthorityNode.HUMAN, to_node=AuthorityNode.META_OFFICE, relation_type="authority"
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority",
         )
 
         assert relation.from_node == AuthorityNode.HUMAN
@@ -169,13 +183,17 @@ class TestAuthorityRelation:  # noqa: F811
         """Test relation validity"""
         # Valid authority relation (flows down)
         relation = AuthorityRelation(
-            from_node=AuthorityNode.META_OFFICE, to_node=AuthorityNode.MANAGER, relation_type="authority"
+            from_node=AuthorityNode.META_OFFICE,
+            to_node=AuthorityNode.MANAGER,
+            relation_type="authority",
         )
         assert relation.is_valid() is True
 
         # Invalid authority relation (would flow up)
         relation2 = AuthorityRelation(
-            from_node=AuthorityNode.MANAGER, to_node=AuthorityNode.META_OFFICE, relation_type="authority"
+            from_node=AuthorityNode.MANAGER,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority",
         )
         assert relation2.is_valid() is False
 
@@ -194,7 +212,9 @@ class TestAuthorityGraph:
         graph = AuthorityGraph()
 
         relation = AuthorityRelation(
-            from_node=AuthorityNode.HUMAN, to_node=AuthorityNode.META_OFFICE, relation_type="authority"
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority",
         )
 
         result = graph.add_relation(relation)
@@ -347,7 +367,9 @@ class TestDensityCodex:
         codex = DensityCodex()
 
         # Test intent precedes execution
-        result = codex.validate_axiom(PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, {"intent": "test intent"})
+        result = codex.validate_axiom(
+            PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, {"intent": "test intent"}
+        )
         assert result is True
 
         # Test without intent
@@ -359,7 +381,9 @@ class TestDensityCodex:
         codex = DensityCodex()
 
         # Test valid access
-        result = codex.validate_layer_access(OntologicalLayer.LAYER_3_INTENT, OntologicalLayer.LAYER_2_ACTORS, "read")
+        result = codex.validate_layer_access(
+            OntologicalLayer.LAYER_3_INTENT, OntologicalLayer.LAYER_2_ACTORS, "read"
+        )
         assert isinstance(result, bool)
 
     def test_record_failure(self):
@@ -424,13 +448,17 @@ class TestAuthorityRelationValidation:
         """Test appeal relation validity (flows up)"""
         # Valid appeal (agent to manager)
         relation = AuthorityRelation(
-            from_node=AuthorityNode.AGENT, to_node=AuthorityNode.MANAGER, relation_type="appeal"
+            from_node=AuthorityNode.AGENT,
+            to_node=AuthorityNode.MANAGER,
+            relation_type="appeal",
         )
         assert relation.is_valid() is True
 
         # Invalid appeal (would flow down)
         relation2 = AuthorityRelation(
-            from_node=AuthorityNode.MANAGER, to_node=AuthorityNode.AGENT, relation_type="appeal"
+            from_node=AuthorityNode.MANAGER,
+            to_node=AuthorityNode.AGENT,
+            relation_type="appeal",
         )
         assert relation2.is_valid() is False
 
@@ -438,20 +466,26 @@ class TestAuthorityRelationValidation:
         """Test execution relation validity (lateral)"""
         # Valid execution (same level)
         relation = AuthorityRelation(
-            from_node=AuthorityNode.AGENT, to_node=AuthorityNode.AGENT, relation_type="execution"
+            from_node=AuthorityNode.AGENT,
+            to_node=AuthorityNode.AGENT,
+            relation_type="execution",
         )
         assert relation.is_valid() is True
 
         # Invalid execution (different levels)
         relation2 = AuthorityRelation(
-            from_node=AuthorityNode.AGENT, to_node=AuthorityNode.MANAGER, relation_type="execution"
+            from_node=AuthorityNode.AGENT,
+            to_node=AuthorityNode.MANAGER,
+            relation_type="execution",
         )
         assert relation2.is_valid() is False
 
     def test_relation_validity_unknown_type(self):
         """Test relation with unknown type"""
         relation = AuthorityRelation(
-            from_node=AuthorityNode.AGENT, to_node=AuthorityNode.MANAGER, relation_type="unknown"
+            from_node=AuthorityNode.AGENT,
+            to_node=AuthorityNode.MANAGER,
+            relation_type="unknown",
         )
         assert relation.is_valid() is False
 
@@ -465,7 +499,9 @@ class TestAuthorityGraphEdgeCases:
 
         # Invalid relation (authority flowing up)
         relation = AuthorityRelation(
-            from_node=AuthorityNode.AGENT, to_node=AuthorityNode.HUMAN, relation_type="authority"
+            from_node=AuthorityNode.AGENT,
+            to_node=AuthorityNode.HUMAN,
+            relation_type="authority",
         )
 
         result = graph.add_relation(relation)
@@ -478,7 +514,9 @@ class TestAuthorityGraphEdgeCases:
 
         # Add a valid relation (will trigger _creates_cycle call)
         relation = AuthorityRelation(
-            from_node=AuthorityNode.HUMAN, to_node=AuthorityNode.META_OFFICE, relation_type="authority"
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority",
         )
 
         result = graph.add_relation(relation)
@@ -505,11 +543,17 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has intent
         context = {"intent": "do something"}
-        assert codex.validate_axiom(PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, context) is True
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, context)
+            is True
+        )
 
         # Invalid: no intent
         context2 = {}
-        assert codex.validate_axiom(PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, context2) is False
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.INTENT_PRECEDES_EXECUTION, context2)
+            is False
+        )
 
     def test_validate_authority_precedes_action(self):
         """Test authority precedes action axiom"""
@@ -517,11 +561,17 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has authority
         context = {"authority": "manager-001"}
-        assert codex.validate_axiom(PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION, context) is True
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION, context)
+            is True
+        )
 
         # Invalid: no authority
         context2 = {}
-        assert codex.validate_axiom(PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION, context2) is False
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.AUTHORITY_PRECEDES_ACTION, context2)
+            is False
+        )
 
     def test_validate_causality_precedes_state(self):
         """Test causality precedes state axiom"""
@@ -529,11 +579,17 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has cause
         context = {"cause": "event-001"}
-        assert codex.validate_axiom(PrimitiveAxiom.CAUSALITY_PRECEDES_STATE, context) is True
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.CAUSALITY_PRECEDES_STATE, context)
+            is True
+        )
 
         # Invalid: no cause
         context2 = {}
-        assert codex.validate_axiom(PrimitiveAxiom.CAUSALITY_PRECEDES_STATE, context2) is False
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.CAUSALITY_PRECEDES_STATE, context2)
+            is False
+        )
 
     def test_validate_scarcity_precedes_value(self):
         """Test scarcity precedes value axiom"""
@@ -541,11 +597,17 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has scarcity > 0
         context = {"scarcity": 10}
-        assert codex.validate_axiom(PrimitiveAxiom.SCARCITY_PRECEDES_VALUE, context) is True
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.SCARCITY_PRECEDES_VALUE, context)
+            is True
+        )
 
         # Invalid: scarcity = 0
         context2 = {"scarcity": 0}
-        assert codex.validate_axiom(PrimitiveAxiom.SCARCITY_PRECEDES_VALUE, context2) is False
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.SCARCITY_PRECEDES_VALUE, context2)
+            is False
+        )
 
     def test_validate_history_precedes_optimization(self):
         """Test history precedes optimization axiom"""
@@ -553,11 +615,17 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has history
         context = {"history": ["event1", "event2"]}
-        assert codex.validate_axiom(PrimitiveAxiom.HISTORY_PRECEDES_OPTIMIZATION, context) is True
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.HISTORY_PRECEDES_OPTIMIZATION, context)
+            is True
+        )
 
         # Invalid: empty history
         context2 = {"history": []}
-        assert codex.validate_axiom(PrimitiveAxiom.HISTORY_PRECEDES_OPTIMIZATION, context2) is False
+        assert (
+            codex.validate_axiom(PrimitiveAxiom.HISTORY_PRECEDES_OPTIMIZATION, context2)
+            is False
+        )
 
     def test_validate_governance_precedes_intelligence(self):
         """Test governance precedes intelligence axiom"""
@@ -565,11 +633,21 @@ class TestDensityCodexAxiomValidation:
 
         # Valid: has governance
         context = {"governance": "enabled"}
-        assert codex.validate_axiom(PrimitiveAxiom.GOVERNANCE_PRECEDES_INTELLIGENCE, context) is True
+        assert (
+            codex.validate_axiom(
+                PrimitiveAxiom.GOVERNANCE_PRECEDES_INTELLIGENCE, context
+            )
+            is True
+        )
 
         # Invalid: no governance
         context2 = {}
-        assert codex.validate_axiom(PrimitiveAxiom.GOVERNANCE_PRECEDES_INTELLIGENCE, context2) is False
+        assert (
+            codex.validate_axiom(
+                PrimitiveAxiom.GOVERNANCE_PRECEDES_INTELLIGENCE, context2
+            )
+            is False
+        )
 
 
 class TestDensityCodexLayerValidation:
@@ -581,13 +659,21 @@ class TestDensityCodexLayerValidation:
 
         # Valid: adjacent upper layer
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_1_WORLD, OntologicalLayer.LAYER_2_ACTORS, "upward")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_1_WORLD,
+                OntologicalLayer.LAYER_2_ACTORS,
+                "upward",
+            )
             is True
         )
 
         # Invalid: skip a layer
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_1_WORLD, OntologicalLayer.LAYER_3_INTENT, "upward")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_1_WORLD,
+                OntologicalLayer.LAYER_3_INTENT,
+                "upward",
+            )
             is False
         )
 
@@ -597,13 +683,21 @@ class TestDensityCodexLayerValidation:
 
         # Valid: access lower layers
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_3_INTENT, OntologicalLayer.LAYER_1_WORLD, "downward")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_3_INTENT,
+                OntologicalLayer.LAYER_1_WORLD,
+                "downward",
+            )
             is True
         )
 
         # Invalid: trying to go up
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_1_WORLD, OntologicalLayer.LAYER_3_INTENT, "downward")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_1_WORLD,
+                OntologicalLayer.LAYER_3_INTENT,
+                "downward",
+            )
             is False
         )
 
@@ -613,13 +707,21 @@ class TestDensityCodexLayerValidation:
 
         # Valid: same layer
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_2_ACTORS, OntologicalLayer.LAYER_2_ACTORS, "lateral")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_2_ACTORS,
+                OntologicalLayer.LAYER_2_ACTORS,
+                "lateral",
+            )
             is True
         )
 
         # Invalid: different layers
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_2_ACTORS, OntologicalLayer.LAYER_3_INTENT, "lateral")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_2_ACTORS,
+                OntologicalLayer.LAYER_3_INTENT,
+                "lateral",
+            )
             is False
         )
 
@@ -628,7 +730,11 @@ class TestDensityCodexLayerValidation:
         codex = DensityCodex()
 
         assert (
-            codex.validate_layer_access(OntologicalLayer.LAYER_1_WORLD, OntologicalLayer.LAYER_2_ACTORS, "unknown")
+            codex.validate_layer_access(
+                OntologicalLayer.LAYER_1_WORLD,
+                OntologicalLayer.LAYER_2_ACTORS,
+                "unknown",
+            )
             is False
         )
 
@@ -710,7 +816,9 @@ class TestDensityCodexEdgeCases:
         graph = AuthorityGraph()
 
         relation = AuthorityRelation(
-            from_node=AuthorityNode.HUMAN, to_node=AuthorityNode.META_OFFICE, relation_type="authority"
+            from_node=AuthorityNode.HUMAN,
+            to_node=AuthorityNode.META_OFFICE,
+            relation_type="authority",
         )
 
         # Patch _creates_cycle to return True to trigger the raise

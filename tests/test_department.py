@@ -4,7 +4,11 @@ Comprehensive tests for departments/department.py to achieve 100% coverage
 
 from src.agents.agent import Agent, AgentRole
 from src.core.entity import EntityType, RelationType, get_registry
-from src.departments.department import Department, DepartmentRegistry, get_department_registry
+from src.departments.department import (
+    Department,
+    DepartmentRegistry,
+    get_department_registry,
+)
 
 
 class TestDepartment:
@@ -13,7 +17,10 @@ class TestDepartment:
     def test_department_creation(self):
         """Test basic department creation"""
         dept = Department(
-            department_id="dept1", name="Python Department", domain="Python", toolchain=["pytest", "mypy"]
+            department_id="dept1",
+            name="Python Department",
+            domain="Python",
+            toolchain=["pytest", "mypy"],
         )
 
         assert dept.entity_id == "dept1"
@@ -35,7 +42,9 @@ class TestDepartment:
 
     def test_add_agent(self):
         """Test adding an agent to department"""
-        dept = Department(department_id="dept3", name="JavaScript Department", domain="JavaScript")
+        dept = Department(
+            department_id="dept3", name="JavaScript Department", domain="JavaScript"
+        )
 
         agent = Agent(agent_id="agent1", name="JS Builder", role=AgentRole.BUILDER)
 
@@ -52,7 +61,9 @@ class TestDepartment:
 
     def test_add_multiple_agents_same_role(self):
         """Test adding multiple agents with same role"""
-        dept = Department(department_id="dept4", name="Multi Agent Dept", domain="Python")
+        dept = Department(
+            department_id="dept4", name="Multi Agent Dept", domain="Python"
+        )
 
         agent1 = Agent(agent_id="agent2", name="Builder 1", role=AgentRole.BUILDER)
         agent2 = Agent(agent_id="agent3", name="Builder 2", role=AgentRole.BUILDER)
@@ -98,10 +109,14 @@ class TestDepartment:
 
     def test_auto_spawn_assistants(self):
         """Test auto-spawning assistants for missing roles"""
-        dept = Department(department_id="dept7", name="Auto Spawn Dept", domain="Python")
+        dept = Department(
+            department_id="dept7", name="Auto Spawn Dept", domain="Python"
+        )
 
         # Add one agent
-        builder = Agent(agent_id="agent6", name="Manual Builder", role=AgentRole.BUILDER)
+        builder = Agent(
+            agent_id="agent6", name="Manual Builder", role=AgentRole.BUILDER
+        )
         dept.add_agent(builder)
 
         # Auto-spawn assistants for missing roles
@@ -201,7 +216,12 @@ class TestDepartment:
 
     def test_add_tool_to_toolchain_existing(self):
         """Test adding existing tool doesn't duplicate"""
-        dept = Department(department_id="dept14", name="Tool Dept", domain="Python", toolchain=["tool2"])
+        dept = Department(
+            department_id="dept14",
+            name="Tool Dept",
+            domain="Python",
+            toolchain=["tool2"],
+        )
 
         dept.add_tool_to_toolchain("tool2")
 
@@ -236,7 +256,13 @@ class TestDepartment:
         dept = Department(department_id="dept18", name="Full Dept", domain="Python")
 
         # Add all required roles
-        roles = [AgentRole.ARCHITECT, AgentRole.BUILDER, AgentRole.VERIFIER, AgentRole.SECURITY, AgentRole.DOC_AGENT]
+        roles = [
+            AgentRole.ARCHITECT,
+            AgentRole.BUILDER,
+            AgentRole.VERIFIER,
+            AgentRole.SECURITY,
+            AgentRole.DOC_AGENT,
+        ]
 
         for i, role in enumerate(roles):
             agent = Agent(agent_id=f"agent_{i}", name=f"Agent {i}", role=role)
@@ -255,11 +281,15 @@ class TestDepartment:
 
     def test_get_agents_by_role(self):
         """Test getting agents by role"""
-        dept = Department(department_id="dept20", name="Multi Builder Dept", domain="Python")
+        dept = Department(
+            department_id="dept20", name="Multi Builder Dept", domain="Python"
+        )
 
         builder1 = Agent(agent_id="agent9", name="Builder 1", role=AgentRole.BUILDER)
         builder2 = Agent(agent_id="agent10", name="Builder 2", role=AgentRole.BUILDER)
-        architect = Agent(agent_id="agent11", name="Architect", role=AgentRole.ARCHITECT)
+        architect = Agent(
+            agent_id="agent11", name="Architect", role=AgentRole.ARCHITECT
+        )
 
         dept.add_agent(builder1)
         dept.add_agent(builder2)
@@ -277,7 +307,9 @@ class TestDepartment:
 
     def test_get_agents_by_role_empty(self):
         """Test getting agents by role when none exist"""
-        dept = Department(department_id="dept21", name="Empty Role Dept", domain="Python")
+        dept = Department(
+            department_id="dept21", name="Empty Role Dept", domain="Python"
+        )
 
         agents = dept.get_agents_by_role(AgentRole.SECURITY)
 
@@ -290,7 +322,9 @@ class TestDepartment:
         # Create a mock contract entity
         from src.core.entity import Entity
 
-        contract = Entity(entity_id="contract1", entity_type=EntityType.CONTRACT, name="Test Contract")
+        contract = Entity(
+            entity_id="contract1", entity_type=EntityType.CONTRACT, name="Test Contract"
+        )
         get_registry().register(contract)
 
         dept.implement_contract("contract1")
@@ -328,7 +362,9 @@ class TestDepartmentRegistry:
         """Test registering a department"""
         registry = DepartmentRegistry()
 
-        dept = Department(department_id="dept25", name="Registered Dept", domain="Python")
+        dept = Department(
+            department_id="dept25", name="Registered Dept", domain="Python"
+        )
 
         registry.register_department(dept)
 
@@ -361,8 +397,12 @@ class TestDepartmentRegistry:
         """Test getting departments by domain"""
         registry = DepartmentRegistry()
 
-        dept1 = Department(department_id="dept27", name="Python Dept 1", domain="Python")
-        dept2 = Department(department_id="dept28", name="Python Dept 2", domain="Python")
+        dept1 = Department(
+            department_id="dept27", name="Python Dept 1", domain="Python"
+        )
+        dept2 = Department(
+            department_id="dept28", name="Python Dept 2", domain="Python"
+        )
         dept3 = Department(department_id="dept29", name="Rust Dept", domain="Rust")
 
         registry.register_department(dept1)

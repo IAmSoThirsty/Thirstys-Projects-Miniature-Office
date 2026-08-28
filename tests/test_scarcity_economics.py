@@ -30,7 +30,11 @@ class TestResourceAllocation:
     def test_allocation_with_values(self):
         """Test resource allocation with values"""
         alloc = ResourceAllocation(
-            agent_time=100, manager_attention=10, consensus_bandwidth=5, tool_slots=3, simulation_budget=2
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=5,
+            tool_slots=3,
+            simulation_budget=2,
         )
         assert alloc.agent_time == 100
         assert alloc.manager_attention == 10
@@ -74,7 +78,9 @@ class TestResourceLedgerEntry:
         """Test creating ledger entry"""
         allocated = ResourceAllocation(agent_time=100, tool_slots=5)
 
-        entry = ResourceLedgerEntry(entity_id="agent-001", tick=100, allocated=allocated)
+        entry = ResourceLedgerEntry(
+            entity_id="agent-001", tick=100, allocated=allocated
+        )
 
         assert entry.entity_id == "agent-001"
         assert entry.tick == 100
@@ -84,7 +90,9 @@ class TestResourceLedgerEntry:
         """Test entry serialization"""
         allocated = ResourceAllocation(agent_time=50, tool_slots=2)
 
-        entry = ResourceLedgerEntry(entity_id="agent-002", tick=200, allocated=allocated)
+        entry = ResourceLedgerEntry(
+            entity_id="agent-002", tick=200, allocated=allocated
+        )
 
         result = entry.to_dict()
         assert result["entity_id"] == "agent-002"
@@ -132,7 +140,9 @@ class TestResourceLedger:
         ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
 
         # Spend some resources
-        result = ledger.spend_resource("agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=30)
+        result = ledger.spend_resource(
+            "agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=30
+        )
 
         assert result is True
         entry = ledger.ledger["agent-001"][100]
@@ -146,7 +156,9 @@ class TestResourceLedger:
         ledger.allocate_resources("agent-001", tick=100, allocation=allocation)
 
         # Try to spend more than allocated
-        result = ledger.spend_resource("agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=50)
+        result = ledger.spend_resource(
+            "agent-001", tick=100, resource_type=ResourceType.AGENT_TIME, amount=50
+        )
 
         assert result is False
 
@@ -255,7 +267,11 @@ class TestResourceAllocationEdgeCases:
     def test_has_capacity_all_types(self):
         """Test has_capacity for all resource types"""
         alloc = ResourceAllocation(
-            agent_time=100, manager_attention=10, consensus_bandwidth=20, tool_slots=5, simulation_budget=50
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50,
         )
 
         assert alloc.has_capacity(ResourceType.AGENT_TIME, 50) is True
@@ -271,7 +287,11 @@ class TestResourceAllocationEdgeCases:
     def test_consume_all_types(self):
         """Test consume for all resource types"""
         alloc = ResourceAllocation(
-            agent_time=100, manager_attention=10, consensus_bandwidth=20, tool_slots=5, simulation_budget=50
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50,
         )
 
         # Consume different types
@@ -298,13 +318,23 @@ class TestResourceLedgerEntryEdgeCases:
         """Test checking if resources are exhausted"""
         # Exhausted: agent_time is 0
         allocated = ResourceAllocation(
-            agent_time=10, manager_attention=5, consensus_bandwidth=10, tool_slots=5, simulation_budget=10
+            agent_time=10,
+            manager_attention=5,
+            consensus_bandwidth=10,
+            tool_slots=5,
+            simulation_budget=10,
         )
         spent = ResourceAllocation(
-            agent_time=10, manager_attention=0, consensus_bandwidth=0, tool_slots=0, simulation_budget=0
+            agent_time=10,
+            manager_attention=0,
+            consensus_bandwidth=0,
+            tool_slots=0,
+            simulation_budget=0,
         )
 
-        entry = ResourceLedgerEntry(entity_id="agent-1", tick=100, allocated=allocated, spent=spent)
+        entry = ResourceLedgerEntry(
+            entity_id="agent-1", tick=100, allocated=allocated, spent=spent
+        )
 
         # Agent time is exhausted (remaining = 0)
         assert entry.is_exhausted() is True
@@ -314,10 +344,18 @@ class TestResourceLedgerEntryEdgeCases:
             entity_id="agent-2",
             tick=100,
             allocated=ResourceAllocation(
-                agent_time=100, manager_attention=10, consensus_bandwidth=10, tool_slots=5, simulation_budget=10
+                agent_time=100,
+                manager_attention=10,
+                consensus_bandwidth=10,
+                tool_slots=5,
+                simulation_budget=10,
             ),
             spent=ResourceAllocation(
-                agent_time=10, manager_attention=1, consensus_bandwidth=1, tool_slots=1, simulation_budget=1
+                agent_time=10,
+                manager_attention=1,
+                consensus_bandwidth=1,
+                tool_slots=1,
+                simulation_budget=1,
             ),
         )
         assert entry2.is_exhausted() is False
@@ -331,15 +369,28 @@ class TestResourceLedgerFullCoverage:
         ledger = ResourceLedger()
 
         allocation = ResourceAllocation(
-            agent_time=100, manager_attention=10, consensus_bandwidth=20, tool_slots=5, simulation_budget=50
+            agent_time=100,
+            manager_attention=10,
+            consensus_bandwidth=20,
+            tool_slots=5,
+            simulation_budget=50,
         )
         ledger.allocate_resources("agent-1", tick=100, allocation=allocation)
 
         # Spend different resource types
-        assert ledger.spend_resource("agent-1", 100, ResourceType.MANAGER_ATTENTION, 3) is True
-        assert ledger.spend_resource("agent-1", 100, ResourceType.CONSENSUS_BANDWIDTH, 5) is True
+        assert (
+            ledger.spend_resource("agent-1", 100, ResourceType.MANAGER_ATTENTION, 3)
+            is True
+        )
+        assert (
+            ledger.spend_resource("agent-1", 100, ResourceType.CONSENSUS_BANDWIDTH, 5)
+            is True
+        )
         assert ledger.spend_resource("agent-1", 100, ResourceType.TOOL_SLOTS, 2) is True
-        assert ledger.spend_resource("agent-1", 100, ResourceType.SIMULATION_BUDGET, 20) is True
+        assert (
+            ledger.spend_resource("agent-1", 100, ResourceType.SIMULATION_BUDGET, 20)
+            is True
+        )
 
         entry = ledger.ledger["agent-1"][100]
         assert entry.spent.manager_attention == 3

@@ -67,7 +67,9 @@ class TestEntity:
         artifact = Entity("artifact-1", EntityType.ARTIFACT, "Artifact")
 
         metadata = {"created_by": "agent-2", "timestamp": "2026-01-01"}
-        relationship = agent.declare_relationship(artifact, RelationType.PRODUCES, metadata)
+        relationship = agent.declare_relationship(
+            artifact, RelationType.PRODUCES, metadata
+        )
 
         assert relationship.metadata == metadata
         assert relationship.metadata["created_by"] == "agent-2"
@@ -175,7 +177,9 @@ class TestEntityRegistry:
         entity_registry.register(agent)
 
         # Manager manages agent (valid)
-        is_valid = entity_registry.validate_relationship("mgr-1", "agent-1", RelationType.MANAGES)
+        is_valid = entity_registry.validate_relationship(
+            "mgr-1", "agent-1", RelationType.MANAGES
+        )
         assert is_valid is True
 
     def test_validate_relationship_invalid(self, entity_registry):
@@ -187,7 +191,9 @@ class TestEntityRegistry:
         entity_registry.register(tool)
 
         # Agent manages tool (invalid)
-        is_valid = entity_registry.validate_relationship("agent-2", "tool-1", RelationType.MANAGES)
+        is_valid = entity_registry.validate_relationship(
+            "agent-2", "tool-1", RelationType.MANAGES
+        )
         assert is_valid is False
 
     def test_validate_relationship_nonexistent_entity(self, entity_registry):
@@ -196,7 +202,9 @@ class TestEntityRegistry:
         entity_registry.register(agent)
 
         # Target entity doesn't exist
-        is_valid = entity_registry.validate_relationship("agent-3", "nonexistent", RelationType.USES)
+        is_valid = entity_registry.validate_relationship(
+            "agent-3", "nonexistent", RelationType.USES
+        )
         assert is_valid is False
 
     def test_find_related(self, entity_registry):

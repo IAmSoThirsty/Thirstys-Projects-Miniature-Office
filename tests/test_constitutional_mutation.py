@@ -35,7 +35,10 @@ class TestAmendmentRules:
     def test_amendment_rules_to_dict(self):
         """Test amendment rules serialization"""
         rules = AmendmentRules(
-            requires=["MetaOffice"], cooldown_ticks=1000, requires_simulation=False, requires_rollback_path=False
+            requires=["MetaOffice"],
+            cooldown_ticks=1000,
+            requires_simulation=False,
+            requires_rollback_path=False,
         )
         result = rules.to_dict()
         assert result["cooldown_ticks"] == 1000
@@ -164,7 +167,10 @@ class TestMutationProposal:
     def test_proposal_to_dict(self):
         """Test proposal serialization"""
         proposal = MutationProposal(
-            proposal_id="prop-003", proposed_change="Change", justification="Justification", proposer_id="manager-001"
+            proposal_id="prop-003",
+            proposed_change="Change",
+            justification="Justification",
+            proposer_id="manager-001",
         )
 
         result = proposal.to_dict()
@@ -247,7 +253,9 @@ class TestConstitutionalMutationEngine:
         engine.submit_proposal(proposal)
 
         # Approve the proposal
-        result = engine.meta_office_ruling("prop-test-2", True, "Approved by meta-office")
+        result = engine.meta_office_ruling(
+            "prop-test-2", True, "Approved by meta-office"
+        )
 
         assert result is True
         assert proposal.meta_office_ruling is True
@@ -312,11 +320,18 @@ class TestMutationProposalAdvanced:
     def test_add_simulation(self):
         """Test adding simulation results - covers lines 236-237"""
         proposal = MutationProposal(
-            proposal_id="prop-sim-1", proposed_change="Test change", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-sim-1",
+            proposed_change="Test change",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         sim_result = SimulationResult(
-            simulation_id="sim-001", success=True, outcome_summary="Success", metrics={}, risks_identified=[]
+            simulation_id="sim-001",
+            success=True,
+            outcome_summary="Success",
+            metrics={},
+            risks_identified=[],
         )
 
         proposal.add_simulation(sim_result)
@@ -328,7 +343,10 @@ class TestMutationProposalAdvanced:
     def test_calculate_approval_no_votes(self):
         """Test approval calculation with no votes - covers line 241-242"""
         proposal = MutationProposal(
-            proposal_id="prop-vote-1", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-vote-1",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         assert proposal.calculate_approval() is False
@@ -336,10 +354,18 @@ class TestMutationProposalAdvanced:
     def test_calculate_approval_passes(self):
         """Test approval calculation that passes - covers lines 244-247"""
         proposal = MutationProposal(
-            proposal_id="prop-vote-2", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-vote-2",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
-        proposal.votes = {"mgr-001": True, "mgr-002": True, "mgr-003": True, "mgr-004": False}
+        proposal.votes = {
+            "mgr-001": True,
+            "mgr-002": True,
+            "mgr-003": True,
+            "mgr-004": False,
+        }
 
         # 3/4 = 75% >= 67% threshold (should pass)
         assert proposal.calculate_approval() is True
@@ -347,7 +373,10 @@ class TestMutationProposalAdvanced:
     def test_calculate_approval_fails(self):
         """Test approval calculation that fails - covers lines 244-247"""
         proposal = MutationProposal(
-            proposal_id="prop-vote-3", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-vote-3",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         proposal.votes = {"mgr-001": True, "mgr-002": False, "mgr-003": False}
@@ -358,7 +387,10 @@ class TestMutationProposalAdvanced:
     def test_schedule_activation(self):
         """Test scheduling delayed activation - covers lines 254-256"""
         proposal = MutationProposal(
-            proposal_id="prop-activate-1", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-activate-1",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         proposal.activation_delay_ticks = 100
@@ -369,7 +401,10 @@ class TestMutationProposalAdvanced:
     def test_rollback_without_path(self):
         """Test rollback without rollback path - covers line 270-271"""
         proposal = MutationProposal(
-            proposal_id="prop-rollback-1", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-rollback-1",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         # Should raise ValueError if no rollback path
@@ -379,7 +414,10 @@ class TestMutationProposalAdvanced:
     def test_rollback_with_path(self):
         """Test rollback with rollback path - covers lines 270-276"""
         proposal = MutationProposal(
-            proposal_id="prop-rollback-2", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-rollback-2",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         proposal.rollback_path = '{"revert": "to previous state"}'
@@ -397,7 +435,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-sim-test", proposed_change="Test change", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-sim-test",
+            proposed_change="Test change",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -420,11 +461,19 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-risk-1", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-risk-1",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         # Add simulation with no risks
-        sim = SimulationResult(simulation_id="sim-1", success=True, outcome_summary="Success", risks_identified=[])
+        sim = SimulationResult(
+            simulation_id="sim-1",
+            success=True,
+            outcome_summary="Success",
+            risks_identified=[],
+        )
         proposal.add_simulation(sim)
 
         engine.submit_proposal(proposal)
@@ -437,12 +486,18 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-risk-2", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-risk-2",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         # Add simulation with 2 risks
         sim = SimulationResult(
-            simulation_id="sim-2", success=True, outcome_summary="Success", risks_identified=["risk1", "risk2"]
+            simulation_id="sim-2",
+            success=True,
+            outcome_summary="Success",
+            risks_identified=["risk1", "risk2"],
         )
         proposal.add_simulation(sim)
 
@@ -456,7 +511,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-risk-3", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-risk-3",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         # Add simulation with 4 risks
@@ -478,7 +536,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-risk-4", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-risk-4",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         # Add simulation with 5+ risks
@@ -507,7 +568,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-vote-test", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-vote-test",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -527,7 +591,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-record-vote", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-record-vote",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -557,7 +624,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-reject", proposed_change="Valid change", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-reject",
+            proposed_change="Valid change",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -578,7 +648,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-activate-wrong", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-activate-wrong",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -592,7 +665,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-activate-no-tick", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-activate-no-tick",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -610,7 +686,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-activate-early", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-activate-early",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -628,7 +707,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-activate-success", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-activate-success",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -658,7 +740,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-get-test", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-get-test",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -700,7 +785,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-exact-tick", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-exact-tick",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)
@@ -717,7 +805,10 @@ class TestConstitutionalMutationEngineAdvanced:
         engine = ConstitutionalMutationEngine()
 
         proposal = MutationProposal(
-            proposal_id="prop-after-tick", proposed_change="Test", justification="Test", proposer_id="mgr-001"
+            proposal_id="prop-after-tick",
+            proposed_change="Test",
+            justification="Test",
+            proposer_id="mgr-001",
         )
 
         engine.submit_proposal(proposal)

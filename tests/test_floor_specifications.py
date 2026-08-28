@@ -83,7 +83,9 @@ class TestSecurityFocus:
 
     def test_security_focus_creation(self):
         """Test creating SecurityFocus with data"""
-        sf = SecurityFocus(primary_risks=["risk1", "risk2"], required_checks=["check1", "check2"])
+        sf = SecurityFocus(
+            primary_risks=["risk1", "risk2"], required_checks=["check1", "check2"]
+        )
         assert sf.primary_risks == ["risk1", "risk2"]
         assert sf.required_checks == ["check1", "check2"]
 
@@ -105,7 +107,11 @@ class TestTestingDoctrine:
 
     def test_testing_doctrine_creation(self):
         """Test creating TestingDoctrine with data"""
-        td = TestingDoctrine(mandatory_tests=["test1"], optional_tests=["test2"], special_emphasis=["emphasis1"])
+        td = TestingDoctrine(
+            mandatory_tests=["test1"],
+            optional_tests=["test2"],
+            special_emphasis=["emphasis1"],
+        )
         assert td.mandatory_tests == ["test1"]
         assert td.optional_tests == ["test2"]
         assert td.special_emphasis == ["emphasis1"]
@@ -119,9 +125,17 @@ class TestTestingDoctrine:
 
     def test_testing_doctrine_to_dict(self):
         """Test TestingDoctrine to_dict method"""
-        td = TestingDoctrine(mandatory_tests=["test1"], optional_tests=["test2"], special_emphasis=["emphasis1"])
+        td = TestingDoctrine(
+            mandatory_tests=["test1"],
+            optional_tests=["test2"],
+            special_emphasis=["emphasis1"],
+        )
         result = td.to_dict()
-        assert result == {"mandatory_tests": ["test1"], "optional_tests": ["test2"], "special_emphasis": ["emphasis1"]}
+        assert result == {
+            "mandatory_tests": ["test1"],
+            "optional_tests": ["test2"],
+            "special_emphasis": ["emphasis1"],
+        }
 
 
 class TestFloorSpecification:
@@ -180,49 +194,63 @@ class TestFloorSpecification:
     def test_validate_jurisdiction_author_allowed(self):
         """Test validate_jurisdiction for author action on own language"""
         floor = FLOOR_1_PYTHON
-        is_legal, reason = floor.validate_jurisdiction("author", ProgrammingLanguage.PYTHON)
+        is_legal, reason = floor.validate_jurisdiction(
+            "author", ProgrammingLanguage.PYTHON
+        )
         assert is_legal is True
         assert reason is None
 
     def test_validate_jurisdiction_author_denied(self):
         """Test validate_jurisdiction for author action on other language"""
         floor = FLOOR_1_PYTHON
-        is_legal, reason = floor.validate_jurisdiction("author", ProgrammingLanguage.RUST)
+        is_legal, reason = floor.validate_jurisdiction(
+            "author", ProgrammingLanguage.RUST
+        )
         assert is_legal is False
         assert "cannot author code in rust" in reason
 
     def test_validate_jurisdiction_interpret_allowed(self):
         """Test validate_jurisdiction for interpret action on own language"""
         floor = FLOOR_2_RUST
-        is_legal, reason = floor.validate_jurisdiction("interpret", ProgrammingLanguage.RUST)
+        is_legal, reason = floor.validate_jurisdiction(
+            "interpret", ProgrammingLanguage.RUST
+        )
         assert is_legal is True
         assert reason is None
 
     def test_validate_jurisdiction_interpret_denied(self):
         """Test validate_jurisdiction for interpret action on other language"""
         floor = FLOOR_2_RUST
-        is_legal, reason = floor.validate_jurisdiction("interpret", ProgrammingLanguage.PYTHON)
+        is_legal, reason = floor.validate_jurisdiction(
+            "interpret", ProgrammingLanguage.PYTHON
+        )
         assert is_legal is False
         assert "cannot interpret semantics of python" in reason
 
     def test_validate_jurisdiction_cross_language_own(self):
         """Test validate_jurisdiction for cross_language on own language"""
         floor = FLOOR_1_PYTHON
-        is_legal, reason = floor.validate_jurisdiction("cross_language", ProgrammingLanguage.PYTHON)
+        is_legal, reason = floor.validate_jurisdiction(
+            "cross_language", ProgrammingLanguage.PYTHON
+        )
         assert is_legal is True
         assert reason is None
 
     def test_validate_jurisdiction_cross_language_other(self):
         """Test validate_jurisdiction for cross_language on other language"""
         floor = FLOOR_1_PYTHON
-        is_legal, reason = floor.validate_jurisdiction("cross_language", ProgrammingLanguage.TYPESCRIPT)
+        is_legal, reason = floor.validate_jurisdiction(
+            "cross_language", ProgrammingLanguage.TYPESCRIPT
+        )
         assert is_legal is False
         assert "requires explicit contract" in reason
 
     def test_validate_jurisdiction_unknown_action(self):
         """Test validate_jurisdiction for unknown action"""
         floor = FLOOR_1_PYTHON
-        is_legal, reason = floor.validate_jurisdiction("unknown_action", ProgrammingLanguage.PYTHON)
+        is_legal, reason = floor.validate_jurisdiction(
+            "unknown_action", ProgrammingLanguage.PYTHON
+        )
         assert is_legal is True
         assert reason is None
 

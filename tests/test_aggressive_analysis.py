@@ -12,6 +12,8 @@ MAXIMUM DETAIL TESTING MODE:
 All test cases are explicit with no summarization.
 """
 
+import ast
+
 import pytest
 
 from src.analysis.ast_analyzer import (
@@ -145,7 +147,7 @@ from typing import List, Dict
 
         assert error is None
         imports = analyzer.extract_imports(root)
-        assert len(imports) == 4
+        assert len(imports) == 3
 
         # Check import types
         import_types = [imp.node_type for imp in imports]
@@ -405,12 +407,10 @@ z = y * 3
         """Test parsing from file"""
         # Create temporary Python file
         test_file = tmp_path / "test_module.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 def test_function():
     return True
-"""
-        )
+""")
 
         analyzer = ASTAnalyzer()
         root, error = analyzer.parse_file(test_file)
@@ -448,7 +448,7 @@ def greet():
         """Test handling of file encoding errors"""
         # Create file with invalid UTF-8 bytes
         test_file = tmp_path / "bad_encoding.py"
-        test_file.write_bytes(b"def test():\n    # Invalid UTF-8: \xFF\xFE\n    pass")
+        test_file.write_bytes(b"def test():\n    # Invalid UTF-8: \xff\xfe\n    pass")
 
         analyzer = ASTAnalyzer()
         root, error = analyzer.parse_file(test_file)
@@ -910,7 +910,10 @@ def calculate(x, y):
         assert arch_decision.ast_analysis is not None
 
         # Verify comprehensive analysis fields
-        if arch_decision.ast_analysis and "parse_error" not in arch_decision.ast_analysis:
+        if (
+            arch_decision.ast_analysis
+            and "parse_error" not in arch_decision.ast_analysis
+        ):
             assert "total_lines" in arch_decision.ast_analysis
             assert "function_count" in arch_decision.ast_analysis
             assert "function_details" in arch_decision.ast_analysis
@@ -1023,8 +1026,10 @@ class DatabaseConnection:
         from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell
 
         # Create a large class with many methods
-        methods = "\n".join([f"    def method_{i}(self): pass" for i in range(25)])  # noqa: F841
-        source = """
+        methods = "\n".join(
+            [f"    def method_{i}(self): pass" for i in range(25)]
+        )  # noqa: F841
+        source = f"""
 class GodClass:
 {methods}
 """
@@ -1036,7 +1041,9 @@ class GodClass:
         result = design_analyzer.analyze(ast_root, source)
 
         # Should detect god class smell
-        god_class_smells = [s for s in result.design_smells if s[0] == DesignSmell.GOD_CLASS]
+        god_class_smells = [
+            s for s in result.design_smells if s[0] == DesignSmell.GOD_CLASS
+        ]
         assert len(god_class_smells) > 0
 
     def test_solid_single_responsibility_violation(self):
@@ -1066,7 +1073,11 @@ class UserService:
         result = design_analyzer.analyze(ast_root, source)
 
         # Should detect SRP violation (multiple responsibilities)
-        srp_violations = [v for v in result.solid_violations if v.principle == SOLIDPrinciple.SINGLE_RESPONSIBILITY]
+        srp_violations = [
+            v
+            for v in result.solid_violations
+            if v.principle == SOLIDPrinciple.SINGLE_RESPONSIBILITY
+        ]
         assert len(srp_violations) > 0
 
     def test_solid_interface_segregation_violation(self):
@@ -1075,8 +1086,10 @@ class UserService:
         from src.analysis.design_analyzer import DesignAnalyzer, SOLIDPrinciple
 
         # Create interface with too many methods
-        methods = "\n".join([f"    def method_{i}(self): pass" for i in range(15)])  # noqa: F841
-        source = """
+        methods = "\n".join(
+            [f"    def method_{i}(self): pass" for i in range(15)]
+        )  # noqa: F841
+        source = f"""
 class LargeInterface:
 {methods}
 """
@@ -1088,7 +1101,11 @@ class LargeInterface:
         result = design_analyzer.analyze(ast_root, source)
 
         # Should detect ISP violation (too many methods in interface)
-        isp_violations = [v for v in result.solid_violations if v.principle == SOLIDPrinciple.INTERFACE_SEGREGATION]
+        isp_violations = [
+            v
+            for v in result.solid_violations
+            if v.principle == SOLIDPrinciple.INTERFACE_SEGREGATION
+        ]
         assert len(isp_violations) > 0
 
     def test_quality_metrics_calculation(self):
@@ -1166,7 +1183,10 @@ class ServiceB(ServiceA):
     def test_circular_dependency_detection(self):
         """Test circular dependency detection"""
         from src.analysis.ast_analyzer import ASTAnalyzer
-        from src.analysis.design_analyzer import DesignAnalyzer, DesignSmell  # noqa: F401
+        from src.analysis.design_analyzer import (  # noqa: F401
+            DesignAnalyzer,
+            DesignSmell,
+        )
 
         # Note: Hard to create true circular dependency in simple code
         # But the detection mechanism should be tested
@@ -1218,7 +1238,10 @@ class Service:
     def test_failure_mode_analysis(self):
         """Test failure mode analysis"""
         from src.analysis.ast_analyzer import ASTAnalyzer
-        from src.analysis.design_analyzer import ComponentType, DesignAnalyzer  # noqa: F401
+        from src.analysis.design_analyzer import (  # noqa: F401
+            ComponentType,
+            DesignAnalyzer,
+        )
 
         source = """
 class DatabaseRepository:

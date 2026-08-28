@@ -3,8 +3,7 @@ Comprehensive tests for Contract system.
 Achieves 100% code coverage for src/interfaces/contract.py
 """
 
-from datetime import datetime
-
+from datetime import datetime, timezone
 
 from src.core.audit import get_audit_log
 from src.core.entity import RelationType, get_registry
@@ -38,7 +37,11 @@ class TestAPIEndpoint:
 
     def test_api_endpoint_creation(self):
         """Test creating an API endpoint"""
-        endpoint = APIEndpoint(path="/api/users", parameters={"id": "int", "name": "str"}, return_type="User")
+        endpoint = APIEndpoint(
+            path="/api/users",
+            parameters={"id": "int", "name": "str"},
+            return_type="User",
+        )
         assert endpoint.path == "/api/users"
         assert endpoint.parameters["id"] == "int"
         assert endpoint.return_type == "User"
@@ -57,7 +60,10 @@ class TestAPIEndpoint:
     def test_api_endpoint_to_dict(self):
         """Test API endpoint serialization"""
         endpoint = APIEndpoint(
-            path="/api/test", parameters={"param1": "str"}, return_type="Result", description="Test endpoint"
+            path="/api/test",
+            parameters={"param1": "str"},
+            return_type="Result",
+            description="Test endpoint",
         )
         d = endpoint.to_dict()
         assert d["path"] == "/api/test"
@@ -120,7 +126,10 @@ class TestContract:
         version = VersionBoundary(1, 0, 0)
 
         contract = Contract(
-            contract_id="contract-1", name="User Service", provider_department_id=dept.entity_id, version=version
+            contract_id="contract-1",
+            name="User Service",
+            provider_department_id=dept.entity_id,
+            version=version,
         )
 
         assert contract.entity_id == "contract-1"
@@ -137,7 +146,10 @@ class TestContract:
         version = VersionBoundary(1, 0, 0)
 
         contract = Contract(
-            contract_id="contract-test-1", name="Test Contract", provider_department_id=dept.entity_id, version=version
+            contract_id="contract-test-1",
+            name="Test Contract",
+            provider_department_id=dept.entity_id,
+            version=version,
         )
 
         registered = get_registry().get(contract.entity_id)
@@ -149,11 +161,16 @@ class TestContract:
         version = VersionBoundary(1, 0, 0)
 
         contract = Contract(
-            contract_id="contract-log-1", name="Logged Contract", provider_department_id=dept.entity_id, version=version
+            contract_id="contract-log-1",
+            name="Logged Contract",
+            provider_department_id=dept.entity_id,
+            version=version,
         )
 
         events = get_audit_log().get_events(limit=10)
-        creation_events = [e for e in events if e.get("target_id") == contract.entity_id]
+        creation_events = [
+            e for e in events if e.get("target_id") == contract.entity_id
+        ]
         assert len(creation_events) > 0
 
     def test_add_api(self):
@@ -162,7 +179,9 @@ class TestContract:
         version = VersionBoundary(1, 0, 0)
         contract = Contract("contract-1", "Service", dept.entity_id, version)
 
-        endpoint = APIEndpoint(path="/api/test", parameters={"id": "int"}, return_type="Result")
+        endpoint = APIEndpoint(
+            path="/api/test", parameters={"id": "int"}, return_type="Result"
+        )
 
         contract.add_api(endpoint)
 
@@ -252,7 +271,9 @@ class TestContract:
 
         # Check relationship was created
         relationships = consumer_dept.relationships
-        uses_relationships = [r for r in relationships if r.relation_type == RelationType.USES]
+        uses_relationships = [
+            r for r in relationships if r.relation_type == RelationType.USES
+        ]
         assert any(r.target_id == contract.entity_id for r in uses_relationships)
 
     def test_is_compatible_with_same_major(self):
@@ -316,7 +337,7 @@ class TestInvocationRecord:
 
     def test_invocation_record_with_values(self):
         """Test invocation record with explicit values"""
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         record = InvocationRecord(
             invocation_id="inv-123",
             contract_id="contract-1",
@@ -385,7 +406,11 @@ class TestElevatorProtocol:
         elevator.register_contract(contract)
 
         events = get_audit_log().get_events(limit=10)
-        reg_events = [e for e in events if "contract_registered_in_elevator" in str(e.get("data", {}))]
+        reg_events = [
+            e
+            for e in events
+            if "contract_registered_in_elevator" in str(e.get("data", {}))
+        ]
         assert len(reg_events) > 0
 
     def test_check_compatibility_contract_not_found(self):
@@ -415,7 +440,9 @@ class TestElevatorProtocol:
         contract = Contract("contract-1", "Service", provider_dept.entity_id, version)
         elevator.register_contract(contract)
 
-        result = elevator.check_compatibility(consumer_dept.entity_id, contract.entity_id)
+        result = elevator.check_compatibility(
+            consumer_dept.entity_id, contract.entity_id
+        )
         assert result is True
 
     def test_invoke_contract_not_found(self):
@@ -436,7 +463,9 @@ class TestElevatorProtocol:
         contract = Contract("contract-1", "Service", dept.entity_id, version)
         elevator.register_contract(contract)
 
-        record = elevator.invoke_contract("nonexistent-dept", contract.entity_id, "/api/test")  # Consumer doesn't exist
+        record = elevator.invoke_contract(
+            "nonexistent-dept", contract.entity_id, "/api/test"
+        )  # Consumer doesn't exist
 
         assert record.success is False
         assert "compatibility" in record.error.lower()
@@ -451,7 +480,9 @@ class TestElevatorProtocol:
         contract = Contract("contract-1", "Service", provider_dept.entity_id, version)
         elevator.register_contract(contract)
 
-        record = elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/nonexistent")
+        record = elevator.invoke_contract(
+            consumer_dept.entity_id, contract.entity_id, "/api/nonexistent"
+        )
 
         assert record.success is False
         assert "not found" in record.error.lower()
@@ -470,7 +501,9 @@ class TestElevatorProtocol:
 
         elevator.register_contract(contract)
 
-        record = elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/test", {"id": 123})
+        record = elevator.invoke_contract(
+            consumer_dept.entity_id, contract.entity_id, "/api/test", {"id": 123}
+        )
 
         assert record.success is True
         assert record.error is None
@@ -483,16 +516,22 @@ class TestElevatorProtocol:
         provider_dept = Department("dept-provider", "Provider", "python")
         consumer_dept = Department("dept-consumer", "Consumer", "rust")
         version = VersionBoundary(1, 0, 0)
-        contract = Contract("contract-inv-1", "Service", provider_dept.entity_id, version)
+        contract = Contract(
+            "contract-inv-1", "Service", provider_dept.entity_id, version
+        )
 
         api = APIEndpoint("/api/test", {}, "Result")
         contract.add_api(api)
         elevator.register_contract(contract)
 
-        record = elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/test")  # noqa: F841
+        record = elevator.invoke_contract(
+            consumer_dept.entity_id, contract.entity_id, "/api/test"
+        )  # noqa: F841
 
         events = get_audit_log().get_events(limit=10)
-        invoke_events = [e for e in events if e.get("data", {}).get("action") == "contract_invoked"]
+        invoke_events = [
+            e for e in events if e.get("data", {}).get("action") == "contract_invoked"
+        ]
         assert len(invoke_events) > 0
 
     def test_get_contract_metrics_no_invocations(self):
@@ -511,7 +550,9 @@ class TestElevatorProtocol:
         provider_dept = Department("dept-provider", "Provider", "python")
         consumer_dept = Department("dept-consumer", "Consumer", "rust")
         version = VersionBoundary(1, 0, 0)
-        contract = Contract("contract-metrics", "Service", provider_dept.entity_id, version)
+        contract = Contract(
+            "contract-metrics", "Service", provider_dept.entity_id, version
+        )
 
         api = APIEndpoint("/api/test", {}, "Result")
         contract.add_api(api)
@@ -519,10 +560,14 @@ class TestElevatorProtocol:
 
         # Make multiple invocations
         for i in range(5):
-            elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/test")
+            elevator.invoke_contract(
+                consumer_dept.entity_id, contract.entity_id, "/api/test"
+            )
 
         # Make one failed invocation
-        elevator.invoke_contract(consumer_dept.entity_id, "nonexistent", "/api/test")  # This will fail
+        elevator.invoke_contract(
+            consumer_dept.entity_id, "nonexistent", "/api/test"
+        )  # This will fail
 
         metrics = elevator.get_contract_metrics(contract.entity_id)
 
@@ -536,7 +581,9 @@ class TestElevatorProtocol:
         provider_dept = Department("dept-provider", "Provider", "python")
         consumer_dept = Department("dept-consumer", "Consumer", "rust")
         version = VersionBoundary(1, 0, 0)
-        contract = Contract("contract-mixed", "Service", provider_dept.entity_id, version)
+        contract = Contract(
+            "contract-mixed", "Service", provider_dept.entity_id, version
+        )
 
         api = APIEndpoint("/api/test", {}, "Result")
         contract.add_api(api)
@@ -544,11 +591,15 @@ class TestElevatorProtocol:
 
         # 3 successful invocations
         for i in range(3):
-            elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/test")
+            elevator.invoke_contract(
+                consumer_dept.entity_id, contract.entity_id, "/api/test"
+            )
 
         # 2 failed invocations (wrong API path)
         for i in range(2):
-            elevator.invoke_contract(consumer_dept.entity_id, contract.entity_id, "/api/wrong")
+            elevator.invoke_contract(
+                consumer_dept.entity_id, contract.entity_id, "/api/wrong"
+            )
 
         metrics = elevator.get_contract_metrics(contract.entity_id)
 

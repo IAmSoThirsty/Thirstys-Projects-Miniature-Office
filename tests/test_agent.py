@@ -4,7 +4,6 @@ Comprehensive tests for agents/agent.py to achieve 100% coverage
 
 from datetime import datetime
 
-
 from src.agents.agent import (
     Agent,
     AgentRole,
@@ -65,7 +64,11 @@ class TestCapabilityProfile:
     def test_to_dict(self):
         """Test conversion to dictionary"""
         profile = CapabilityProfile(
-            languages={"python"}, tools={"pytest"}, domains={"backend"}, skills={"coding"}, security_clearance=2
+            languages={"python"},
+            tools={"pytest"},
+            domains={"backend"},
+            skills={"coding"},
+            security_clearance=2,
         )
 
         result = profile.to_dict()
@@ -81,7 +84,12 @@ class TestAgent:
 
     def test_agent_creation(self):
         """Test basic agent creation"""
-        agent = Agent(agent_id="agent1", name="Test Agent", role=AgentRole.BUILDER, department_id="dept1")
+        agent = Agent(
+            agent_id="agent1",
+            name="Test Agent",
+            role=AgentRole.BUILDER,
+            department_id="dept1",
+        )
 
         assert agent.entity_id == "agent1"
         assert agent.name == "Test Agent"
@@ -98,7 +106,12 @@ class TestAgent:
     def test_agent_with_capabilities(self):
         """Test agent creation with custom capabilities"""
         capabilities = CapabilityProfile(languages={"python"}, tools={"pytest"})
-        agent = Agent(agent_id="agent2", name="Capable Agent", role=AgentRole.VERIFIER, capabilities=capabilities)
+        agent = Agent(
+            agent_id="agent2",
+            name="Capable Agent",
+            role=AgentRole.VERIFIER,
+            capabilities=capabilities,
+        )
 
         assert agent.capabilities == capabilities
         assert "python" in agent.capabilities.languages
@@ -225,7 +238,9 @@ class TestConsensusVote:
 
     def test_vote_with_all_fields(self):
         """Test vote creation with all fields"""
-        vote = ConsensusVote(agent_id="agent11", vote=False, weight=2.5, reasoning="Safety concern")
+        vote = ConsensusVote(
+            agent_id="agent11", vote=False, weight=2.5, reasoning="Safety concern"
+        )
 
         assert vote.vote is False
         assert vote.weight == 2.5
@@ -261,7 +276,9 @@ class TestConsensusDecision:
 
     def test_calculate_outcome_approval(self):
         """Test consensus calculation with approval"""
-        decision = ConsensusDecision(subject="Approval test", target_id="target2", threshold=0.66)
+        decision = ConsensusDecision(
+            subject="Approval test", target_id="target2", threshold=0.66
+        )
 
         decision.add_vote("agent1", True, weight=1.0)
         decision.add_vote("agent2", True, weight=1.0)
@@ -275,7 +292,9 @@ class TestConsensusDecision:
 
     def test_calculate_outcome_rejection(self):
         """Test consensus calculation with rejection"""
-        decision = ConsensusDecision(subject="Rejection test", target_id="target3", threshold=0.66)
+        decision = ConsensusDecision(
+            subject="Rejection test", target_id="target3", threshold=0.66
+        )
 
         decision.add_vote("agent1", True, weight=1.0)
         decision.add_vote("agent2", False, weight=1.0)
@@ -298,7 +317,9 @@ class TestConsensusDecision:
 
     def test_calculate_outcome_weighted(self):
         """Test weighted consensus calculation"""
-        decision = ConsensusDecision(subject="Weighted test", target_id="target5", threshold=0.66)
+        decision = ConsensusDecision(
+            subject="Weighted test", target_id="target5", threshold=0.66
+        )
 
         decision.add_vote("senior", True, weight=2.0)
         decision.add_vote("junior1", False, weight=1.0)
@@ -358,7 +379,9 @@ class TestConsensusSystem:
         """Test initiating a consensus decision"""
         system = ConsensusSystem()
 
-        decision = system.initiate_consensus(subject="Feature X", target_id="featureX", threshold=0.75)
+        decision = system.initiate_consensus(
+            subject="Feature X", target_id="featureX", threshold=0.75
+        )
 
         assert decision.subject == "Feature X"
         assert decision.target_id == "featureX"

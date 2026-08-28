@@ -2,7 +2,6 @@
 
 from datetime import datetime
 
-
 from src.core.canonical_bundle import (  # I. Foundational Legitimacy Pack; II. Directive & Governance Records; III. Verification & Proof Pack; IV. Execution Evidence; V. Floor & Contract Artifacts; VI. Toolchain & Supply-Chain Trust; VII. Human-in-the-Loop Records; VIII. Evolution & Change Control; IX. Audit & External Trust; X. Termination & Continuity; XI. Meta-Evaluation; Bundle Manager  # noqa: F401,E501
     AuthorityGrant,
     AuthorityRoleLedger,
@@ -76,7 +75,12 @@ class TestCivilizationCharter:
                     "enforcement": "automatic",
                 }
             ],
-            role_definitions={"agent": {"powers": ["execute", "report"], "prohibitions": ["self-modify"]}},
+            role_definitions={
+                "agent": {
+                    "powers": ["execute", "report"],
+                    "prohibitions": ["self-modify"],
+                }
+            },
             limits_and_prohibitions={"general": ["No autonomous goals"]},
             supersession_rules=["Rule 1"],
             digital_signature="sig-001",
@@ -102,7 +106,9 @@ class TestCivilizationCharter:
                     "enforcement": "automatic",
                 }
             ],
-            role_definitions={"agent": {"powers": ["execute"], "prohibitions": ["self-modify"]}},
+            role_definitions={
+                "agent": {"powers": ["execute"], "prohibitions": ["self-modify"]}
+            },
             limits_and_prohibitions={},
             supersession_rules=[],
             digital_signature="sig-001",
@@ -140,7 +146,9 @@ class TestAuthorityRoleLedger:
 
     def test_grant_authority(self):
         """Test granting authority."""
-        ledger = AuthorityRoleLedger(ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[])
+        ledger = AuthorityRoleLedger(
+            ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[]
+        )
 
         grant_id = ledger.grant_authority(
             role="admin",
@@ -158,9 +166,13 @@ class TestAuthorityRoleLedger:
 
     def test_revoke_authority(self):
         """Test revoking authority."""
-        ledger = AuthorityRoleLedger(ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[])
+        ledger = AuthorityRoleLedger(
+            ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[]
+        )
 
-        grant_id = ledger.grant_authority("admin", "deploy", "entity-001", "entity-000", "Setup")
+        grant_id = ledger.grant_authority(
+            "admin", "deploy", "entity-001", "entity-000", "Setup"
+        )
 
         result = ledger.revoke_authority(grant_id, "entity-000", "No longer needed")
 
@@ -171,18 +183,24 @@ class TestAuthorityRoleLedger:
 
     def test_revoke_nonexistent_authority(self):
         """Test revoking non-existent authority."""
-        ledger = AuthorityRoleLedger(ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[])
+        ledger = AuthorityRoleLedger(
+            ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[]
+        )
 
         result = ledger.revoke_authority("grant-999", "entity-000", "Reason")
         assert result is False
 
     def test_get_active_authorities(self):
         """Test getting active authorities for an entity."""
-        ledger = AuthorityRoleLedger(ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[])
+        ledger = AuthorityRoleLedger(
+            ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[]
+        )
 
         ledger.grant_authority("admin", "deploy", "entity-001", "entity-000", "Setup")
         ledger.grant_authority("admin", "monitor", "entity-001", "entity-000", "Setup")
-        grant_id = ledger.grant_authority("admin", "delete", "entity-001", "entity-000", "Setup")
+        grant_id = ledger.grant_authority(
+            "admin", "delete", "entity-001", "entity-000", "Setup"
+        )
         ledger.revoke_authority(grant_id, "entity-000", "Removed")
 
         authorities = ledger.get_active_authorities("entity-001")
@@ -194,7 +212,9 @@ class TestAuthorityRoleLedger:
 
     def test_has_authority(self):
         """Test checking if entity has authority."""
-        ledger = AuthorityRoleLedger(ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[])
+        ledger = AuthorityRoleLedger(
+            ledger_id="ledger-001", created_at=datetime.now(), roles={}, grants=[]
+        )
 
         ledger.grant_authority("admin", "deploy", "entity-001", "entity-000", "Setup")
 
@@ -266,7 +286,10 @@ class TestPurposeLockAttestation:
             subsystem="subsystem3",
             timestamp=datetime.now(),
             is_locked=False,
-            violations=["Autonomous goal formation detected", "Exploratory behavior found"],
+            violations=[
+                "Autonomous goal formation detected",
+                "Exploratory behavior found",
+            ],
             evidence={"details": "test"},
         )
         attestation.checks.append(check)
@@ -274,7 +297,10 @@ class TestPurposeLockAttestation:
         report = attestation.generate_attestation_report()
 
         assert "subsystem3: ✗ UNLOCKED" in report
-        assert "Violations: Autonomous goal formation detected, Exploratory behavior found" in report
+        assert (
+            "Violations: Autonomous goal formation detected, Exploratory behavior found"
+            in report
+        )
         assert "Overall Status: UNLOCKED" in report
 
 
@@ -283,7 +309,9 @@ class TestBoardResolutionArchive:
 
     def test_record_resolution(self):
         """Test recording a board resolution."""
-        archive = BoardResolutionArchive(archive_id="archive-001", created_at=datetime.now(), resolutions=[])
+        archive = BoardResolutionArchive(
+            archive_id="archive-001", created_at=datetime.now(), resolutions=[]
+        )
 
         resolution_id = archive.record_resolution(
             directive_id="dir-001",
@@ -300,7 +328,9 @@ class TestBoardResolutionArchive:
 
     def test_get_resolutions_for_directive(self):
         """Test getting resolutions for a directive."""
-        archive = BoardResolutionArchive(archive_id="archive-001", created_at=datetime.now(), resolutions=[])
+        archive = BoardResolutionArchive(
+            archive_id="archive-001", created_at=datetime.now(), resolutions=[]
+        )
 
         archive.record_resolution("dir-001", "accepted", "python", "Good", {})
         archive.record_resolution("dir-002", "rejected", None, "Bad", {})
@@ -317,7 +347,9 @@ class TestDirectivePrecedentCorpus:
 
     def test_add_precedent(self):
         """Test adding a precedent."""
-        corpus = DirectivePrecedentCorpus(corpus_id="corpus-001", precedents=[], index={})
+        corpus = DirectivePrecedentCorpus(
+            corpus_id="corpus-001", precedents=[], index={}
+        )
 
         precedent_id = corpus.add_precedent(
             directive_id="dir-001",
@@ -336,11 +368,19 @@ class TestDirectivePrecedentCorpus:
 
     def test_search_precedents(self):
         """Test searching precedents by tags."""
-        corpus = DirectivePrecedentCorpus(corpus_id="corpus-001", precedents=[], index={})
+        corpus = DirectivePrecedentCorpus(
+            corpus_id="corpus-001", precedents=[], index={}
+        )
 
-        corpus.add_precedent("dir-001", "res-001", "Scenario 1", "success", "Good", ["api", "python"])
-        corpus.add_precedent("dir-002", "res-002", "Scenario 2", "failure", "Bad", ["api", "rust"])
-        corpus.add_precedent("dir-003", "res-003", "Scenario 3", "success", "Good", ["database"])
+        corpus.add_precedent(
+            "dir-001", "res-001", "Scenario 1", "success", "Good", ["api", "python"]
+        )
+        corpus.add_precedent(
+            "dir-002", "res-002", "Scenario 2", "failure", "Bad", ["api", "rust"]
+        )
+        corpus.add_precedent(
+            "dir-003", "res-003", "Scenario 3", "success", "Good", ["database"]
+        )
 
         results = corpus.search_precedents(["api"])
         assert len(results) == 2
@@ -389,7 +429,9 @@ class TestLawFailureResponseMatrix:
         )
 
         matrix = LawFailureResponseMatrix(
-            matrix_id="matrix-001", version="1.0.0", responses={("law-1", "failure-1"): response}
+            matrix_id="matrix-001",
+            version="1.0.0",
+            responses={("law-1", "failure-1"): response},
         )
 
         result = matrix.get_response("law-1", "failure-1")
@@ -407,10 +449,15 @@ class TestLawFailureResponseMatrix:
         matrix = LawFailureResponseMatrix(
             matrix_id="matrix-001",
             version="1.0.0",
-            responses={("law-1", "failure-1"): response1, ("law-2", "failure-1"): response2},
+            responses={
+                ("law-1", "failure-1"): response1,
+                ("law-2", "failure-1"): response2,
+            },
         )
 
-        is_complete, missing = matrix.verify_completeness(["law-1", "law-2"], ["failure-1", "failure-2"])
+        is_complete, missing = matrix.verify_completeness(
+            ["law-1", "law-2"], ["failure-1", "failure-2"]
+        )
 
         assert is_complete is False
         assert len(missing) == 2
@@ -423,7 +470,9 @@ class TestFormalLawVerificationModels:
 
     def test_add_invariant(self):
         """Test adding an invariant."""
-        models = FormalLawVerificationModels(model_id="model-001", version="1.0.0", invariants=[])
+        models = FormalLawVerificationModels(
+            model_id="model-001", version="1.0.0", invariants=[]
+        )
 
         inv_id = models.add_invariant(
             name="Safety Property",
@@ -439,7 +488,9 @@ class TestFormalLawVerificationModels:
 
     def test_verify_all_invariants(self):
         """Test verifying all invariants."""
-        models = FormalLawVerificationModels(model_id="model-001", version="1.0.0", invariants=[])
+        models = FormalLawVerificationModels(
+            model_id="model-001", version="1.0.0", invariants=[]
+        )
 
         models.add_invariant("Inv1", "stmt1", "check", "proof1", True)
         models.add_invariant("Inv2", "stmt2", "check", "proof2", False)
@@ -467,7 +518,9 @@ class TestInvariantViolationPlaybooks:
             escalation_path=["security", "meta-office"],
         )
 
-        playbooks = InvariantViolationPlaybooks(playbooks_id="playbooks-001", playbooks={"safety-property": playbook})
+        playbooks = InvariantViolationPlaybooks(
+            playbooks_id="playbooks-001", playbooks={"safety-property": playbook}
+        )
 
         result = playbooks.get_playbook("safety-property")
         assert result is not None
@@ -488,7 +541,9 @@ class TestInvariantViolationPlaybooks:
             escalation_path=["security", "meta-office"],
         )
 
-        playbooks = InvariantViolationPlaybooks(playbooks_id="playbooks-001", playbooks={"safety-property": playbook})
+        playbooks = InvariantViolationPlaybooks(
+            playbooks_id="playbooks-001", playbooks={"safety-property": playbook}
+        )
 
         result = playbooks.execute_playbook("safety-property")
         assert "invariant" in result
@@ -587,7 +642,9 @@ class TestFloorRuntimeProfiles:
             security_constraints=["no-network"],
         )
 
-        profiles = FloorRuntimeProfiles(profiles_id="profiles-001", profiles={"python": profile})
+        profiles = FloorRuntimeProfiles(
+            profiles_id="profiles-001", profiles={"python": profile}
+        )
 
         result = profiles.get_profile("python")
         assert result is not None
@@ -634,7 +691,9 @@ class TestCrossFloorContractRegistry:
 
         registry.register_contract("python", "rust", "1.0", True, "res-001", [], [])
         registry.register_contract("rust", "go", "1.0", True, "res-002", [], [])
-        c_id = registry.register_contract("python", "go", "1.0", True, "res-003", [], [])
+        c_id = registry.register_contract(
+            "python", "go", "1.0", True, "res-003", [], []
+        )
 
         # Deactivate one contract
         for contract in registry.contracts:
@@ -669,7 +728,9 @@ class TestToolProvenanceTrustLedger:
         """Test registering a tool."""
         ledger = ToolProvenanceTrustLedger(ledger_id="ledger-001", tools={})
 
-        tool_id = ledger.register_tool(tool_name="pytest", version="7.0.0", checksum="abc123", trust_score=0.95)
+        tool_id = ledger.register_tool(
+            tool_name="pytest", version="7.0.0", checksum="abc123", trust_score=0.95
+        )
 
         assert tool_id == "tool-1"
         assert len(ledger.tools) == 1
@@ -691,7 +752,9 @@ class TestUnsafeCapabilityExceptionRecords:
 
     def test_grant_exception(self):
         """Test granting an unsafe capability exception."""
-        records = UnsafeCapabilityExceptionRecords(records_id="records-001", exceptions=[])
+        records = UnsafeCapabilityExceptionRecords(
+            records_id="records-001", exceptions=[]
+        )
 
         exc_id = records.grant_exception(
             capability="network-access",
@@ -709,7 +772,9 @@ class TestUnsafeCapabilityExceptionRecords:
         """Test getting active exceptions."""
         from datetime import timedelta
 
-        records = UnsafeCapabilityExceptionRecords(records_id="records-001", exceptions=[])
+        records = UnsafeCapabilityExceptionRecords(
+            records_id="records-001", exceptions=[]
+        )
 
         records.grant_exception("network", "sec-001", "agent-001", "Reason", 100)
         records.grant_exception("file-write", "sec-001", "agent-002", "Reason", 100)
@@ -799,7 +864,9 @@ class TestConstitutionalAmendmentRegistry:
 
     def test_propose_amendment(self):
         """Test proposing an amendment."""
-        registry = ConstitutionalAmendmentRegistry(registry_id="registry-001", amendments=[])
+        registry = ConstitutionalAmendmentRegistry(
+            registry_id="registry-001", amendments=[]
+        )
 
         amendment_id = registry.propose_amendment(
             proposal_id="prop-001",
@@ -839,10 +906,14 @@ class TestIndependentAuditInterface:
     def test_grant_audit_access(self):
         """Test granting audit access."""
         interface = IndependentAuditInterface(
-            interface_id="interface-001", accessible_artifacts=["charter", "ledger"], access_log=[]
+            interface_id="interface-001",
+            accessible_artifacts=["charter", "ledger"],
+            access_log=[],
         )
 
-        token = interface.grant_audit_access(auditor_id="auditor-001", artifacts=["charter", "ledger"])
+        token = interface.grant_audit_access(
+            auditor_id="auditor-001", artifacts=["charter", "ledger"]
+        )
 
         assert token == "audit-1"
         assert len(interface.access_log) == 1
@@ -851,7 +922,9 @@ class TestIndependentAuditInterface:
     def test_get_artifact(self):
         """Test getting an artifact."""
         interface = IndependentAuditInterface(
-            interface_id="interface-001", accessible_artifacts=["charter"], access_log=[]
+            interface_id="interface-001",
+            accessible_artifacts=["charter"],
+            access_log=[],
         )
 
         # Placeholder returns None
@@ -867,7 +940,10 @@ class TestComplianceCertificationReports:
         reports = ComplianceCertificationReports(reports_id="reports-001", reports=[])
 
         report_id = reports.generate_report(
-            standard="ISO-27001", evidence=["doc-1", "doc-2"], status="compliant", gaps=[]
+            standard="ISO-27001",
+            evidence=["doc-1", "doc-2"],
+            status="compliant",
+            gaps=[],
         )
 
         assert report_id == "comp-1"
@@ -891,7 +967,9 @@ class TestCivilizationFreezeProtocol:
         )
 
         state_hash = protocol.freeze(
-            frozen_by="security-001", reason="Critical bug detected", state_snapshot={"agents": [], "tick": 100}
+            frozen_by="security-001",
+            reason="Critical bug detected",
+            state_snapshot={"agents": [], "tick": 100},
         )
 
         assert protocol.is_frozen is True
@@ -950,7 +1028,9 @@ class TestCivilizationShutdownSuccession:
         )
 
         seal = protocol.shutdown(
-            initiated_by="admin-001", archive_data={"artifacts": 27, "complete": True}, successor="steward-002"
+            initiated_by="admin-001",
+            archive_data={"artifacts": 27, "complete": True},
+            successor="steward-002",
         )
 
         assert protocol.is_shutdown is True

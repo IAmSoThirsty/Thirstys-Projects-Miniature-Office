@@ -1,6 +1,6 @@
 # Installation Guide - Miniature Office
 
-**Quick access across all platforms: Desktop, Mobile, and VR**
+**Access: local Flask app in a browser (desktop and mobile). There is no native VR client.**
 
 ## 📱 Easiest Option: Use Your Web Browser (All Platforms)
 
@@ -8,13 +8,12 @@ The Miniature Office runs as a web application, accessible from **any device wit
 
 1. Someone starts the server (see options below)
 2. Open your browser to: `http://localhost:5000` (or the server's IP address)
-3. Works on: Windows, macOS, Linux, Android, iOS, VR headsets with browsers
+3. Works in a modern browser on the same machine or LAN. A headset browser can load the page; that is not a VR product (no WebXR).
 
 This means:
-- ✅ **Desktop**: Chrome, Firefox, Safari, Edge on Windows/Mac/Linux
-- ✅ **Mobile**: Any phone or tablet with a web browser
-- ✅ **VR**: Quest Browser, Firefox Reality, Wolvic on VR headsets
-- ✅ **Tablets**: iPad, Android tablets, Surface devices
+- **Desktop**: Chrome, Firefox, Safari, Edge on Windows/Mac/Linux
+- **Mobile / tablet**: any phone or tablet browser pointed at the Flask server
+- **Not included**: a native app, PWA install package, or WebXR session
 
 ---
 

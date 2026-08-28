@@ -57,12 +57,9 @@ docker-compose down
 3. Open phone browser → `http://YOUR_IP:5000`
 4. Add to Home Screen for app-like experience
 
-## VR Quick Steps
+## Headsets
 
-1. Start server on computer (see above)
-2. Put on VR headset
-3. Open VR browser
-4. Navigate to `http://YOUR_IP:5000`
+There is no WebXR client. A headset browser can load `http://YOUR_IP:5000` the same way a phone can. That is still the Flask HTML UI.
 
 ## Find Your IP Address
 
@@ -87,7 +84,7 @@ Look for: inet 192.168.x.x
 | Python not found | Install Python 3.9+ from python.org |
 | Port 5000 in use | Edit run.py, change port to 8080 |
 | Can't connect from phone | Same WiFi? Firewall off? |
-| Permission denied | Run: `chmod +x install.sh start.sh` |
+| Permission denied | Run: `chmod +x install.sh start.sh start.command` |
 
 ## Need Help?
 

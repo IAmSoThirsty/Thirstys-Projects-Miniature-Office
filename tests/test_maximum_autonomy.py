@@ -74,10 +74,15 @@ class TestFloorInitiativeType:
     def test_floor_initiative_type_values(self):
         """Test floor initiative type enum values."""
         assert FloorInitiativeType.SAFETY_IMPROVEMENT.value == "safety_improvement"
-        assert FloorInitiativeType.PERFORMANCE_OPTIMIZATION.value == "performance_optimization"
+        assert (
+            FloorInitiativeType.PERFORMANCE_OPTIMIZATION.value
+            == "performance_optimization"
+        )
         assert FloorInitiativeType.TOOLING.value == "tooling"
         assert FloorInitiativeType.VISUALIZATION.value == "visualization"
-        assert FloorInitiativeType.TESTING_INFRASTRUCTURE.value == "testing_infrastructure"
+        assert (
+            FloorInitiativeType.TESTING_INFRASTRUCTURE.value == "testing_infrastructure"
+        )
         assert FloorInitiativeType.SECURITY_SCANNER.value == "security_scanner"
         assert FloorInitiativeType.REFACTORING.value == "refactoring"
 
@@ -101,7 +106,9 @@ class TestReputationEffect:
         """Test reputation effect enum values."""
         assert ReputationEffect.ATTRACTS_COLLABORATORS.value == "attracts_collaborators"
         assert ReputationEffect.SPEEDS_REVIEW.value == "speeds_review"
-        assert ReputationEffect.INCREASES_STAGING_TRUST.value == "increases_staging_trust"
+        assert (
+            ReputationEffect.INCREASES_STAGING_TRUST.value == "increases_staging_trust"
+        )
         assert ReputationEffect.INFLUENCES_LISTENING.value == "influences_listening"
 
 
@@ -125,7 +132,9 @@ class TestSelfCareCategory:
         """Test self care category enum values."""
         assert SelfCareCategory.REFACTORING.value == "refactoring"
         assert SelfCareCategory.SECURITY_HARDENING.value == "security_hardening"
-        assert SelfCareCategory.ARCHITECTURAL_EVOLUTION.value == "architectural_evolution"
+        assert (
+            SelfCareCategory.ARCHITECTURAL_EVOLUTION.value == "architectural_evolution"
+        )
         assert SelfCareCategory.LEGACY_CLEANUP.value == "legacy_cleanup"
         assert SelfCareCategory.TOOLING_MODERNIZATION.value == "tooling_modernization"
 
@@ -198,7 +207,11 @@ class TestStagingReality:
         staging = StagingReality(staging_id="staging-001")
 
         artifact_id = staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         assert artifact_id == "art-001"
@@ -215,7 +228,11 @@ class TestStagingReality:
         """Test running integration tests on artifact."""
         staging = StagingReality(staging_id="staging-001")
         staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         results = staging.run_integration_tests("art-001")
@@ -238,7 +255,11 @@ class TestStagingReality:
         """Test running security tests on artifact."""
         staging = StagingReality(staging_id="staging-001")
         staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         results = staging.run_security_tests("art-001")
@@ -261,7 +282,11 @@ class TestStagingReality:
         """Test resolving conflicts organically."""
         staging = StagingReality(staging_id="staging-001")
         staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         conflicts = staging.resolve_conflicts_organically("art-001")
@@ -284,7 +309,11 @@ class TestStagingReality:
         """Test getting a staging artifact."""
         staging = StagingReality(staging_id="staging-001")
         staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         artifact = staging.get_staging("art-001")
@@ -304,7 +333,11 @@ class TestStagingReality:
         """Test rolling back an artifact."""
         staging = StagingReality(staging_id="staging-001")
         staging.add_provisional_artifact(
-            artifact_id="art-001", artifact_type="codebase", content="test code", created_by="team-1", created_tick=1
+            artifact_id="art-001",
+            artifact_type="codebase",
+            content="test code",
+            created_by="team-1",
+            created_tick=1,
         )
 
         success = staging.rollback_artifact("art-001", "Testing rollback")
@@ -671,7 +704,9 @@ class TestReputationLeadership:
         """Test applying attracts collaborators effect."""
         rep_lead = ReputationLeadership(agent_id="agent-002", reputation_level=75)
 
-        success = rep_lead.apply_effect(ReputationEffect.ATTRACTS_COLLABORATORS, "project-alpha")
+        success = rep_lead.apply_effect(
+            ReputationEffect.ATTRACTS_COLLABORATORS, "project-alpha"
+        )
 
         assert success is True
         assert ReputationEffect.ATTRACTS_COLLABORATORS in rep_lead.active_effects
@@ -691,7 +726,9 @@ class TestReputationLeadership:
         """Test applying increases staging trust effect."""
         rep_lead = ReputationLeadership(agent_id="agent-004", reputation_level=80)
 
-        success = rep_lead.apply_effect(ReputationEffect.INCREASES_STAGING_TRUST, "project-gamma")
+        success = rep_lead.apply_effect(
+            ReputationEffect.INCREASES_STAGING_TRUST, "project-gamma"
+        )
 
         assert success is True
         assert ReputationEffect.INCREASES_STAGING_TRUST in rep_lead.active_effects
@@ -700,7 +737,9 @@ class TestReputationLeadership:
         """Test applying influences listening effect."""
         rep_lead = ReputationLeadership(agent_id="agent-005", reputation_level=95)
 
-        success = rep_lead.apply_effect(ReputationEffect.INFLUENCES_LISTENING, "project-delta")
+        success = rep_lead.apply_effect(
+            ReputationEffect.INFLUENCES_LISTENING, "project-delta"
+        )
 
         assert success is True
         assert ReputationEffect.INFLUENCES_LISTENING in rep_lead.active_effects
@@ -774,7 +813,10 @@ class TestVRLiveStagingView:
     def test_agent_demo_code(self):
         """Test agent demo code in VR."""
         vr_view = VRLiveStagingView(
-            view_id="vr-002", staging_id="staging-002", human_id="human-2", interaction_mode=VRInteractionMode.DEMO
+            view_id="vr-002",
+            staging_id="staging-002",
+            human_id="human-2",
+            interaction_mode=VRInteractionMode.DEMO,
         )
 
         demo_id = vr_view.agent_demo_code(
@@ -794,12 +836,19 @@ class TestVRLiveStagingView:
     def test_multiple_demos(self):
         """Test multiple agent demos."""
         vr_view = VRLiveStagingView(
-            view_id="vr-003", staging_id="staging-003", human_id="human-3", interaction_mode=VRInteractionMode.DEMO
+            view_id="vr-003",
+            staging_id="staging-003",
+            human_id="human-3",
+            interaction_mode=VRInteractionMode.DEMO,
         )
 
-        demo_id_1 = vr_view.agent_demo_code(agent_id="agent-1", demo_title="Demo 1", passionate_argument="Argument 1")
+        demo_id_1 = vr_view.agent_demo_code(
+            agent_id="agent-1", demo_title="Demo 1", passionate_argument="Argument 1"
+        )
 
-        demo_id_2 = vr_view.agent_demo_code(agent_id="agent-2", demo_title="Demo 2", passionate_argument="Argument 2")
+        demo_id_2 = vr_view.agent_demo_code(
+            agent_id="agent-2", demo_title="Demo 2", passionate_argument="Argument 2"
+        )
 
         assert demo_id_1 == "demo-0"
         assert demo_id_2 == "demo-1"
@@ -815,7 +864,9 @@ class TestVRLiveStagingView:
         )
 
         debate_id = vr_view.agents_debate(
-            participants=["agent-1", "agent-2", "agent-3"], topic="Refactoring Strategy", interruptions_allowed=True
+            participants=["agent-1", "agent-2", "agent-3"],
+            topic="Refactoring Strategy",
+            interruptions_allowed=True,
         )
 
         assert debate_id == "debate-0"
@@ -836,7 +887,9 @@ class TestVRLiveStagingView:
         )
 
         debate_id = vr_view.agents_debate(
-            participants=["agent-4", "agent-5"], topic="Architectural Evolution", interruptions_allowed=False
+            participants=["agent-4", "agent-5"],
+            topic="Architectural Evolution",
+            interruptions_allowed=False,
         )
 
         assert debate_id == "debate-0"
@@ -852,11 +905,17 @@ class TestVRLiveStagingView:
             interaction_mode=VRInteractionMode.FACTION_FORMATION,
         )
 
-        faction_name = vr_view.form_faction(faction_name="Refactoring Squad", members=["agent-1", "agent-2", "agent-3"])
+        faction_name = vr_view.form_faction(
+            faction_name="Refactoring Squad", members=["agent-1", "agent-2", "agent-3"]
+        )
 
         assert faction_name == "Refactoring Squad"
         assert "Refactoring Squad" in vr_view.factions
-        assert vr_view.factions["Refactoring Squad"] == ["agent-1", "agent-2", "agent-3"]
+        assert vr_view.factions["Refactoring Squad"] == [
+            "agent-1",
+            "agent-2",
+            "agent-3",
+        ]
 
     def test_multiple_factions(self):
         """Test forming multiple factions."""
@@ -867,9 +926,13 @@ class TestVRLiveStagingView:
             interaction_mode=VRInteractionMode.FACTION_FORMATION,
         )
 
-        faction_1 = vr_view.form_faction(faction_name="Team A", members=["agent-1", "agent-2"])  # noqa: F841
+        faction_1 = vr_view.form_faction(
+            faction_name="Team A", members=["agent-1", "agent-2"]
+        )  # noqa: F841
 
-        faction_2 = vr_view.form_faction(faction_name="Team B", members=["agent-3", "agent-4"])  # noqa: F841
+        faction_2 = vr_view.form_faction(
+            faction_name="Team B", members=["agent-3", "agent-4"]
+        )  # noqa: F841
 
         assert len(vr_view.factions) == 2
         assert "Team A" in vr_view.factions
@@ -896,7 +959,9 @@ class TestProjectAISelfCare:
         self_care = ProjectAISelfCare()
 
         proposal_id = self_care.propose_continuous_refactoring(
-            target_area="database_layer", rationale="Reduce query complexity", proposed_by="ai-agent-1"
+            target_area="database_layer",
+            rationale="Reduce query complexity",
+            proposed_by="ai-agent-1",
         )
 
         assert proposal_id == "refactor-0"
@@ -914,7 +979,9 @@ class TestProjectAISelfCare:
         self_care = ProjectAISelfCare()
 
         proposal_id = self_care.propose_security_hardening(
-            vulnerability_area="authentication_module", mitigation="Implement MFA", proposed_by="ai-agent-2"
+            vulnerability_area="authentication_module",
+            mitigation="Implement MFA",
+            proposed_by="ai-agent-2",
         )
 
         assert proposal_id == "security-0"
@@ -932,7 +999,9 @@ class TestProjectAISelfCare:
         self_care = ProjectAISelfCare()
 
         proposal_id = self_care.propose_architectural_evolution(
-            evolution_path="microservices_migration", long_term_benefit="Improved scalability", proposed_by="ai-agent-3"
+            evolution_path="microservices_migration",
+            long_term_benefit="Improved scalability",
+            proposed_by="ai-agent-3",
         )
 
         assert proposal_id == "arch-0"
@@ -950,15 +1019,21 @@ class TestProjectAISelfCare:
         self_care = ProjectAISelfCare()
 
         refactor_id = self_care.propose_continuous_refactoring(
-            target_area="api_layer", rationale="Simplify endpoints", proposed_by="ai-agent-1"
+            target_area="api_layer",
+            rationale="Simplify endpoints",
+            proposed_by="ai-agent-1",
         )
 
         security_id = self_care.propose_security_hardening(
-            vulnerability_area="input_validation", mitigation="Add sanitization", proposed_by="ai-agent-2"
+            vulnerability_area="input_validation",
+            mitigation="Add sanitization",
+            proposed_by="ai-agent-2",
         )
 
         arch_id = self_care.propose_architectural_evolution(
-            evolution_path="caching_strategy", long_term_benefit="Reduced latency", proposed_by="ai-agent-3"
+            evolution_path="caching_strategy",
+            long_term_benefit="Reduced latency",
+            proposed_by="ai-agent-3",
         )
 
         assert len(self_care.proposals) == 3
@@ -969,7 +1044,10 @@ class TestProjectAISelfCare:
         # Verify all three proposals are different types
         assert self_care.proposals[0]["category"] == SelfCareCategory.REFACTORING
         assert self_care.proposals[1]["category"] == SelfCareCategory.SECURITY_HARDENING
-        assert self_care.proposals[2]["category"] == SelfCareCategory.ARCHITECTURAL_EVOLUTION
+        assert (
+            self_care.proposals[2]["category"]
+            == SelfCareCategory.ARCHITECTURAL_EVOLUTION
+        )
 
 
 # ============================================================================
@@ -1067,10 +1145,15 @@ class TestMaximumAutonomyModel:
         autonomy_model.current_tick = 20
 
         team_id = autonomy_model.form_self_organizing_team(
-            team_name="Team A", founder="agent-1", reason=TeamFormationReason.INNOVATION, initial_members=["agent-1"]
+            team_name="Team A",
+            founder="agent-1",
+            reason=TeamFormationReason.INNOVATION,
+            initial_members=["agent-1"],
         )
 
-        success = autonomy_model.team_recruit_member(team_id=team_id, agent_id="agent-4", recruited_by="agent-1")
+        success = autonomy_model.team_recruit_member(
+            team_id=team_id, agent_id="agent-4", recruited_by="agent-1"
+        )
 
         assert success is True
         assert "agent-4" in autonomy_model.team_dynamics.teams[team_id].members
@@ -1088,11 +1171,17 @@ class TestMaximumAutonomyModel:
         autonomy_model.current_tick = 25
 
         team_id_1 = autonomy_model.form_self_organizing_team(
-            team_name="Team A", founder="agent-1", reason=TeamFormationReason.COMPETITION, initial_members=["agent-1"]
+            team_name="Team A",
+            founder="agent-1",
+            reason=TeamFormationReason.COMPETITION,
+            initial_members=["agent-1"],
         )
 
         team_id_2 = autonomy_model.form_self_organizing_team(
-            team_name="Team B", founder="agent-2", reason=TeamFormationReason.COMPETITION, initial_members=["agent-2"]
+            team_name="Team B",
+            founder="agent-2",
+            reason=TeamFormationReason.COMPETITION,
+            initial_members=["agent-2"],
         )
 
         autonomy_model.teams_compete(team_id_1, team_id_2, "project-alpha")
@@ -1129,14 +1218,18 @@ class TestMaximumAutonomyModel:
             strength=0.7,
         )
 
-        allowed, message = autonomy_model.verify_lounge_influence_limits(influence_id, "override_security")
+        allowed, message = autonomy_model.verify_lounge_influence_limits(
+            influence_id, "override_security"
+        )
 
         assert allowed is False
         assert "Cannot override security" in message
 
     def test_verify_lounge_influence_limits_nonexistent(self, autonomy_model):
         """Test verifying limits for nonexistent influence."""
-        allowed, message = autonomy_model.verify_lounge_influence_limits("nonexistent-influence", "override_security")
+        allowed, message = autonomy_model.verify_lounge_influence_limits(
+            "nonexistent-influence", "override_security"
+        )
 
         assert allowed is False
         assert "Influence not found" in message
@@ -1164,14 +1257,18 @@ class TestMaximumAutonomyModel:
             reputation_level=90,
         )
 
-        allowed, message = autonomy_model.verify_reputation_caps("agent-6", "override_veto")
+        allowed, message = autonomy_model.verify_reputation_caps(
+            "agent-6", "override_veto"
+        )
 
         assert allowed is False
         assert "Cannot override veto" in message
 
     def test_verify_reputation_caps_nonexistent(self, autonomy_model):
         """Test verifying reputation caps for nonexistent agent."""
-        allowed, message = autonomy_model.verify_reputation_caps("nonexistent-agent", "override_veto")
+        allowed, message = autonomy_model.verify_reputation_caps(
+            "nonexistent-agent", "override_veto"
+        )
 
         assert allowed is False
         assert "Agent reputation not found" in message
@@ -1180,13 +1277,17 @@ class TestMaximumAutonomyModel:
         """Test accessing live staging in VR."""
         autonomy_model.current_tick = 40
         autonomy_model.promote_to_staging(
-            source_sandbox_id="sandbox-002", promoted_by="agent-1", integration_requirements=[]
+            source_sandbox_id="sandbox-002",
+            promoted_by="agent-1",
+            integration_requirements=[],
         )
 
         staging_id = list(autonomy_model.staging_reality.artifacts.keys())[0]
 
         view_id = autonomy_model.vr_access_live_staging(
-            staging_id=staging_id, human_id="human-1", interaction_mode=VRInteractionMode.WALKTHROUGH
+            staging_id=staging_id,
+            human_id="human-1",
+            interaction_mode=VRInteractionMode.WALKTHROUGH,
         )
 
         assert view_id in autonomy_model.vr_staging_views
@@ -1198,16 +1299,23 @@ class TestMaximumAutonomyModel:
         """Test VR agent demo code."""
         autonomy_model.current_tick = 45
         autonomy_model.promote_to_staging(
-            source_sandbox_id="sandbox-003", promoted_by="agent-1", integration_requirements=[]
+            source_sandbox_id="sandbox-003",
+            promoted_by="agent-1",
+            integration_requirements=[],
         )
 
         staging_id = list(autonomy_model.staging_reality.artifacts.keys())[0]
         view_id = autonomy_model.vr_access_live_staging(
-            staging_id=staging_id, human_id="human-2", interaction_mode=VRInteractionMode.DEMO
+            staging_id=staging_id,
+            human_id="human-2",
+            interaction_mode=VRInteractionMode.DEMO,
         )
 
         demo_id = autonomy_model.vr_agent_demo_code(
-            view_id=view_id, agent_id="agent-7", demo_title="New Feature", passionate_argument="This is amazing!"
+            view_id=view_id,
+            agent_id="agent-7",
+            demo_title="New Feature",
+            passionate_argument="This is amazing!",
         )
 
         assert demo_id == "demo-0"
@@ -1228,16 +1336,22 @@ class TestMaximumAutonomyModel:
         """Test VR faction formation."""
         autonomy_model.current_tick = 50
         autonomy_model.promote_to_staging(
-            source_sandbox_id="sandbox-004", promoted_by="agent-1", integration_requirements=[]
+            source_sandbox_id="sandbox-004",
+            promoted_by="agent-1",
+            integration_requirements=[],
         )
 
         staging_id = list(autonomy_model.staging_reality.artifacts.keys())[0]
         view_id = autonomy_model.vr_access_live_staging(
-            staging_id=staging_id, human_id="human-3", interaction_mode=VRInteractionMode.FACTION_FORMATION
+            staging_id=staging_id,
+            human_id="human-3",
+            interaction_mode=VRInteractionMode.FACTION_FORMATION,
         )
 
         faction_name = autonomy_model.vr_form_faction(
-            view_id=view_id, faction_name="Security Team", members=["agent-8", "agent-9"]
+            view_id=view_id,
+            faction_name="Security Team",
+            members=["agent-8", "agent-9"],
         )
 
         assert faction_name == "Security Team"
@@ -1246,7 +1360,9 @@ class TestMaximumAutonomyModel:
     def test_vr_form_faction_nonexistent_view(self, autonomy_model):
         """Test VR faction formation with nonexistent view."""
         faction_name = autonomy_model.vr_form_faction(
-            view_id="nonexistent-view", faction_name="Security Team", members=["agent-8", "agent-9"]
+            view_id="nonexistent-view",
+            faction_name="Security Team",
+            members=["agent-8", "agent-9"],
         )
 
         assert faction_name == ""
@@ -1255,11 +1371,15 @@ class TestMaximumAutonomyModel:
         """Test human sealing artifact for production."""
         autonomy_model.current_tick = 55
         staging_id = autonomy_model.promote_to_staging(
-            source_sandbox_id="sandbox-005", promoted_by="agent-1", integration_requirements=[]
+            source_sandbox_id="sandbox-005",
+            promoted_by="agent-1",
+            integration_requirements=[],
         )
 
         result = autonomy_model.human_seal_for_production(
-            staging_id=staging_id, human_id="human-4", approval_reason="All tests passed"
+            staging_id=staging_id,
+            human_id="human-4",
+            approval_reason="All tests passed",
         )
 
         assert result["success"] is True
@@ -1278,10 +1398,14 @@ class TestMaximumAutonomyModel:
         """Test human veto on artifact."""
         autonomy_model.current_tick = 60
         staging_id = autonomy_model.promote_to_staging(
-            source_sandbox_id="sandbox-006", promoted_by="agent-1", integration_requirements=[]
+            source_sandbox_id="sandbox-006",
+            promoted_by="agent-1",
+            integration_requirements=[],
         )
 
-        result = autonomy_model.human_veto(staging_id=staging_id, human_id="human-6", veto_reason="Security concern")
+        result = autonomy_model.human_veto(
+            staging_id=staging_id, human_id="human-6", veto_reason="Security concern"
+        )
 
         assert result["success"] is True
         assert result["vetoed"] is True
@@ -1289,7 +1413,9 @@ class TestMaximumAutonomyModel:
 
     def test_human_veto_nonexistent_artifact(self, autonomy_model):
         """Test human veto on nonexistent artifact."""
-        result = autonomy_model.human_veto(staging_id="nonexistent", human_id="human-7", veto_reason="Test")
+        result = autonomy_model.human_veto(
+            staging_id="nonexistent", human_id="human-7", veto_reason="Test"
+        )
 
         assert result["success"] is False
 
@@ -1297,7 +1423,9 @@ class TestMaximumAutonomyModel:
         """Test triggering global freeze."""
         assert autonomy_model.global_freeze_active is False
 
-        result = autonomy_model.trigger_global_freeze(human_id="human-8", reason="Emergency shutdown")
+        result = autonomy_model.trigger_global_freeze(
+            human_id="human-8", reason="Emergency shutdown"
+        )
 
         assert result["success"] is True
         assert result["freeze_active"] is True
@@ -1307,11 +1435,17 @@ class TestMaximumAutonomyModel:
         """Test verifying free operation."""
         autonomy_model.current_tick = 65
         autonomy_model.floor_initiate_project(
-            floor_id="floor-2", project_title="Test", description="Test", initiative_type=FloorInitiativeType.TOOLING
+            floor_id="floor-2",
+            project_title="Test",
+            description="Test",
+            initiative_type=FloorInitiativeType.TOOLING,
         )
 
         autonomy_model.form_self_organizing_team(
-            team_name="Team X", founder="agent-10", reason=TeamFormationReason.INNOVATION, initial_members=["agent-10"]
+            team_name="Team X",
+            founder="agent-10",
+            reason=TeamFormationReason.INNOVATION,
+            initial_members=["agent-10"],
         )
 
         result = autonomy_model.verify_free_operation()
