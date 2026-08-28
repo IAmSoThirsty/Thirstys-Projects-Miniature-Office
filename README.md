@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an optional HMAC-tagged audit JSONL, language “floors,” a template-based code-generation pipeline, a jailed workspace / no-shell terminal API, a browser editor/file-tree/terminal UI, and a small PWA shell.
 
-This README reports the **measured** state of [`590b90c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/590b90ce53bd859d8baf32a2155820e3169a93e8). Independent pytest on that SHA: **1,571 passed**, 1 skipped, 13.89s. This pin adds two honesty-lock tests (EASY_ACCESS must not deny the PWA; canonical files cite the same SHA). Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
+This README reports the **independently re-measured** state of [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a). Independent pytest on that SHA: **1,573 passed**, 1 skipped, 13.14s. Fresh `--cov=src`: **7,494 / 7,749** (96.71%). Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -22,27 +22,27 @@ This README reports the **measured** state of [`590b90c`](https://github.com/IAm
 | PWA | `manifest.json` + `sw.js`. No WebXR |
 | Code pipeline | `src/core/code_civilization.py` — **1,421-line** template generator (not 49,741 lines). Python identity bodies; generated pytest is executed |
 | Floors | 28 directories under `floors/`. SQL floor includes `schema.sql`. Every floor README is marked a toy. See [floors/README.md](floors/README.md) |
-| Tests | **1,573 passing**, 1 skipped (1,571 on `590b90c` + 2 honesty-lock tests) |
-| CI / CD | **Both green** on `590b90c`: [CI 33211771675](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771675), [CD 33211771674](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771674). Matrix is Python 3.10–3.12; bandit JSON dump uses `-ll` |
+| Tests | **1,573 passing**, 1 skipped |
+| CI / CD | **Both green** on `fdd9762`: [CI 33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987), [CD 33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992). Matrix is Python 3.10–3.12; bandit JSON dump uses `-ll` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
 ## Honest metrics (measured 28 August 2026)
 
-| Metric | Claimed (old README) | Measured (`590b90c`) |
+| Metric | Claimed (old README) | Measured (`fdd9762`) |
 | --- | --- | --- |
 | Production status | Production ready | Experimental prototype |
 | `src/` Python lines | 18,285 | **24,441** total / **19,058** non-comment (53 files) |
 | `code_civilization.py` | 49,741 lines | **1,421 lines** (52,653 bytes; original error treated bytes as lines) |
-| Tests | 1,537 passing | **1,573 passed**, 1 skipped (`def test_` grep = 1,606; 1,571 on `590b90c` + 2 honesty-lock tests) |
-| Coverage | 99% of the system | Fresh `pytest --cov=src`: **7,493 / 7,749** imported statements (**96.70%**). `integrated_specs/` still omitted |
+| Tests | 1,537 passing | **1,573 passed**, 1 skipped (`def test_` grep = 1,606) |
+| Coverage | 99% of the system | Fresh `pytest --cov=src`: **7,494 / 7,749** imported statements (**96.71%**). `integrated_specs/` still omitted |
 | Language floors | 30+ native, working | 28 dirs; SQL has `schema.sql`; each README is bannered as a toy |
 | Flask routes | 45+ | **74** `@app.route` entries (67 in `app.py` + 7 IDE) |
 | Python | 3.9+ | **3.10+** (`pytest==9.0.3` requires ≥3.10) |
 | macOS `start.command` | Documented | **Present** — launches `start.sh` |
 | Editor UI | (older docs denied it) | **Present** |
 | PWA | Claimed | **Present** (`manifest.json`, `sw.js`); no WebXR |
-| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **9 / 6 / 1 / 3** of 19 (sums). CI/CD Holds: both jobs green on `590b90c` |
+| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **9 / 6 / 1 / 3** of 19 (sums). CI/CD Holds: both jobs green on `fdd9762` |
 
 ## What still works as a prototype
 
@@ -53,8 +53,8 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Real terminal: one PATH program + args, no shell operators, 15s default timeout
 - Browser IDE chrome: file tree, editor, terminal (HTTP API, not Monaco/LSP)
 - AST-backed pattern / flow / metrics / dependency analyzers (small named set)
-- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `590b90c`.
-- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `590b90c`
+- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `fdd9762`.
+- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `fdd9762`
 
 ## What does not work as advertised
 

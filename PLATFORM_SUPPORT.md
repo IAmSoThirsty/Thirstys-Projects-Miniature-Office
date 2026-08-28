@@ -15,7 +15,7 @@ There is a small PWA shell (`manifest.json` + `sw.js`). There is no native deskt
 
 `install.sh` is not a native OS installer. `start.command` is a shell wrapper, not a signed macOS app.
 
-CD `test-docker` curls `/health` and `/api/ide/health` and `chmod 777`s `user_workspace` / `data` / `logs` before compose up. On [`590b90c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/590b90ce53bd859d8baf32a2155820e3169a93e8): CI [33211771675](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771675) **succeeded**, CD [33211771674](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771674) **succeeded**. Docker is still not a hardened stack (in-memory world, `chmod 777`).
+CD `test-docker` curls `/health` and `/api/ide/health` and `chmod 777`s `user_workspace` / `data` / `logs` before compose up. On [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a): CI [33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987) **succeeded**, CD [33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992) **succeeded**. Docker is still not a hardened stack (in-memory world, `chmod 777`).
 
 ## Browsers
 
