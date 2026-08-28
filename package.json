@@ -1,18 +1,17 @@
 {
   "name": "miniature-office",
   "version": "0.1.0",
-  "description": "A spatialized, agent-orchestrated development environment",
-  "main": "src/client/main.js",
+  "description": "Experimental Flask prototype of a spatial office metaphor. Not production-ready. See CLAIMS_AUDIT.md.",
   "scripts": {
-    "start": "python3 src/server/app.py",
-    "dev": "python3 src/server/app.py"
+    "start": "python3 run.py",
+    "dev": "python3 run.py"
   },
   "keywords": [
-    "ide",
-    "spatial",
+    "flask",
+    "prototype",
     "agents",
     "pixel-art"
   ],
   "author": "IAmSoThirsty",
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "Apache-2.0"
 }

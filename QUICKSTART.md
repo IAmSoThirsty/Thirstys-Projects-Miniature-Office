@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+**Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
 ## Installation
 
 ```bash
@@ -255,7 +257,7 @@ for agent in data['agents']:
 "
 ```
 
-### Verify Immutability
+### Inspect an event hash
 
 ```bash
 # Get an event hash
@@ -265,11 +267,12 @@ data = json.load(sys.stdin)
 event = data['events'][0]
 print('Event ID:', event['event_id'])
 print('Hash:', event['hash'])
+print('prev_hash:', event.get('prev_hash'))
 print('Timestamp:', event['timestamp'])
 "
 ```
 
-The hash proves the event hasn't been tampered with.
+Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous event). That is an in-memory hash chain. It is not persisted, not signed, and a process restart drops it. It does not prove a production-grade ledger.
 
 ## Troubleshooting
 
@@ -294,11 +297,9 @@ The hash proves the event hasn't been tampered with.
 
 ## Next Steps
 
-- Read [ARCHITECTURE.md](ARCHITECTURE.md) for detailed system design
+- Read [ARCHITECTURE.md](ARCHITECTURE.md) for intended design (not a completion certificate)
+- Read [LIMITATIONS.md](LIMITATIONS.md) for what is not implemented
 - Explore the code in `src/` directories
-- Try creating custom agents with specific capabilities
-- Build a contract between departments
-- Implement a complete workflow from directive to deployment
 
 ## Getting Help
 

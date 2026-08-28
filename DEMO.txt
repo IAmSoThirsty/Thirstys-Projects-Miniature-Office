@@ -1,5 +1,6 @@
 ==========================================
   MINIATURE OFFICE - INSTALLATION DEMO
+  Experimental Flask prototype
 ==========================================
 
 WINDOWS USERS:
@@ -9,8 +10,8 @@ WINDOWS USERS:
 3. Wait for: "✅ Installation Complete!"
 4. Double-click: start.bat
 5. Open browser to: http://localhost:5000
-   
-   🎉 You're running Miniature Office!
+
+   That's the local Flask UI.
 
 MACOS USERS:
 ------------
@@ -20,8 +21,6 @@ MACOS USERS:
 4. Double-click: start.command
 5. Open browser to: http://localhost:5000
 
-   🎉 You're running Miniature Office!
-
 LINUX USERS:
 ------------
 1. Open Terminal
@@ -30,51 +29,45 @@ LINUX USERS:
 4. Run: ./start.sh
 5. Open browser to: http://localhost:5000
 
-   🎉 You're running Miniature Office!
-
 DOCKER USERS (ALL PLATFORMS):
 ------------------------------
 1. Open Terminal/Command Prompt
-2. Run: docker-compose up
+2. Run: docker compose up --build
 3. Wait for server to start
 4. Open browser to: http://localhost:5000
 
-   🎉 You're running Miniature Office!
+   Default SECRET_KEY is a placeholder. State is in-memory.
 
 MOBILE/TABLET USERS:
 --------------------
 1. Someone starts the server (see above)
-2. Find computer's IP: 
+2. Find computer's IP:
    - Windows: ipconfig
    - Mac/Linux: ifconfig
 3. Open phone browser
 4. Go to: http://[YOUR_IP]:5000
    Example: http://192.168.1.100:5000
-5. Optional: Add to Home Screen
+5. Optional: bookmark, or "Add to Home Screen"
+   (a browser shortcut — this repo is not a PWA)
 
-   🎉 You're accessing Miniature Office!
+HEADSET BROWSERS (not a VR product):
+------------------------------------
+1. Start server on a computer (see above)
+2. Open the headset's web browser
+3. Go to: http://[YOUR_IP]:5000
 
-VR USERS:
----------
-1. Start server on computer (see above)
-2. Put on VR headset
-3. Open VR browser (Quest Browser, etc.)
-4. Navigate to: http://[YOUR_IP]:5000
-   Example: http://192.168.1.100:5000
-
-   🎉 You're in VR with Miniature Office!
+   You get the same Flask HTML page. There is no WebXR client.
 
 ==========================================
-  THAT'S IT - YOU'RE DONE!
+  Status: experimental — not production
+  Evidence: CLAIMS_AUDIT.md
 ==========================================
 
 Questions? Check these files:
 - INSTALL.md (detailed installation)
 - GETTING_STARTED.md (step-by-step guide)
 - QUICK_REFERENCE.md (command cheat sheet)
-- PLATFORM_SUPPORT.md (all platforms)
+- PLATFORM_SUPPORT.md (what "runs everywhere" means)
 
 Issues? Visit:
 https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/issues
-
-==========================================

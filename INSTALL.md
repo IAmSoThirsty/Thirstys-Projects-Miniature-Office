@@ -123,10 +123,10 @@ Now anyone on your network can access it at: `http://YOUR_IP:5000`
 
 ### Security Note
 When opening to your network:
-1. Set a strong `SECRET_KEY` in `.env`
-2. Configure CORS if needed
-3. Consider using HTTPS (see DEPLOYMENT.md)
-4. Use firewall rules to limit access
+1. Set a strong `SECRET_KEY` (compose default is a placeholder)
+2. There is no authentication on the API
+3. Restarting the process drops in-memory world state and audit events
+4. Use firewall rules to limit access. This is a local prototype, not a hardened service.
 
 ---
 

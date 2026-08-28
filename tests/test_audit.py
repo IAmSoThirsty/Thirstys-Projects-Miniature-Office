@@ -265,6 +265,42 @@ class TestAuditLog:  # noqa: F811
 
         assert audit_log.verify_integrity()
 
+    def test_hash_chain_links_prev_hash(self, audit_log):
+        """Each event hashes over the previous event's hash."""
+        from src.core.audit import GENESIS_HASH
+
+        first = audit_log.log_event(EventType.ENTITY_CREATED, "a", "t1", {})
+        second = audit_log.log_event(EventType.ENTITY_UPDATED, "a", "t2", {})
+
+        assert first.prev_hash == GENESIS_HASH
+        assert second.prev_hash == first._hash
+        assert first._hash != second._hash
+        assert audit_log.verify_integrity()
+
+    def test_hash_chain_includes_parent_hashes(self, audit_log):
+        """Causality parents contribute their hashes, not only their ids."""
+        parent = audit_log.log_event(EventType.ENTITY_CREATED, "a", "p", {})
+        child = audit_log.log_event(
+            EventType.ENTITY_UPDATED, "a", "c", {}, [parent.event_id]
+        )
+        assert child.parent_hashes == [parent._hash]
+        assert "hash" in child.to_dict()
+        assert child.to_dict()["prev_hash"] == parent._hash
+        assert audit_log.verify_integrity()
+
+    def test_hash_chain_detects_broken_prev_hash(self, audit_log):
+        """Relinking prev_hash without recomputing the hash fails verification."""
+        audit_log.log_event(EventType.ENTITY_CREATED, "a", "t1", {})
+        second = audit_log.log_event(EventType.ENTITY_UPDATED, "a", "t2", {})
+        second.prev_hash = "f" * 64
+        assert audit_log.verify_integrity() is False
+
+    def test_unknown_parent_is_rejected(self, audit_log):
+        with pytest.raises(ValueError, match="Unknown parent"):
+            audit_log.log_event(
+                EventType.ENTITY_UPDATED, "a", "c", {}, ["does-not-exist"]
+            )
+
     def test_get_audit_log_global(self):
         """Test getting global audit log."""
         from src.core.audit import get_audit_log

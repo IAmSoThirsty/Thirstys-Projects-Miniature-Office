@@ -1,4 +1,7 @@
-# 🚀 Quick Reference - Installation Commands
+# Quick Reference - Installation Commands
+
+Experimental Flask prototype. Not production-ready. Status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
 
 ## Windows
 

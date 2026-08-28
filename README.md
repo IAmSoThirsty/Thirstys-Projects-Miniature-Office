@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an in-memory audit log, language “floors,” and a template-based code-generation pipeline.
 
-This README reports the **measured** state of `main` at [`8132127`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/813212727e14eb68e5da0aab3043a35e2e0a8520) (28 August 2026). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Index: [DOCS.md](DOCS.md).
+This README reports the **measured** state of `main` as of 28 August 2026 (honesty pass after [`b8827e7`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/b8827e7812c2da4e5336851288c92461b27f588b)). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
@@ -17,24 +17,24 @@ This README reports the **measured** state of `main` at [`8132127`](https://gith
 | --- | --- |
 | Web app | Flask + Flask-SocketIO, `python3 run.py`, port 5000 |
 | Domain model | `src/core/entity.py` — entities, relationship types, in-memory registry with `threading.RLock` |
-| Audit log | `src/core/audit.py` — SHA-256 of each event’s own fields, in memory, not a hash chain, not persisted |
+| Audit log | `src/core/audit.py` — in-memory SHA-256 **chain** (`prev_hash` + parent hashes). Not persisted, not signed |
 | Code pipeline | `src/core/code_civilization.py` — **1,364-line** template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
-| Floors | 28 directories under `floors/`. Elixir has Mix modules. The SQL floor is Python. See [floors/README.md](floors/README.md) |
-| Tests | **1,537 passing**, 1 skipped (pytest; GitHub Actions CI green) |
-| CI / CD | **CI and CD are green** on `8132127`. Security scans still use `\|\| true` |
+| Floors | 28 directories under `floors/`. Every floor README is marked a toy. The SQL floor is Python. See [floors/README.md](floors/README.md) |
+| Tests | **1,541 passing**, 1 skipped (local pytest; prior GitHub Actions CI green on `b8827e7`) |
+| CI / CD | **CI and CD are green** on `b8827e7`. Security scans still use `\|\| true` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
-## Honest metrics (measured at `8132127`)
+## Honest metrics (measured 28 August 2026)
 
 | Metric | Claimed (old README) | Measured |
 | --- | --- | --- |
 | Production status | Production ready | Experimental prototype |
-| `src/` Python lines | 18,285 | **23,196** total / **17,943** non-comment |
+| `src/` Python lines | 18,285 | **23,250** total / **17,991** non-comment |
 | `code_civilization.py` | 49,741 lines | **1,364 lines** (50,430 bytes; original error treated bytes as lines) |
-| Tests | 1,537 passing | **1,537 passed**, 1 skipped (`def test_` grep = 1,572) |
-| Coverage | 99% of the system | 98.7% of 6,438 tracked statements; `design_analyzer.py` and `integrated_specs/` omitted |
-| Language floors | 30+ native, working | 28 dirs; mixed; SQL floor is Python |
+| Tests | 1,537 passing | **1,541 passed**, 1 skipped (`def test_` grep = 1,574) |
+| Coverage | 99% of the system | Committed `coverage.json` is 98.7% of 6,438 tracked statements and omits `design_analyzer.py` + `integrated_specs/`. Fresh `pytest --cov=src` is 99% of 6,971 *imported* statements; `integrated_specs/` is still omitted |
+| Language floors | 30+ native, working | 28 dirs; mixed; SQL floor is Python; each README is bannered as a toy |
 | Flask routes | 45+ | 64 `@app.route` entries |
 | macOS `start.command` | Documented | **Present** — launches `start.sh` |
 
@@ -52,7 +52,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Generated code is scaffolding with `TODO: Implement actual logic`
 - Generated tests are not executed (`# For this implementation, we assume tests pass`)
 - `src/analysis/pattern_detector.py`, `flow_analyzer.py`, `metrics_calculator.py`, and `dependency_analyzer.py` are placeholders (empty graphs, constant A-grade maintainability)
-- Audit events live in process memory
+- Audit events live in process memory. Each event hashes `prev_hash` and parent hashes; restart drops the chain
 - CI security jobs use `|| true` and cannot fail the build
 - Default compose `SECRET_KEY` is `change-this-secret-key`
 - There is no PWA (no `manifest.json`, no service worker) and no WebXR

@@ -1,3 +1,5 @@
+> **Toy floor — not SQL.** Source here is Python (`*.py`), not SQL. This is not a database engine. Inventory: [floors/README.md](../README.md).
+
 # Floor 8 - SQL Jurisdiction
 
 **Language:** SQL (Analyzed via Python)  

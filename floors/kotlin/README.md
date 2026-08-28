@@ -1,3 +1,5 @@
+> **Toy floor.** This directory is a small language demo plus JSON-RPC glue, not a production toolchain or SLA. Inventory: [floors/README.md](../README.md).
+
 # Floor 11 - Kotlin Jurisdiction
 
 **Language:** Kotlin  

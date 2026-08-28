@@ -1,6 +1,10 @@
 """
-Audit Log System - Immutable event tracking and causality graph
-Implements Codex Section 8.2 for audit trails and change lineage
+Audit log — in-memory event log with a SHA-256 hash chain.
+
+Each event hashes its own fields plus `prev_hash` (the previous event's
+hash, or 64 zero hex digits for the first event) and the hashes of any
+explicit causality parents. This is a process-local chain, not a
+persisted ledger and not a signature.
 """
 
 import hashlib
@@ -10,6 +14,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Set
+
+GENESIS_HASH = "0" * 64
 
 
 class EventType(Enum):
@@ -33,8 +39,8 @@ class EventType(Enum):
 @dataclass
 class AuditEvent:
     """
-    Immutable audit event with cryptographic integrity.
-    Forms nodes in the causality graph.
+    Audit event with a SHA-256 over its fields, prev_hash, and parent hashes.
+    Not persisted. Not signed. Restarting the process drops the chain.
     """
 
     event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
@@ -44,6 +50,8 @@ class AuditEvent:
     target_id: Optional[str] = None  # Entity affected by the event
     data: Dict[str, Any] = field(default_factory=dict)
     parent_events: List[str] = field(default_factory=list)  # Causality links
+    parent_hashes: List[str] = field(default_factory=list)
+    prev_hash: str = GENESIS_HASH
     _hash: Optional[str] = None
 
     def __post_init__(self):
@@ -52,7 +60,7 @@ class AuditEvent:
             self._hash = self._calculate_hash()
 
     def _calculate_hash(self) -> str:
-        """Calculate SHA-256 hash of event content"""
+        """Calculate SHA-256 hash of event content plus chain links."""
         content = {
             "event_id": self.event_id,
             "event_type": self.event_type.value,
@@ -61,12 +69,14 @@ class AuditEvent:
             "target_id": self.target_id,
             "data": self.data,
             "parent_events": sorted(self.parent_events),
+            "parent_hashes": sorted(self.parent_hashes),
+            "prev_hash": self.prev_hash,
         }
         content_str = json.dumps(content, sort_keys=True)
         return hashlib.sha256(content_str.encode()).hexdigest()
 
     def verify_integrity(self) -> bool:
-        """Verify event hasn't been tampered with"""
+        """Verify the stored hash still matches the event's fields."""
         return self._hash == self._calculate_hash()
 
     def to_dict(self) -> Dict:
@@ -79,6 +89,8 @@ class AuditEvent:
             "target_id": self.target_id,
             "data": self.data,
             "parent_events": self.parent_events,
+            "parent_hashes": self.parent_hashes,
+            "prev_hash": self.prev_hash,
             "hash": self._hash,
         }
 
@@ -100,6 +112,16 @@ class CausalityGraph:
 
         if not event.verify_integrity():
             raise ValueError(f"Event {event.event_id} failed integrity check")
+
+        if len(event.parent_events) != len(event.parent_hashes):
+            raise ValueError("parent_events and parent_hashes length mismatch")
+
+        for parent_id, parent_hash in zip(event.parent_events, event.parent_hashes):
+            parent = self.events.get(parent_id)
+            if parent is None:
+                raise ValueError(f"Unknown parent event {parent_id}")
+            if parent._hash != parent_hash:
+                raise ValueError(f"Parent hash mismatch for {parent_id}")
 
         self.events[event.event_id] = event
 
@@ -162,8 +184,11 @@ class CausalityGraph:
 
 class AuditLog:
     """
-    Main audit log system implementing immutable logging.
-    Codex Section 8.2 - Every stage of work writes to immutable log.
+    In-memory audit log with a SHA-256 hash chain.
+
+    `prev_hash` links each event to the previous event in insertion order.
+    Explicit `parent_events` also bind to those parents' hashes.
+    The chain lives in this process only.
     """
 
     def __init__(self):
@@ -171,6 +196,8 @@ class AuditLog:
         self._type_index: Dict[EventType, List[str]] = {}
         self._actor_index: Dict[str, List[str]] = {}
         self._target_index: Dict[str, List[str]] = {}
+        self._order: List[str] = []
+        self._tip_hash: str = GENESIS_HASH
 
     def log_event(
         self,
@@ -181,18 +208,31 @@ class AuditLog:
         parent_events: Optional[List[str]] = None,
     ) -> AuditEvent:
         """
-        Log a new event to the immutable audit log.
+        Log a new event, hashing it over prev_hash and any parent hashes.
         Returns the created event.
         """
+        parents = parent_events or []
+        parent_hashes: List[str] = []
+        for parent_id in parents:
+            parent = self.graph.get_event(parent_id)
+            if parent is None or parent._hash is None:
+                raise ValueError(f"Unknown parent event {parent_id}")
+            parent_hashes.append(parent._hash)
+
         event = AuditEvent(
             event_type=event_type,
             actor_id=actor_id,
             target_id=target_id,
             data=data or {},
-            parent_events=parent_events or [],
+            parent_events=parents,
+            parent_hashes=parent_hashes,
+            prev_hash=self._tip_hash,
         )
 
         self.graph.add_event(event)
+        assert event._hash is not None
+        self._order.append(event.event_id)
+        self._tip_hash = event._hash
 
         # Update indexes for efficient querying
         if event_type not in self._type_index:
@@ -257,8 +297,22 @@ class AuditLog:
         return [e.to_dict() for e in all_events]
 
     def verify_integrity(self) -> bool:
-        """Verify integrity of entire audit log"""
-        return all(event.verify_integrity() for event in self.graph.events.values())
+        """Verify each event hash and that prev_hash forms a chain."""
+        prev = GENESIS_HASH
+        for event_id in self._order:
+            event = self.graph.get_event(event_id)
+            if event is None:
+                return False
+            if event.prev_hash != prev:
+                return False
+            if not event.verify_integrity():
+                return False
+            for parent_id, parent_hash in zip(event.parent_events, event.parent_hashes):
+                parent = self.graph.get_event(parent_id)
+                if parent is None or parent._hash != parent_hash:
+                    return False
+            prev = event._hash
+        return True
 
 
 # Global audit log instance

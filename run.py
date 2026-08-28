@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Miniature Office - Cognitive IDE
-Main entry point
+Miniature Office — experimental Flask prototype.
+Main entry point. Not a production IDE.
 """
 import os
 import sys
