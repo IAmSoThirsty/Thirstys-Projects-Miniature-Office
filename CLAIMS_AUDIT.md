@@ -40,7 +40,7 @@ The three **false** and two **inflated** rows are *historical* claims. Canonical
 | Cryptographic immutable audit log | **Partial** | Tamper-proof hash chain | In-memory SHA-256 **chain**: each event hashes `prev_hash` plus parent hashes. Not persisted, not signed. Restart drops it. |
 | Desktop / mobile / VR | **Partial** | Any device including VR | Browser UI on port 5000. `start.command` exists. No WebXR, no PWA. A Holds verdict is not compatible with a missing VR surface. |
 | 45+ API endpoints | **Holds** | 45+ | 64 Flask routes |
-| CI / CD healthy | **Holds** | Live green badges | **CI** [run 33174907396](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907396) and **CD** [run 33174907349](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907349) succeeded on `b8827e7`. Security steps remain `\\|\\| true`. |
+| CI / CD healthy | **Holds** | Live green badges | **CI** [run 33174907396](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907396) and **CD** [run 33174907349](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33174907349) succeeded on `b8827e7`. Security steps remain `\|\| true`. |
 | 0 lint / 0 vulns | **Partial** | Clean | Critical flake8, Black, and isort pass on `src/` (CI green). Committed `flake8_remaining*.txt` dumps remain. Bandit/safety cannot fail CI. |
 | Registry thread-safe via GIL | **Partial** | Thread-safe because GIL | `EntityRegistry` and `GlobalRegistry` use `threading.RLock`. The GIL is not the mutex. Gunicorn uses 4 eventlet workers (separate processes). |
 | Formal entity ontology | **Holds** | 7 types, 8 relations | Real, small module (`entity.py`) |
@@ -143,8 +143,5 @@ Canonical README / LIMITATIONS / this file. `PRODUCTION_READY.md` superseded.
 5. `src/core/audit.py` now hashes `prev_hash` and parent hashes (in-memory chain). Local pytest: **1,541 passed**, 1 skipped.
 6. Re-measured `src/`: **23,250** total / **17,991** non-comment.
 
-### Score correction (this branch)
-
-Headline arithmetic is 6 / 7 / 2 / 3. VR is Partial. Machine-readable copy: [claims.json](claims.json).
-
 The product remains a Flask office metaphor with templates and in-memory state. It is not a civilization-tier IDE.
+
