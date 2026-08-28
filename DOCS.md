@@ -10,7 +10,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | --- | --- |
 | [README.md](README.md) | What the project is, measured metrics, how to run it |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence |
-| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (6/7/2/3 = 18) |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (6/8/2/3 = 19) |
 | [claims.json](claims.json) | Same score as JSON |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations without contradictory percentages |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Superseded certificate, kept as history |
@@ -21,7 +21,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | --- | --- |
 | [INSTALL.md](INSTALL.md) | Install and run. Browser app on port 5000. Not a VR product. Not a PWA. |
 | [GETTING_STARTED.md](GETTING_STARTED.md) | First-run path |
-| [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. Event hashes are an in-memory chain, not a ledger. |
+| [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. Event hashes are an unsigned chain, optionally JSONL. |
 | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Short command card |
 | [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | What “runs everywhere” means (Flask + browser) |
 | [EASY_ACCESS.md](EASY_ACCESS.md) | LAN browser access |

@@ -1,10 +1,13 @@
 """
-Audit log — in-memory event log with a SHA-256 hash chain.
+Audit log — SHA-256 hash chain, in-memory by default.
 
 Each event hashes its own fields plus `prev_hash` (the previous event's
 hash, or 64 zero hex digits for the first event) and the hashes of any
-explicit causality parents. This is a process-local chain, not a
-persisted ledger and not a signature.
+explicit causality parents.
+
+Optional JSONL persistence when `persist_path` is set (or `MO_DATA_DIR`
+via `configure_ide_defaults`). Reloading that file rebuilds the in-process
+chain. Events are not signed. This is not a cryptographic ledger.
 """
 
 import hashlib
@@ -13,6 +16,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 GENESIS_HASH = "0" * 64
@@ -34,13 +38,16 @@ class EventType(Enum):
     CODEX_AMENDMENT = "codex_amendment"
     AGENT_ACTION = "agent_action"
     SECURITY_EVENT = "security_event"
+    WORKSPACE_WRITE = "workspace_write"
+    WORKSPACE_DELETE = "workspace_delete"
+    TERMINAL_RUN = "terminal_run"
 
 
 @dataclass
 class AuditEvent:
     """
     Audit event with a SHA-256 over its fields, prev_hash, and parent hashes.
-    Not persisted. Not signed. Restarting the process drops the chain.
+    Not signed. Persisted only when AuditLog.persist_path is set.
     """
 
     event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
@@ -188,16 +195,19 @@ class AuditLog:
 
     `prev_hash` links each event to the previous event in insertion order.
     Explicit `parent_events` also bind to those parents' hashes.
-    The chain lives in this process only.
+    The chain lives in this process unless persist_path is set.
     """
 
-    def __init__(self):
+    def __init__(self, persist_path: Optional[Path] = None):
         self.graph = CausalityGraph()
         self._type_index: Dict[EventType, List[str]] = {}
         self._actor_index: Dict[str, List[str]] = {}
         self._target_index: Dict[str, List[str]] = {}
         self._order: List[str] = []
         self._tip_hash: str = GENESIS_HASH
+        self.persist_path = Path(persist_path) if persist_path else None
+        if self.persist_path and self.persist_path.exists():
+            self._load()
 
     def log_event(
         self,
@@ -249,6 +259,7 @@ class AuditLog:
                 self._target_index[target_id] = []
             self._target_index[target_id].append(event.event_id)
 
+        self._append_persist(event)
         return event
 
     def get_events_by_type(self, event_type: EventType) -> List[AuditEvent]:
@@ -314,6 +325,51 @@ class AuditLog:
             prev = event._hash
         return True
 
+    def verify_chain(self) -> bool:
+        return self.verify_integrity()
+
+    def _append_persist(self, event: AuditEvent) -> None:
+        if not self.persist_path:
+            return
+        self.persist_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.persist_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(event.to_dict()) + "\n")
+
+    def _load(self) -> None:
+        if not self.persist_path or not self.persist_path.exists():
+            return
+        with self.persist_path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                payload = json.loads(line)
+                event = AuditEvent(
+                    event_id=payload["event_id"],
+                    event_type=EventType(payload["event_type"]),
+                    timestamp=datetime.fromisoformat(payload["timestamp"]),
+                    actor_id=payload.get("actor_id"),
+                    target_id=payload.get("target_id"),
+                    data=payload.get("data") or {},
+                    parent_events=payload.get("parent_events") or [],
+                    parent_hashes=payload.get("parent_hashes") or [],
+                    prev_hash=payload.get("prev_hash") or GENESIS_HASH,
+                    _hash=payload.get("hash"),
+                )
+                self.graph.add_event(event)
+                assert event._hash is not None
+                self._order.append(event.event_id)
+                self._tip_hash = event._hash
+                self._type_index.setdefault(event.event_type, []).append(event.event_id)
+                if event.actor_id:
+                    self._actor_index.setdefault(event.actor_id, []).append(
+                        event.event_id
+                    )
+                if event.target_id:
+                    self._target_index.setdefault(event.target_id, []).append(
+                        event.event_id
+                    )
+
 
 # Global audit log instance
 _audit_log = AuditLog()
@@ -321,4 +377,10 @@ _audit_log = AuditLog()
 
 def get_audit_log() -> AuditLog:
     """Get the global audit log instance"""
+    return _audit_log
+
+
+def reset_audit_log(persist_path: Optional[Path] = None) -> AuditLog:
+    global _audit_log
+    _audit_log = AuditLog(persist_path=persist_path)
     return _audit_log

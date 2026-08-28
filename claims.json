@@ -1,41 +1,43 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "commit": "27d7fdf9c237bdc86608fd99897669a3c9bc53d3",
-  "honesty_pass": "fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77",
+  "parent_commit": "6196f8afb941351c8fb435e5ea68199add48b0ae",
+  "repair": "wire IDE routes + optional unsigned audit JSONL",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
   "rule": "A claim is true only if the tree implements it.",
-  "score": { "holds": 6, "partial": 7, "inflated": 2, "false": 3, "total": 18 },
+  "score": { "holds": 6, "partial": 8, "inflated": 2, "false": 3, "total": 19 },
   "measured": {
-    "src_python_lines_total": 23250,
-    "src_python_lines_noncomment": 17991,
-    "src_python_files": 48,
+    "src_python_lines_total": 23858,
+    "src_python_lines_noncomment": 18527,
+    "src_python_files": 53,
     "code_civilization_lines": 1364,
     "code_civilization_bytes": 50430,
-    "pytest_passed": 1541,
+    "pytest_passed": 1558,
     "pytest_skipped": 1,
-    "pytest_collected": 1542,
-    "def_test_grep": 1574,
-    "flask_routes": 64,
+    "pytest_collected": 1559,
+    "def_test_grep": 1591,
+    "flask_routes": 71,
+    "app_py_routes": 64,
+    "ide_routes": 7,
     "floor_directories": 28,
-    "coverage_json_statements": 6438,
-    "coverage_json_covered": 6354,
-    "fresh_cov_statements": 6971,
-    "fresh_cov_covered": 6908,
-    "ci_run": 33189144183,
-    "cd_run": 33189144211,
-    "prior_ci_run_fe9cdf1": 33179509134,
-    "prior_cd_run_fe9cdf1": 33179509146
+    "fresh_cov_statements": 7356,
+    "fresh_cov_covered": 7192,
+    "fresh_cov_percent": 97.8,
+    "ci_run_6196f8a": 33197912388,
+    "ci_6196f8a_conclusion": "failure",
+    "last_green_docs_pin": "f560d651bb9eb8708f49f60440a370d36fdd384d",
+    "prior_ci_run_27d7fdf": 33189144183,
+    "prior_cd_run_27d7fdf": 33189144211
   },
   "verdicts": {
     "holds": [
       "tests_passing",
       "api_endpoints",
-      "ci_cd_healthy",
       "entity_ontology",
       "docs_consistent",
-      "apache_2"
+      "apache_2",
+      "ide_core_workspace_terminal"
     ],
     "partial": [
       "language_floors",
@@ -44,7 +46,8 @@
       "desktop_mobile_vr",
       "lint_vulns",
       "registry_thread_safety",
-      "docker_compose"
+      "docker_compose",
+      "ci_cd_healthy"
     ],
     "inflated": [
       "coverage_99",
@@ -57,9 +60,9 @@
     ]
   },
   "corrections": [
-    "Canonical docs pinned fe9cdf1 after 27d7fdf landed. Tree numbers are identical (docs-only follow-up). This file pins the current HEAD.",
-    "CI/CD evidence is now 27d7fdf: CI 33189144183, CD 33189144211. fe9cdf1 remains the honesty-pass code commit.",
-    "Independent pytest on 27d7fdf: 1541 passed, 1 skipped (7.09s). Collected 1542. fresh --cov=src 6908/6971.",
-    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469, which is stale relative to the 28 Aug honesty pass."
+    "PR #15 (6196f8a) added workspace/terminal/ide_routes files but did not call register_ide_routes(app) and did not give AuditLog persist_path. Independent pytest: 5 failed, 1553 passed. CI run 33197912388 failed.",
+    "This repair registers the 7 /api/ide/* routes, adds unsigned JSONL persist, and re-measures. Independent pytest: 1558 passed, 1 skipped.",
+    "Score is now 6/8/2/3 of 19. CI/CD moved to Partial. IDE core added as Holds.",
+    "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY badge. Stale."
   ]
 }

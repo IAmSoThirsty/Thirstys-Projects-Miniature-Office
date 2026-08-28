@@ -26,6 +26,7 @@ from src.core.simulation import SimulationConfig, SimulationEngine, create_simul
 from src.core.world import Floor, Office, create_world, get_world
 from src.departments.department import Department, get_department_registry
 from src.interfaces.contract import get_elevator_protocol
+from src.server.ide_routes import configure_ide_defaults, register_ide_routes
 from src.server.security import add_security_headers, configure_cors
 from src.tools.supply_store import Tool, ToolMetadata, ToolTag, get_supply_store
 
@@ -48,6 +49,8 @@ configure_cors(app)
 # Configure SocketIO with CORS
 cors_origins = os.getenv("CORS_ORIGINS", "*")
 socketio = SocketIO(app, cors_allowed_origins=cors_origins)
+
+register_ide_routes(app)
 
 
 # Apply security headers to all responses
@@ -1529,7 +1532,7 @@ def get_metrics_canon():
 
 def run_server(host="0.0.0.0", port=5000, debug=False):
     """Run the API server"""
-    # Initialize simulation on startup
+    configure_ide_defaults()
     init_simulation()
 
     print(f"Starting Miniature Office API Server on {host}:{port}")
@@ -1541,6 +1544,7 @@ def run_server(host="0.0.0.0", port=5000, debug=False):
 # Initialize simulation at module level for production servers (gunicorn, etc.)
 # Only initialize if explicitly in production mode
 if os.getenv("FLASK_ENV") == "production":
+    configure_ide_defaults()
     simulation = init_simulation()
     print(
         f"Production mode: Simulation initialized with world: {simulation.world.name if simulation else 'None'}"
