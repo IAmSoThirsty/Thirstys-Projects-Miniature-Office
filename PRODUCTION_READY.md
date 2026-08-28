@@ -2,7 +2,7 @@
 
 **This certificate is inaccurate.** It was generated 11 February 2026 from 22 tests and 32% coverage, then left in the tree after later documents claimed 1,537 tests and 99% coverage.
 
-Do not cite this file. Current measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md), [LIMITATIONS.md](LIMITATIONS.md). Independently re-measured 28 August 2026 on [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a).
+Do not cite this file. Current measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md), [LIMITATIONS.md](LIMITATIONS.md). Independently re-measured 28 August 2026 on **code pin** [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) (last `src/` / `tests/` change; docs commit `1a103bf` is identical there).
 
 Facts that still contradict this certificate on current `main`:
 
