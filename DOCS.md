@@ -10,7 +10,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | --- | --- |
 | [README.md](README.md) | What the project is, measured metrics, how to run it |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence |
-| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (8/7/1/3 = 19) |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (9/6/1/3 = 19) |
 | [claims.json](claims.json) | Same score as JSON |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations without contradictory percentages |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Superseded certificate, kept as history |
@@ -20,7 +20,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | File | Role |
 | --- | --- |
 | [INSTALL.md](INSTALL.md) | Install and run. Browser app on port 5000. PWA shell exists. Not a VR product. |
-| [GETTING_STARTED.md](GETTING_STARTED.md) | First-run path |
+| [GETTING_STARTED.md](GETTING_STARTED.md) | First-run path. Compose has **no** default `SECRET_KEY`. |
 | [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. Event hashes are an unsigned chain, optionally JSONL. |
 | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Short command card |
 | [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | What “runs everywhere” means (Flask + browser + PWA shell) |

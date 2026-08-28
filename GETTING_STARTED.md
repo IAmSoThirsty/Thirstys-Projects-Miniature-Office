@@ -180,9 +180,12 @@ Install Docker Desktop: https://www.docker.com/products/docker-desktop
 
 3. **Start with one command**:
    ```bash
+   export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+   mkdir -p user_workspace data logs
+   chmod 777 user_workspace data logs
    docker compose up --build
    ```
-
+   Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders.
 4. **Wait for it to start** (10-30 seconds)
 
 5. **Open browser to**: `http://localhost:5000`
@@ -237,7 +240,7 @@ Once you're in:
 - **Bookmark it**: Save the URL for quick access
 - **Keep the process running**: Restarting drops in-memory world state
 - **LAN access**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
-- **Docker**: `docker compose up --build` if you have Docker; default `SECRET_KEY` is a placeholder
+- **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY` (compose has **no** default)
 
 ---
 

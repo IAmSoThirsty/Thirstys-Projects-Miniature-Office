@@ -108,3 +108,22 @@ def test_operator_docs_do_not_deny_pwa():
     assert "this repo is not a PWA" not in started
     assert "no web-app manifest" not in started
     assert "Not a PWA" not in docs
+
+
+def test_getting_started_does_not_claim_compose_placeholder_secret():
+    started = Path("GETTING_STARTED.md").read_text(encoding="utf-8")
+    assert "default `SECRET_KEY` is a placeholder" not in started
+    assert "placeholder SECRET_KEY" not in started.lower()
+    assert "Compose interpolates `SECRET_KEY` with **no default**" in started
+
+
+def test_claims_json_score_sums_and_is_not_production():
+    data = json.loads(Path("claims.json").read_text(encoding="utf-8"))
+    score = data["score"]
+    assert (
+        score["holds"] + score["partial"] + score["inflated"] + score["false"]
+        == score["total"]
+    )
+    assert score["total"] == 19
+    assert data["production_ready"] is False
+    assert data["status"] == "experimental prototype"
