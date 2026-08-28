@@ -8,7 +8,7 @@
 
 **Docs pin (pre-repair):** `8f7ee8be` of `a41e1f8` — score 6/8/2/3 of 19
 
-**This pin:** honesty-repair of remaining *code* defects that made canonical claims fail (health 503, bandit B104, safety `|| true`, unsigned JSONL, placeholder analyzers, assumed tests, SQL-is-Python, no PWA).
+**This pin:** [`ffd9b5e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ffd9b5e7310194c713473941a06eaf797cfdfd38) — honesty-repair of remaining *code* defects that made canonical claims fail (health 503, bandit B104, safety `|| true`, unsigned JSONL, placeholder analyzers, assumed tests, SQL-is-Python, no PWA).
 
 **Rule:** a claim is true only if the tree implements it. Design prose is not implementation.
 

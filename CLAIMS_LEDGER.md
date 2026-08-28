@@ -3,7 +3,7 @@
 Canonical prose remains [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). This file is the
 score that must sum.
 
-**Measured tree:** honesty-repair pin on parent `8f7ee8be`
+**Measured tree:** [`ffd9b5e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ffd9b5e7310194c713473941a06eaf797cfdfd38) (parent `8f7ee8be`)
 
 **Status:** experimental prototype — not production-ready
 

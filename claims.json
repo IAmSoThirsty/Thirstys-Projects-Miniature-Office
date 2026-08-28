@@ -1,7 +1,7 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "measured_commit": "pending-this-pin",
-  "measured_short": "pending",
+  "measured_commit": "ffd9b5e7310194c713473941a06eaf797cfdfd38",
+  "measured_short": "ffd9b5e",
   "parent_code": "8f7ee8be10ef4a64599415db84b07cefe535ca88",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
@@ -86,5 +86,5 @@
     "MO_IDE_TOKEN gates /api/ide/* except /api/ide/health. Required when FLASK_ENV=production.",
     "Independent pytest: 1567 passed, 1 skipped. src 24441/19058. cov 7493/7749 (96.70%). 74 routes."
   ],
-  "commit": "pending-this-pin"
+  "commit": "ffd9b5e7310194c713473941a06eaf797cfdfd38"
 }

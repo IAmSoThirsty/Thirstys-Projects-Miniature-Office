@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an optional HMAC-tagged audit JSONL, language “floors,” a template-based code-generation pipeline, a jailed workspace / no-shell terminal API, a browser editor/file-tree/terminal UI, and a small PWA shell.
 
-This README reports the **measured** state of the honesty-repair pin on parent [`8f7ee8be`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/8f7ee8be10ef4a64599415db84b07cefe535ca88). Independent pytest: **1,567 passed**, 1 skipped. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
+This README reports the **measured** state of [`ffd9b5e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ffd9b5e7310194c713473941a06eaf797cfdfd38) (parent [`8f7ee8be`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/8f7ee8be10ef4a64599415db84b07cefe535ca88)). Independent pytest: **1,567 passed**, 1 skipped. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
