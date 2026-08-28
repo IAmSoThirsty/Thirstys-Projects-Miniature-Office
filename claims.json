@@ -1,17 +1,21 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "commit": "fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77",
+  "commit": "27d7fdf9c237bdc86608fd99897669a3c9bc53d3",
+  "honesty_pass": "fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
+  "rule": "A claim is true only if the tree implements it.",
   "score": { "holds": 6, "partial": 7, "inflated": 2, "false": 3, "total": 18 },
   "measured": {
     "src_python_lines_total": 23250,
     "src_python_lines_noncomment": 17991,
+    "src_python_files": 48,
     "code_civilization_lines": 1364,
     "code_civilization_bytes": 50430,
     "pytest_passed": 1541,
     "pytest_skipped": 1,
+    "pytest_collected": 1542,
     "def_test_grep": 1574,
     "flask_routes": 64,
     "floor_directories": 28,
@@ -19,8 +23,10 @@
     "coverage_json_covered": 6354,
     "fresh_cov_statements": 6971,
     "fresh_cov_covered": 6908,
-    "ci_run": 33179509134,
-    "cd_run": 33179509146
+    "ci_run": 33189144183,
+    "cd_run": 33189144211,
+    "prior_ci_run_fe9cdf1": 33179509134,
+    "prior_cd_run_fe9cdf1": 33179509146
   },
   "verdicts": {
     "holds": [
@@ -51,9 +57,9 @@
     ]
   },
   "corrections": [
-    "CLAIMS_AUDIT.md said 8 holds of 18; that sums to 19. VR is Partial (no WebXR). Score is 6/7/2/3.",
-    "CI/CD evidence was still citing b8827e7 after fe9cdf1 went green (CI 33179509134, CD 33179509146).",
-    "LIMITATIONS roadmap listed hashing prev_hash as undone; hashing exists, persistence and signing do not.",
+    "Canonical docs pinned fe9cdf1 after 27d7fdf landed. Tree numbers are identical (docs-only follow-up). This file pins the current HEAD.",
+    "CI/CD evidence is now 27d7fdf: CI 33189144183, CD 33189144211. fe9cdf1 remains the honesty-pass code commit.",
+    "Independent pytest on 27d7fdf: 1541 passed, 1 skipped (7.09s). Collected 1542. fresh --cov=src 6908/6971.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469, which is stale relative to the 28 Aug honesty pass."
   ]
 }

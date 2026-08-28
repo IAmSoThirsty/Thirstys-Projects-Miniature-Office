@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an in-memory audit log, language “floors,” and a template-based code-generation pipeline.
 
-This README reports the **measured** state of `main` at [`fe9cdf1`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77) (28 August 2026). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
+This README reports the **measured** state of `main` at [`27d7fdf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/27d7fdf9c237bdc86608fd99897669a3c9bc53d3) (28 August 2026). Tree numbers were first taken on [`fe9cdf1`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fe9cdf16a0cb0a660e5ba921a3a604a93ddd6f77) and independently re-counted on `27d7fdf` (docs-only follow-up). Earlier documents described a civilization-tier production IDE. Those claims were not true of the code. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
@@ -20,8 +20,8 @@ This README reports the **measured** state of `main` at [`fe9cdf1`](https://gith
 | Audit log | `src/core/audit.py` — in-memory SHA-256 **chain** (`prev_hash` + parent hashes). Not persisted, not signed |
 | Code pipeline | `src/core/code_civilization.py` — **1,364-line** template generator (not 49,741 lines). Inserts `TODO` bodies and assumes generated tests pass |
 | Floors | 28 directories under `floors/`. Every floor README is marked a toy. The SQL floor is Python. See [floors/README.md](floors/README.md) |
-| Tests | **1,541 passing**, 1 skipped (local pytest on `fe9cdf1`; GitHub Actions CI green on the same commit) |
-| CI / CD | **CI and CD are green** on `fe9cdf1` ([CI run 33179509134](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509134), [CD run 33179509146](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33179509146)). Security scans still use `\|\| true` |
+| Tests | **1,541 passing**, 1 skipped (independent pytest on `27d7fdf`; GitHub Actions CI green on the same commit) |
+| CI / CD | **CI and CD are green** on `27d7fdf` ([CI run 33189144183](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33189144183), [CD run 33189144211](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33189144211)). Security scans still use `\|\| true` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 

@@ -3,10 +3,11 @@
 Canonical prose remains [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). This file is the
 score that must sum.
 
-**Commit measured:** `fe9cdf1` (28 August 2026)  
+**Commit measured:** `27d7fdf` (28 August 2026)  
+**Honesty-pass code:** `fe9cdf1` (docs-only delta to `27d7fdf`; tree numbers identical)  
 **Status:** experimental prototype — not production-ready  
 **Rule:** a claim is true only if the tree implements it.  
-**Independent re-measure:** pytest 1,541 passed / 1 skipped; `src/` 23,250 lines; 64 `@app.route`; 28 floor dirs; `code_civilization.py` 1,364 lines.
+**Independent re-measure of `27d7fdf`:** pytest **1,541 passed / 1 skipped**; `src/` **23,250** lines / **17,991** non-comment; 64 `@app.route`; 28 floor dirs; `code_civilization.py` **1,364** lines / **50,430** bytes; fresh `--cov=src` **6,908 / 6,971**. CI [33189144183](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33189144183) and CD [33189144211](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33189144211) green on `27d7fdf`.
 
 ## Score
 
@@ -20,9 +21,9 @@ score that must sum.
 
 **Holds (6)**
 
-- Tests passing (updated to 1,541)
+- Tests passing (1,541 passed, 1 skipped on `27d7fdf`)
 - 45+ API endpoints (64 routes)
-- CI / CD healthy on `fe9cdf1`
+- CI / CD healthy on `27d7fdf`
 - Formal entity ontology (7 types, 8 relations)
 - Canonical docs consistent
 - Apache 2.0
