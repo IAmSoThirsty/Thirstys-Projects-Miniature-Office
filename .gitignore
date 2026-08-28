@@ -47,3 +47,6 @@ logs/
 
 # Docker
 docker-compose.override.yml
+
+user_workspace/
+data/
