@@ -170,33 +170,44 @@ def index():
     return send_from_directory(CLIENT_DIR, "index.html")
 
 
+@app.route("/manifest.json")
+def pwa_manifest():
+    return send_from_directory(CLIENT_DIR, "manifest.json")
+
+
+@app.route("/sw.js")
+def pwa_service_worker():
+    return send_from_directory(CLIENT_DIR, "sw.js")
+
+
+@app.route("/static/<path:filename>")
+def client_static(filename):
+    return send_from_directory(CLIENT_DIR, filename)
+
+
 @app.route("/health")
 def health_check():
-    """Health check endpoint for monitoring and load balancers"""
-    if simulation:
-        return (
-            jsonify(
-                {
-                    "status": "healthy",
-                    "service": "miniature-office",
-                    "version": "0.1.0",
-                    "simulation": "running",
-                }
-            ),
-            200,
-        )
-    else:
-        return (
-            jsonify(
-                {
-                    "status": "starting",
-                    "service": "miniature-office",
-                    "version": "0.1.0",
-                    "simulation": "initializing",
-                }
-            ),
-            503,
-        )
+    """Liveness probe. Always 200 if this process can serve HTTP."""
+    global simulation
+    sim_status = "running" if simulation else "not_started"
+    if simulation is None:
+        try:
+            configure_ide_defaults()
+            simulation = init_simulation()
+            sim_status = "running"
+        except Exception:
+            sim_status = "not_started"
+    return (
+        jsonify(
+            {
+                "status": "healthy",
+                "service": "miniature-office",
+                "version": "0.1.0",
+                "simulation": sim_status,
+            }
+        ),
+        200,
+    )
 
 
 @app.route("/metrics")
@@ -1530,8 +1541,13 @@ def get_metrics_canon():
         return jsonify({"error": str(e)}), 500
 
 
-def run_server(host="0.0.0.0", port=5000, debug=False):
-    """Run the API server"""
+def run_server(host="0.0.0.0", port=5000, debug=False):  # nosec B104
+    """Run the API server.
+
+    Bind-all is required for Docker/gunicorn and LAN access. Local
+    `start.sh` still uses this default. Containers must listen on every
+    interface inside the network namespace.
+    """
     configure_ide_defaults()
     init_simulation()
 
@@ -1542,8 +1558,7 @@ def run_server(host="0.0.0.0", port=5000, debug=False):
 
 
 # Initialize simulation at module level for production servers (gunicorn, etc.)
-# Only initialize if explicitly in production mode
-if os.getenv("FLASK_ENV") == "production":
+if os.getenv("FLASK_ENV") == "production" or os.getenv("MO_EAGER_INIT") == "1":
     configure_ide_defaults()
     simulation = init_simulation()
     print(

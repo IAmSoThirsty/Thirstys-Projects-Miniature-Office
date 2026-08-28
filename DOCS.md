@@ -10,7 +10,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | --- | --- |
 | [README.md](README.md) | What the project is, measured metrics, how to run it |
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence |
-| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (6/8/2/3 = 19) |
+| [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (8/7/1/3 = 19) |
 | [claims.json](claims.json) | Same score as JSON |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations without contradictory percentages |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Superseded certificate, kept as history |

@@ -36,8 +36,9 @@ ENV PATH=/home/minioffice/.local/bin:$PATH
 # Copy application code
 COPY --chown=minioffice:minioffice . .
 
-# Create log directory
-RUN mkdir -p /var/log/miniature-office && \
+# Create log and workspace directories. Bind mounts may still need
+# host-side chmod 777 (see deploy.yml); image dirs are owned by the app user.
+RUN mkdir -p /var/log/miniature-office /app/user_workspace /app/data && \
     chown -R minioffice:minioffice /var/log/miniature-office /app
 
 # Switch to non-root user

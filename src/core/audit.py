@@ -1,17 +1,23 @@
 """
-Audit log — SHA-256 hash chain, in-memory by default.
+Audit log — SHA-256 hash chain, HMAC-signed when a key is present.
 
 Each event hashes its own fields plus `prev_hash` (the previous event's
 hash, or 64 zero hex digits for the first event) and the hashes of any
 explicit causality parents.
 
+When `MO_AUDIT_HMAC_KEY` or `SECRET_KEY` is set, each event also carries
+an HMAC-SHA256 over its content hash. That is a local integrity tag, not
+a public ledger and not a PKI signature.
+
 Optional JSONL persistence when `persist_path` is set (or `MO_DATA_DIR`
 via `configure_ide_defaults`). Reloading that file rebuilds the in-process
-chain. Events are not signed. This is not a cryptographic ledger.
+chain.
 """
 
 import hashlib
+import hmac
 import json
+import os
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -20,6 +26,24 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 GENESIS_HASH = "0" * 64
+
+
+def _hmac_key() -> Optional[bytes]:
+    raw = os.getenv("MO_AUDIT_HMAC_KEY") or os.getenv("SECRET_KEY")
+    if not raw or raw in {
+        "change-this-secret-key",
+        "change-this-in-production-use-a-random-string",
+        "dev-secret-key-only-for-testing",
+    }:
+        return None
+    return raw.encode("utf-8")
+
+
+def sign_hash(content_hash: str, key: Optional[bytes] = None) -> str:
+    material = key if key is not None else _hmac_key()
+    if not material:
+        return ""
+    return hmac.new(material, content_hash.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
 class EventType(Enum):
@@ -47,7 +71,7 @@ class EventType(Enum):
 class AuditEvent:
     """
     Audit event with a SHA-256 over its fields, prev_hash, and parent hashes.
-    Not signed. Persisted only when AuditLog.persist_path is set.
+    HMAC tag is stored separately and is not part of the content hash.
     """
 
     event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
@@ -59,12 +83,15 @@ class AuditEvent:
     parent_events: List[str] = field(default_factory=list)  # Causality links
     parent_hashes: List[str] = field(default_factory=list)
     prev_hash: str = GENESIS_HASH
+    hmac_sha256: str = ""
     _hash: Optional[str] = None
 
     def __post_init__(self):
         """Calculate hash for immutability verification"""
         if not self._hash:
             self._hash = self._calculate_hash()
+        if not self.hmac_sha256:
+            self.hmac_sha256 = sign_hash(self._hash)
 
     def _calculate_hash(self) -> str:
         """Calculate SHA-256 hash of event content plus chain links."""
@@ -84,7 +111,15 @@ class AuditEvent:
 
     def verify_integrity(self) -> bool:
         """Verify the stored hash still matches the event's fields."""
-        return self._hash == self._calculate_hash()
+        if self._hash != self._calculate_hash():
+            return False
+        key = _hmac_key()
+        if not key:
+            return True
+        expected = sign_hash(self._hash, key)
+        if not self.hmac_sha256:
+            return False
+        return hmac.compare_digest(self.hmac_sha256, expected)
 
     def to_dict(self) -> Dict:
         """Serialize event to dictionary"""
@@ -98,6 +133,8 @@ class AuditEvent:
             "parent_events": self.parent_events,
             "parent_hashes": self.parent_hashes,
             "prev_hash": self.prev_hash,
+            "hmac_sha256": self.hmac_sha256,
+            "hmac_present": bool(self.hmac_sha256),
             "hash": self._hash,
         }
 
@@ -195,6 +232,7 @@ class AuditLog:
 
     `prev_hash` links each event to the previous event in insertion order.
     Explicit `parent_events` also bind to those parents' hashes.
+    HMAC tags are applied when a non-placeholder key is present.
     The chain lives in this process unless persist_path is set.
     """
 
@@ -328,6 +366,9 @@ class AuditLog:
     def verify_chain(self) -> bool:
         return self.verify_integrity()
 
+    def signed(self) -> bool:
+        return _hmac_key() is not None
+
     def _append_persist(self, event: AuditEvent) -> None:
         if not self.persist_path:
             return
@@ -354,6 +395,7 @@ class AuditLog:
                     parent_events=payload.get("parent_events") or [],
                     parent_hashes=payload.get("parent_hashes") or [],
                     prev_hash=payload.get("prev_hash") or GENESIS_HASH,
+                    hmac_sha256=payload.get("hmac_sha256") or "",
                     _hash=payload.get("hash"),
                 )
                 self.graph.add_event(event)

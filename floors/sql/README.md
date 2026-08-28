@@ -1,4 +1,4 @@
-> **Toy floor — not SQL.** Source here is Python (`*.py`), not SQL. This is not a database engine. Inventory: [floors/README.md](../README.md).
+> **Toy floor.** `schema.sql` is SQL. Department runtime (`department_floor.py`) is still Python. This is not a database engine. Inventory: [floors/README.md](../README.md).
 
 # Floor 8 - SQL Jurisdiction
 

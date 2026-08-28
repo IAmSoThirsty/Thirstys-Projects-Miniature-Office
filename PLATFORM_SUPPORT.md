@@ -2,7 +2,7 @@
 
 Miniature Office is a **local Flask app**. You start a Python (or Docker) process and open it in a browser. That is the entire platform story.
 
-There is no native desktop app, no mobile app, no PWA (`manifest.json` / service worker are absent), and no WebXR.
+There is a small PWA shell (`manifest.json` + `sw.js`). There is no native desktop app, no store client, and no WebXR.
 
 ## What actually runs
 
@@ -15,18 +15,17 @@ There is no native desktop app, no mobile app, no PWA (`manifest.json` / service
 
 `install.sh` is not a native OS installer. `start.command` is a shell wrapper, not a signed macOS app.
 
-The CD compose probe currently fails: it curls `/health` (503) while the compose healthcheck uses `/api/ide/health`, and the image user cannot write `./user_workspace`.
+CD `test-docker` now curls `/health` and `/api/ide/health` and `chmod 777`s `user_workspace` / `data` / `logs` before compose up. Actions on this SHA have not yet been observed.
 
 ## Browsers
 
-A modern desktop or mobile browser on the same machine or LAN can load `http://HOST:5000`. A headset browser can do the same. You get the Flask HTML UI (world canvas, file tree, editor, terminal), not a VR product.
+A modern desktop or mobile browser on the same machine or LAN can load `http://HOST:5000`. A headset browser can do the same. You get the Flask HTML UI (world canvas, file tree, editor, terminal), not a VR product. The PWA shell can be installed from a supporting browser; it is not a native app.
 
 ## Not included
 
 - Electron / packaged desktop app
 - App Store / Play Store clients
-- Installable PWA
 - WebXR, VR controllers, or hand tracking
-- Production hardening (in-memory state, no auth, CD probe red)
+- Production hardening (in-memory world state)
 
 Canonical status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Runbook: [INSTALL.md](INSTALL.md).

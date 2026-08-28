@@ -33,7 +33,7 @@ Older docs marked every floor “Implemented.” Completeness is uneven. Some di
 | `rust-async` | `.rs` + Cargo; committed `target/` | |
 | `scala` | `.scala` + sbt | |
 | `shell` | `.sh` | |
-| `sql` | **Python** (`*.py`) | Not SQL |
+| `sql` | `.sql` schema + Python department | Toy. `schema.sql` is SQL; department logic is still Python |
 | `swift` | `.swift` | |
 | `typescript` | `.ts` | |
 | `wasm` | Rust targeting wasm; committed `target/` | |
