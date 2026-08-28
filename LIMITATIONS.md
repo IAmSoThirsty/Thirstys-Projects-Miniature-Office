@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on the honesty-repair pin (parent `8f7ee8be`).
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on the honesty-repair pin (parent `8f7ee8be`), with Actions observed on merge `f24ae5c`.
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -20,6 +20,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - `start.sh`, `start.bat`, `start.command`
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
 - `/health` is a liveness probe (HTTP 200)
+- Python **3.10+** (`pytest==9.0.3` does not install on 3.9)
 
 ## What is not implemented (but was claimed)
 
@@ -33,7 +34,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | VR | Browser + PWA only. No WebXR. |
 | 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
-| CI / CD on this SHA | Workflows rewritten to be able to pass. No Actions run observed yet. |
+| CI / CD on `f24ae5c` | CD [33208378559](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378559) green. CI [33208378504](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33208378504) red (bandit JSON dump without `-ll`; pytest 9 vs Python 3.9). This pin is the CI fix. |
 
 ## Code generation pipeline
 
@@ -66,14 +67,14 @@ There is no single 99% of the whole tree.
 - Non-root Docker user: yes
 - Security headers module: yes
 - SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one
-- Bandit `-ll`: clean (B104 nosec on `run_server`)
+- Bandit `-ll`: clean (B104 nosec on `run_server`). JSON dump in CI also uses `-ll`.
 - pip-audit: clean on this pin
 - `MO_IDE_TOKEN` required when `FLASK_ENV=production`
 - `datetime.utcnow` has been replaced with `datetime.now(timezone.utc)`
 
 ## Roadmap (not done)
 
-1. Observe GitHub Actions on this SHA and move CI/CD + Docker to **Holds** if both jobs are green.
+1. Observe CI on **this** SHA (the 3.9 / bandit-JSON fix). Move CI/CD to **Holds** only if CI is green. Docker stays Partial until the stack is more than a compose healthcheck (in-memory world, `chmod 777`).
 2. Turn HMAC on by default in compose via a generated key.
 3. Replace identity codegen with spec-mapped generators, or stop listing a pipeline.
 4. Include every `src/` module in coverage reports.

@@ -1,8 +1,8 @@
 # Installation Guide - Miniature Office
 
-**Access: local Flask app in a browser (desktop and mobile). There is no native VR client.**
+**Access: local Flask app in a browser (desktop and mobile). There is a small PWA shell. There is no native VR client.**
 
-## 📱 Easiest Option: Use Your Web Browser (All Platforms)
+## Easiest Option: Use Your Web Browser (All Platforms)
 
 The Miniature Office runs as a web application, accessible from **any device with a modern web browser**:
 
@@ -13,11 +13,12 @@ The Miniature Office runs as a web application, accessible from **any device wit
 This means:
 - **Desktop**: Chrome, Firefox, Safari, Edge on Windows/Mac/Linux
 - **Mobile / tablet**: any phone or tablet browser pointed at the Flask server
-- **Not included**: a native app, PWA install package, or WebXR session
+- **PWA**: `manifest.json` + `sw.js` ship with the Flask client. Supporting browsers can install the shell. That is still the Flask HTML UI, not a native app.
+- **Not included**: a store client, Electron package, or WebXR session
 
 ---
 
-## 🖥️ Desktop Installation (Windows, macOS, Linux)
+## Desktop Installation (Windows, macOS, Linux)
 
 ### Option 1: One-Click Installer (Recommended)
 
@@ -45,17 +46,19 @@ This means:
 ### Option 2: Docker (Easiest, All Platforms)
 
 ```bash
-# One command to run everything
+export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+mkdir -p user_workspace data logs
+chmod 777 user_workspace data logs
 docker compose up --build
 ```
 
 Then open: `http://localhost:5000`
 
-**Prerequisites**: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+**Prerequisites**: Install [Docker Desktop](https://www.docker.com/products/docker-desktop). Compose has **no** default `SECRET_KEY`.
 
 ### Option 3: Manual Installation
 
-**Prerequisites**: Python 3.9 or higher
+**Prerequisites**: Python 3.10 or higher (`pytest==9.0.3` in `requirements.txt` does not install on 3.9)
 
 ```bash
 # Install dependencies
@@ -69,9 +72,9 @@ Then open: `http://localhost:5000`
 
 ---
 
-## 📱 Mobile Access (Android & iOS)
+## Mobile Access (Android & iOS)
 
-The Miniature Office is a **web-based application** that works perfectly on mobile devices:
+The Miniature Office is a **web-based application** that works on mobile devices:
 
 ### Method 1: Connect to Local Server
 1. Start the server on your computer (see Desktop Installation above)
@@ -83,9 +86,9 @@ The Miniature Office is a **web-based application** that works perfectly on mobi
 
 **Example**: If your computer's IP is `192.168.1.100`, go to `http://192.168.1.100:5000`
 
-### Method 2: Browser shortcut (optional)
+### Method 2: Install the PWA shell (optional)
 
-You can bookmark `http://YOUR_COMPUTER_IP:5000` or use the browser’s “Add to Home Screen.” That is a shortcut to the Flask page. This repo does not ship a PWA (`manifest.json` and a service worker are absent).
+Supporting browsers can install the Flask client from `manifest.json` / `sw.js` (or use “Add to Home Screen”). That is the same HTML UI, not a native app and not WebXR.
 
 ### Method 3: Run on Your Phone (Advanced)
 
@@ -110,7 +113,7 @@ A Quest (or other) browser can load `http://YOUR_COMPUTER_IP:5000` the same way 
 
 ---
 
-## 🌐 Network Access
+## Network Access
 
 ### Make it Accessible on Your Network
 
@@ -123,14 +126,14 @@ Now anyone on your network can access it at: `http://YOUR_IP:5000`
 
 ### Security Note
 When opening to your network:
-1. Set a strong `SECRET_KEY` (compose default is a placeholder)
-2. There is no authentication on the API
+1. Set a strong `SECRET_KEY` (compose has **no** default)
+2. `/api/ide/*` is open unless `MO_IDE_TOKEN` is set (required when `FLASK_ENV=production`)
 3. Restarting the process drops in-memory world state and audit events
 4. Use firewall rules to limit access. This is a local prototype, not a hardened service.
 
 ---
 
-## 🚀 Quick Start Commands
+## Quick Start Commands
 
 ### Windows
 ```cmd
@@ -154,13 +157,16 @@ start.bat            # Start the application
 
 ### Docker (All Platforms)
 ```bash
+export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+mkdir -p user_workspace data logs
+chmod 777 user_workspace data logs
 docker compose up --build    # Start everything
 docker compose down          # Stop everything
 ```
 
 ---
 
-## 📦 Pre-built Packages (Future)
+## Pre-built Packages (Future)
 
 We're working on pre-built installers:
 - [ ] Windows: `.exe` installer with automatic Python bundling
@@ -169,9 +175,11 @@ We're working on pre-built installers:
 - [ ] Snap package for Linux
 - [ ] Electron-based desktop app (Windows, macOS, Linux)
 
+Those packages do not exist yet.
+
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Port Already in Use
 If port 5000 is taken, edit `run.py` and change the port:
@@ -180,7 +188,7 @@ run_server(host='0.0.0.0', port=8080)
 ```
 
 ### Python Not Found
-- Windows: Install from [python.org](https://www.python.org/downloads/)
+- Windows: Install from [python.org](https://www.python.org/downloads/) (3.10+)
 - macOS: `brew install python3`
 - Linux: `sudo apt install python3 python3-pip` (Ubuntu/Debian)
 
@@ -201,16 +209,16 @@ chmod +x install.sh start.sh start.command
 
 ---
 
-## 💡 Tips
+## Tips
 
 1. **Bookmark it**: Save `http://localhost:5000` on the machine that runs the server
 2. **LAN only**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
 3. **Keep the process running**: Restarting drops in-memory world state
-4. **Docker**: `docker compose up --build` if you have Docker; default `SECRET_KEY` is a placeholder
+4. **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY`
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **[README.md](README.md)** - Project overview and measured metrics
 - **[CLAIMS_AUDIT.md](CLAIMS_AUDIT.md)** - What is actually implemented
@@ -219,7 +227,7 @@ chmod +x install.sh start.sh start.command
 
 ---
 
-## ❓ Need Help?
+## Need Help?
 
 - Check [GitHub Issues](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/issues)
 - Read the troubleshooting section above

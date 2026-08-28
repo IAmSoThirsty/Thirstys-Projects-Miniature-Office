@@ -19,11 +19,11 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 
 | File | Role |
 | --- | --- |
-| [INSTALL.md](INSTALL.md) | Install and run. Browser app on port 5000. Not a VR product. Not a PWA. |
+| [INSTALL.md](INSTALL.md) | Install and run. Browser app on port 5000. PWA shell exists. Not a VR product. |
 | [GETTING_STARTED.md](GETTING_STARTED.md) | First-run path |
 | [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. Event hashes are an unsigned chain, optionally JSONL. |
 | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Short command card |
-| [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | What “runs everywhere” means (Flask + browser) |
+| [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | What “runs everywhere” means (Flask + browser + PWA shell) |
 | [EASY_ACCESS.md](EASY_ACCESS.md) | LAN browser access |
 | [DEMO.txt](DEMO.txt) | Install demo. Headset browsers get the Flask HTML page, not VR. |
 | [floors/README.md](floors/README.md) | Floor inventory and stub markings |

@@ -22,7 +22,7 @@ What device do you have?
 │   │   └─ NO  → Need someone to start the server first
 │   │
 │   └─ Optional: bookmark the URL, or use the browser’s “Add to Home Screen”
-│       (a shortcut — this repo is not a PWA)
+│       (the Flask client ships manifest.json + sw.js; still not a native app)
 
 │
 └─ Headset browser
@@ -142,7 +142,7 @@ Look for an address like `192.168.1.100`
 2. Scroll down and tap "Add to Home Screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. This creates a browser shortcut, not a packaged app. There is no web-app manifest or service worker in this repo.
+5. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
 
 
 **Android:**
@@ -150,7 +150,7 @@ Look for an address like `192.168.1.100`
 2. Tap "Add to Home screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. This creates a browser shortcut, not a packaged app. There is no web-app manifest or service worker in this repo.
+5. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
 
 
 ---

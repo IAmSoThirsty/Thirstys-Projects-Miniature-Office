@@ -87,7 +87,7 @@ Look for: inet 192.168.x.x
 
 | Problem | Solution |
 |---------|----------|
-| Python not found | Install Python 3.9+ from python.org |
+| Python not found | Install Python 3.10+ from python.org |
 | Port 5000 in use | Edit run.py, change port to 8080 |
 | Can't connect from phone | Same WiFi? Firewall off? |
 | Permission denied | Run: `chmod +x install.sh start.sh start.command` |
