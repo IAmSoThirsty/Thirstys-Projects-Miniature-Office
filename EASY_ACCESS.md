@@ -2,7 +2,7 @@
 
 Miniature Office is a local Flask app you open in a browser.
 
-There is no phone-native installer, no PWA package, and no VR/WebXR client. A phone, tablet, or headset browser on the same network can load the Flask URL. That is still the HTML UI.
+There is no phone-native installer and no VR/WebXR client. A phone, tablet, or headset browser on the same network can load the Flask URL. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
 
 ## Desktop
 
@@ -21,7 +21,7 @@ Then open `http://127.0.0.1:5000`.
 2. Find that computer’s LAN IP (`ipconfig` / `ifconfig` / `ip addr`).
 3. On the other device, open `http://THE_IP:5000`.
 
-“Add to Home Screen” in a mobile browser is a bookmark. This repo does not ship a web app manifest or service worker.
+Supporting browsers can install the PWA shell from `manifest.json` / `sw.js` (or use “Add to Home Screen”). That is the same HTML UI, not a native app and not WebXR.
 
 ## More detail
 

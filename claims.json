@@ -1,9 +1,9 @@
 {
   "repo": "IAmSoThirsty/Thirstys-Projects-Miniature-Office",
-  "measured_commit": "a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6",
-  "measured_short": "a4b3de4",
-  "code_pin": "a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6",
-  "parent_code": "f24ae5c3d419f9bb14388591b05b8fb40ab70cc0",
+  "measured_commit": "590b90ce53bd859d8baf32a2155820e3169a93e8",
+  "measured_short": "590b90c",
+  "code_pin": "590b90ce53bd859d8baf32a2155820e3169a93e8",
+  "parent_code": "a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6",
   "measured_at": "2026-08-28",
   "status": "experimental prototype",
   "production_ready": false,
@@ -16,6 +16,14 @@
     "total": 19
   },
   "actions": {
+    "ci_590b90c": {
+      "run": 33211771675,
+      "conclusion": "success"
+    },
+    "cd_590b90c": {
+      "run": 33211771674,
+      "conclusion": "success"
+    },
     "ci_a4b3de4": {
       "run": 33209447993,
       "conclusion": "success"
@@ -43,11 +51,11 @@
     "src_python_files": 53,
     "code_civilization_lines": 1421,
     "code_civilization_bytes": 52653,
-    "pytest_passed": 1571,
+    "pytest_passed": 1573,
     "pytest_skipped": 1,
-    "pytest_collected": 1572,
-    "pytest_seconds": 9.17,
-    "def_test_grep": 1604,
+    "pytest_collected": 1574,
+    "pytest_seconds": 13.89,
+    "def_test_grep": 1606,
     "flask_routes": 74,
     "app_py_routes": 67,
     "ide_routes": 7,
@@ -104,13 +112,12 @@
     ]
   },
   "corrections": [
-    "Independent clone of a4b3de4: pytest 1569 passed, 1 skipped; this pin adds 2 honesty-lock tests (1571 passed). src 24441/19058; cov 7493/7749 (96.70%); 74 routes; 28 floors; civilization module 1421 lines / 52653 bytes.",
-    "CI 33209447993 and CD 33209448004 both succeeded on a4b3de4. CI/CD is Holds. Docker stays Partial (in-memory world, chmod 777).",
+    "Independent clone of 590b90c: pytest 1571 passed, 1 skipped, 13.89s; this pin adds 2 honesty-lock tests (1573 passed). src 24441/19058; cov 7493/7749 (96.70%); 74 routes; 28 floors; civilization module 1421 lines / 52653 bytes.",
+    "CI 33211771675 and CD 33211771674 both succeeded on 590b90c. CI/CD is Holds. Docker stays Partial (in-memory world, chmod 777).",
+    "EASY_ACCESS no longer denies the PWA shell. manifest.json + sw.js exist; there is still no WebXR.",
     "GETTING_STARTED no longer claims compose ships a placeholder SECRET_KEY. Compose interpolates SECRET_KEY with no default.",
-    "f24ae5c CI 33208378504 failed (bandit JSON without -ll; pytest 9 vs Python 3.9). That SHA is historical. HEAD dropped 3.9 and added -ll.",
-    "Python codegen writes identity bodies (no TODO) and actually runs pytest on the generated suite.",
-    "PWA: manifest.json + sw.js. No WebXR.",
+    "a4b3de4 CI 33209447993 and CD 33209448004 were also green. This pin retargets canonical files to HEAD.",
     "Score 9/6/1/3 of 19. Production ready remains False."
   ],
-  "commit": "a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6"
+  "commit": "590b90ce53bd859d8baf32a2155820e3169a93e8"
 }

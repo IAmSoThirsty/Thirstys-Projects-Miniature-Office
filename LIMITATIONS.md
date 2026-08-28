@@ -1,6 +1,6 @@
 # Known limitations
 
-**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on [`a4b3de4`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a4b3de48c88a1c09aa3619be3cf7dacc1080b2a6). CI [33209447993](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209447993) and CD [33209448004](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33209448004) both green.
+**Status: experimental prototype.** Operator-facing limitation list. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Measured 28 August 2026 on [`590b90c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/590b90ce53bd859d8baf32a2155820e3169a93e8). CI [33211771675](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771675) and CD [33211771674](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33211771674) both green.
 
 Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_ALLOWED_*.md` as status. Those files start with a historical banner. Index: [DOCS.md](DOCS.md).
 
@@ -16,12 +16,12 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 - AST-backed pattern / flow / metrics / dependency analyzers (5 patterns, 4 anti-patterns)
 - 28 language-floor directories; SQL floor includes `schema.sql` ([floors/README.md](floors/README.md))
 - Docker Compose / GitHub Actions **files**; security job uses bandit `-ll` + `pip-audit` (no `|| true`)
-- **1,571 tests passing**, 1 skipped (1,569 on `a4b3de4` + 2 honesty-lock tests)
+- **1,573 tests passing**, 1 skipped (1,571 on `590b90c` + 2 honesty-lock tests)
 - `start.sh`, `start.bat`, `start.command`
 - Production refuses placeholder `SECRET_KEY` values. Compose has no default secret
 - `/health` is a liveness probe (HTTP 200)
 - Python **3.10+** (`pytest==9.0.3` does not install on 3.9)
-- CI and CD **green** on `a4b3de4`
+- CI and CD **green** on `590b90c`
 
 ## What is not implemented (but was claimed)
 
@@ -49,8 +49,8 @@ Steps 1–6 exist as Python methods. Python:
 
 | Source | Number | Meaning |
 | --- | --- | --- |
-| Independent pytest | 1,571 passed, 1 skipped | Collected tests (1,569 on `a4b3de4` + 2 honesty-lock tests) |
-| `def test_` grep | 1,604 | Functions defined, not the same as collected |
+| Independent pytest | 1,573 passed, 1 skipped | Collected tests (1,571 on `590b90c` + 2 honesty-lock tests) |
+| `def test_` grep | 1,606 | Functions defined, not the same as collected |
 | Fresh `pytest --cov=src` | 7,493 / 7,749 statements (96.70%) | Imported modules only; still omits `integrated_specs/` |
 | `src/` Python lines | 24,441 total / 19,058 non-comment | Whole tree, not coverage |
 | PRODUCTION_READY.md (old) | 22 tests, 32% | Historical |
@@ -69,7 +69,7 @@ There is no single 99% of the whole tree.
 - Security headers module: yes
 - SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one
 - Bandit `-ll`: clean (B104 nosec on `run_server`). JSON dump in CI also uses `-ll`.
-- pip-audit: clean on `a4b3de4`
+- pip-audit: clean on `590b90c`
 - `MO_IDE_TOKEN` required when `FLASK_ENV=production`
 - `datetime.utcnow` has been replaced with `datetime.now(timezone.utc)`
 

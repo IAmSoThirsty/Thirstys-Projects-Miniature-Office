@@ -127,3 +127,36 @@ def test_claims_json_score_sums_and_is_not_production():
     assert score["total"] == 19
     assert data["production_ready"] is False
     assert data["status"] == "experimental prototype"
+
+
+def test_easy_access_does_not_deny_pwa():
+    text = Path("EASY_ACCESS.md").read_text(encoding="utf-8")
+    lowered = text.lower()
+    assert "no pwa package" not in lowered
+    assert "does not ship a web app manifest" not in lowered
+    assert "does not ship a web-app manifest" not in lowered
+    assert "manifest.json" in text
+    assert "sw.js" in text
+
+
+def test_canonical_files_cite_same_measured_commit():
+    data = json.loads(Path("claims.json").read_text(encoding="utf-8"))
+    sha = data["measured_commit"]
+    short = data["measured_short"]
+    assert len(sha) == 40
+    assert sha.startswith(short)
+    assert data["production_ready"] is False
+    assert data["score"]["holds"] == 9
+    assert data["score"]["partial"] == 6
+    assert data["score"]["inflated"] == 1
+    assert data["score"]["false"] == 3
+    for path in (
+        "README.md",
+        "CLAIMS_AUDIT.md",
+        "CLAIMS_LEDGER.md",
+        "LIMITATIONS.md",
+        "PLATFORM_SUPPORT.md",
+    ):
+        body = Path(path).read_text(encoding="utf-8")
+        assert short in body, path
+        assert sha in body, path
