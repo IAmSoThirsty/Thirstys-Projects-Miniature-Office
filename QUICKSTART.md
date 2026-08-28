@@ -282,7 +282,7 @@ Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous eve
 
 ### Import Errors
 - Ensure you're running from project root
-- Check Python version: `python3 --version` (needs 3.9+)
+- Check Python version: `python3 --version` (needs 3.10+)
 - Reinstall dependencies: `pip install -r requirements.txt`
 
 ### UI Not Loading

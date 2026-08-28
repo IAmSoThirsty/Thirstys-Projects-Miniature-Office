@@ -84,3 +84,27 @@ def test_ide_token_rejects_terminal(monkeypatch, tmp_path):
         )
     assert denied.status_code == 401
     assert allowed.status_code == 200
+
+
+def test_ci_bandit_json_uses_severity_floor():
+    text = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+    bandit_lines = [
+        line.strip()
+        for line in text.splitlines()
+        if "bandit " in line and not line.strip().startswith("#")
+    ]
+    assert bandit_lines
+    for line in bandit_lines:
+        assert "-ll" in line, line
+    assert "'3.9'" not in text
+    assert "'3.10'" in text
+
+
+def test_operator_docs_do_not_deny_pwa():
+    install = Path("INSTALL.md").read_text(encoding="utf-8")
+    started = Path("GETTING_STARTED.md").read_text(encoding="utf-8")
+    docs = Path("DOCS.md").read_text(encoding="utf-8")
+    assert "service worker are absent" not in install
+    assert "this repo is not a PWA" not in started
+    assert "no web-app manifest" not in started
+    assert "Not a PWA" not in docs
