@@ -5,9 +5,9 @@ score that must sum.
 
 **Code pin (measured tree):** [`fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) — last commit that changed `src/` or `tests/`.
 
-**Docs commit observed on `main`:** [`c783357`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/c7833576720d381322a2186a26b610715fd6f388) (docs-only successor of `1a103bf`). `src/` and `tests/` are identical to the code pin. A later docs merge will have a different SHA; do not retarget the pin to it.
+Later docs-only commits (`1a103bf`, `c783357`, `32a70dc`, and successors) do not retarget the pin. `src/` and `tests/` stay identical. Do not name a docs SHA as HEAD.
 
-**Independent remeasure of HEAD `c783357` (29 August 2026):** shallow clone counted `src/` **24,441** / **19,058** non-comment (53 files), **74** `@app.route` in `src/` (67+7), 28 floor dirs, `code_civilization.py` **1,421** lines / **52,653** bytes, anchored `def test_` = 1,606. Matches the code-pin metrics. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. [thirstysystems.com EC-013](https://www.thirstysystems.com/claims) is still stale (pins `537c469`, still describes a PRODUCTION READY README badge).
+**Independent remeasure (29 August 2026):** clone of then-HEAD `32a70dc`. Counted `src/` **24,441** / **19,058** non-comment (53 files), **74** `@app.route` in `src/` (67+7), 28 floor dirs, `code_civilization.py` **1,421** lines / **52,653** bytes, anchored `def test_` = 1,606. Pytest **1,573 passed**, 1 skipped, **13.18s**. Coverage XML **7,494 / 7,749** (96.71%). Bandit `-ll` clean. `pip-audit` clean. Matches the code-pin metrics. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. [thirstysystems.com EC-013](https://www.thirstysystems.com/claims) is still stale (pins `537c469`, still describes a PRODUCTION READY README badge).
 
 **Status:** experimental prototype — not production-ready
 
@@ -17,7 +17,7 @@ score that must sum.
 
 **Actions on code pin `fdd9762`:** CI [33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987) **succeeded**. CD [33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992) **succeeded**.
 
-**Actions on docs commit `1a103bf`:** CI [33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008) **succeeded**. CD [33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012) **succeeded**.
+**Actions on later docs-only commits:** `1a103bf` CI [33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008) **succeeded**, CD [33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012) **succeeded**. `32a70dc` CI [33250434458](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33250434458) **succeeded**, CD [33250434461](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33250434461) **succeeded**.
 
 Re-running coverage on an identical tree can swing by one statement (7,493 vs 7,494). That is not evidence the parent pin was wrong. Do not report `def test_` = 1,612.
 
@@ -41,7 +41,7 @@ Re-running coverage on an identical tree can swing by one statement (7,493 vs 7,
 - Real workspace / editor API / terminal (jailed FS, no-shell argv, 7 `/api/ide/*` routes, browser file-tree/editor/terminal UI)
 - Lint / known-vuln gates (Black, isort, flake8 E9/F63/F7/F82; bandit `-ll` 0 medium/high with documented B104 nosec; `pip-audit` clean). 13 bandit **low** findings remain.
 - Registry thread-safety via `threading.RLock` (the GIL is not the mutex)
-- CI / CD healthy (green on `fdd9762` and on docs commit `1a103bf`)
+- CI / CD healthy (green on `fdd9762` and on later docs-only commits)
 
 **Partial (6)**
 
@@ -49,7 +49,7 @@ Re-running coverage on an identical tree can swing by one statement (7,493 vs 7,
 - Complete codegen → tested artifact (identity bodies; Python tests **are** executed; other languages still assumed)
 - Cryptographic immutable audit log (SHA-256 chain; optional HMAC-SHA256 when a real key is set; not a ledger)
 - Desktop / mobile / VR (browser UI + PWA manifest/service worker; no WebXR)
-- Docker / compose (files exist; CD `test-docker` green on `fdd9762` and `1a103bf`; not hardened — in-memory world, `chmod 777`)
+- Docker / compose (files exist; CD `test-docker` green on `fdd9762` and later docs-only commits; not hardened — in-memory world, `chmod 777`)
 - 23+ patterns / SOLID / smells (AST walkers exist for 5 patterns and 4 anti-patterns; not a 23+/SOLID product)
 
 **Inflated (1)**

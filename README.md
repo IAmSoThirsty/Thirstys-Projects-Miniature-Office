@@ -4,7 +4,7 @@
 
 A Flask simulation of a spatial office metaphor for software work: typed entities, an optional HMAC-tagged audit JSONL, language “floors,” a template-based code-generation pipeline, a jailed workspace / no-shell terminal API, a browser editor/file-tree/terminal UI, and a small PWA shell.
 
-This README reports the **code pin** [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) — the last commit that changed `src/` or `tests/`. Independent pytest on that SHA: **1,573 passed**, 1 skipped, 13.14s. Fresh `--cov=src`: **7,494 / 7,749** (96.71%). A later **docs** commit (currently `1a103bf` and any successor) does not retarget the pin: `git diff fdd9762 1a103bf -- src tests` is empty. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
+This README reports the **code pin** [`fdd9762`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) — the last commit that changed `src/` or `tests/`. Independent pytest on that SHA: **1,573 passed**, 1 skipped, 13.14s. Fresh `--cov=src`: **7,494 / 7,749** (96.71%). Re-run 29 August 2026 on then-HEAD `32a70dc` (src/tests identical to the pin): **1,573 passed**, 1 skipped, 13.18s, same coverage XML. Later docs-only commits do not retarget the pin. Evidence: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Score that must sum: [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md). Index: [DOCS.md](DOCS.md).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -23,7 +23,7 @@ This README reports the **code pin** [`fdd9762`](https://github.com/IAmSoThirsty
 | Code pipeline | `src/core/code_civilization.py` — **1,421-line** template generator (not 49,741 lines). Python identity bodies; generated pytest is executed |
 | Floors | 28 directories under `floors/`. SQL floor includes `schema.sql`. Every floor README is marked a toy. See [floors/README.md](floors/README.md) |
 | Tests | **1,573 passing**, 1 skipped |
-| CI / CD | **Both green** on the code pin `fdd9762`: [CI 33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987), [CD 33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992). Also green on docs commit `1a103bf`: [CI 33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008), [CD 33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012). Matrix is Python 3.10–3.12; bandit JSON dump uses `-ll` |
+| CI / CD | **Both green** on the code pin `fdd9762`: [CI 33212776987](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776987), [CD 33212776992](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33212776992). Also green on later docs-only commits `1a103bf` ([CI 33215760008](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760008), [CD 33215760012](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33215760012)) and `32a70dc` ([CI 33250434458](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33250434458), [CD 33250434461](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33250434461)). Matrix is Python 3.10–3.12; bandit JSON dump uses `-ll` |
 
 It is **not** a production IDE, not VR-native, not a cryptographic ledger, and not a polyglot runtime that authors real code in 30 languages.
 
@@ -42,7 +42,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 | macOS `start.command` | Documented | **Present** — launches `start.sh` |
 | Editor UI | (older docs denied it) | **Present** |
 | PWA | Claimed | **Present** (`manifest.json`, `sw.js`); no WebXR |
-| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **9 / 6 / 1 / 3** of 19 (sums). CI/CD Holds: both jobs green on code pin `fdd9762` and on docs commit `1a103bf` |
+| Audit score | 8 hold / 6 partial / 2 inflated / 3 false | **9 / 6 / 1 / 3** of 19 (sums). CI/CD Holds: both jobs green on code pin `fdd9762` and on later docs-only commits |
 
 ## What still works as a prototype
 
@@ -54,7 +54,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Browser IDE chrome: file tree, editor, terminal (HTTP API, not Monaco/LSP)
 - AST-backed pattern / flow / metrics / dependency analyzers (small named set)
 - Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `fdd9762`.
-- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `fdd9762` and on `1a103bf`
+- GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `fdd9762` and on later docs-only commits
 
 ## What does not work as advertised
 
