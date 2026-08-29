@@ -5,7 +5,9 @@ score that must sum.
 
 **Code pin (measured tree):** [`fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a) — last commit that changed `src/` or `tests/`.
 
-**Docs commit observed on `main`:** [`1a103bf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/1a103bf198ebb4b795b36d04cdc081d3a1fa4687). `src/` and `tests/` are identical to the code pin. A later docs merge will have a different SHA; do not retarget the pin to it.
+**Docs commit observed on `main`:** [`c783357`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/c7833576720d381322a2186a26b610715fd6f388) (docs-only successor of `1a103bf`). `src/` and `tests/` are identical to the code pin. A later docs merge will have a different SHA; do not retarget the pin to it.
+
+**Independent remeasure of HEAD `c783357` (29 August 2026):** shallow clone counted `src/` **24,441** / **19,058** non-comment (53 files), **74** `@app.route` in `src/` (67+7), 28 floor dirs, `code_civilization.py` **1,421** lines / **52,653** bytes, anchored `def test_` = 1,606. Matches the code-pin metrics. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. [thirstysystems.com EC-013](https://www.thirstysystems.com/claims) is still stale (pins `537c469`, still describes a PRODUCTION READY README badge).
 
 **Status:** experimental prototype — not production-ready
 
@@ -64,7 +66,7 @@ VR is **Partial**, not Holds: PWA exists; WebXR does not.
 
 CI/CD is **Holds**, not Partial: both jobs were observed green on `fdd9762`. Docker stays Partial.
 
-See [claims.json](claims.json) for the same table as JSON.
+See [claims.json](claims.json) for the same table as JSON. See [INDEPENDENT_REMEASURE.md](INDEPENDENT_REMEASURE.md) for the 29 August 2026 clone counts.
 
 ## Remaining product gaps
 
