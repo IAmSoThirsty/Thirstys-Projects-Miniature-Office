@@ -32,6 +32,11 @@ Clone of [`32a70dc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature
 
 These numbers match [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) and [claims.json](claims.json) for the code pin.
 
+## 29 August 2026 — HEAD `a0910d4` (counts only)
+
+Clone of [`a0910d4`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a0910d4768f0a9ce05c65b91761ef7dc62e54110). Counted `src/` **24,441** / **19,058** non-comment (53 files), **74** `@app.route` in `src/` (67+7), 28 floor dirs, `code_civilization.py` **1,421** lines / **52,653** bytes, anchored `def test_` = 1,606. Matches the code pin. Pytest was **not** re-run in this clone (last pytest: `32a70dc`). CI [33252125717](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33252125717) **succeeded**. CD [33252125743](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33252125743) **succeeded**. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**.
+
+
 ## 29 August 2026 — then-HEAD `c783357` (counts only)
 
 Clone of [`c783357`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/c7833576720d381322a2186a26b610715fd6f388). Counts matched the pin. Pytest was **not** run in that clone.
