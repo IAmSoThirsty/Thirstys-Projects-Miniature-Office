@@ -59,6 +59,14 @@
     "cd_1a103bf": {
       "run": 33215760012,
       "conclusion": "success"
+    },
+    "ci_32a70dc": {
+      "run": 33250434458,
+      "conclusion": "success"
+    },
+    "cd_32a70dc": {
+      "run": 33250434461,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -100,7 +108,7 @@
     "def_test_grep_anchored": 1606,
     "def_test_grep_unanchored_tests": 1608,
     "def_test_grep_whole_repo_unanchored": 1626,
-    "fresh_cov_note": "XML 7494/7749 on fdd9762. Identical src/tests at c783357. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
+    "fresh_cov_note": "XML 7494/7749 on fdd9762. Re-run 2026-08-29 on then-HEAD 32a70dc (identical src/tests): 7494/7749 in 13.18s. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
   },
   "verdicts": {
     "holds": [
@@ -132,24 +140,40 @@
     ]
   },
   "corrections": [
-    "Code pin is fdd9762 (last src/tests change). Docs HEAD c783357 is identical in src/ and tests/ (git log fdd9762..HEAD -- src tests is empty). Do not retarget the pin to a docs-only SHA.",
-    "Independent pytest on fdd9762: 1573 passed, 1 skipped, 13.14s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization 1421 lines / 52653 bytes.",
+    "Code pin is fdd9762 (last src/tests change). Later docs-only commits are identical in src/ and tests/ (git log fdd9762..HEAD -- src tests is empty). Do not name a docs SHA as HEAD and do not retarget the pin to it.",
+    "Independent pytest on fdd9762: 1573 passed, 1 skipped, 13.14s. Re-run 2026-08-29 on then-HEAD 32a70dc: 1573 passed, 1 skipped, 13.18s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization 1421 lines / 52653 bytes.",
     "Anchored def test_ in tests/ = 1606. Unanchored in tests/ = 1608. Whole-repo unanchored = 1626. 1612 is not a reproducible count.",
-    "CI 33212776987 and CD 33212776992 green on fdd9762. CI 33215760008 and CD 33215760012 green on 1a103bf. CI/CD is Holds. Docker stays Partial.",
+    "CI 33212776987 and CD 33212776992 green on fdd9762. Later docs-only commits also green: 1a103bf (33215760008 / 33215760012), 32a70dc (33250434458 / 33250434461). CI/CD is Holds. Docker stays Partial.",
     "Coverage XML may swing by one statement across machines on an identical tree. That is not a parent-pin error.",
     "Score 9/6/1/3 of 19. Production ready remains False.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale of current main."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
-  "docs_commit_observed": "c7833576720d381322a2186a26b610715fd6f388",
-  "docs_commit_short": "c783357",
-  "src_tests_identical_through": "c7833576720d381322a2186a26b610715fd6f388",
-  "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree.",
-  "remeasured_head": {
-    "sha": "c7833576720d381322a2186a26b610715fd6f388",
-    "short": "c783357",
+  "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
+  "docs_successors_observed": [
+    {
+      "sha": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
+      "short": "1a103bf",
+      "ci": 33215760008,
+      "cd": 33215760012
+    },
+    {
+      "sha": "c7833576720d381322a2186a26b610715fd6f388",
+      "short": "c783357"
+    },
+    {
+      "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
+      "short": "32a70dc",
+      "ci": 33250434458,
+      "cd": 33250434461
+    }
+  ],
+  "src_tests_identical_through_at_least": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
+  "remeasured": {
+    "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
+    "short": "32a70dc",
     "at": "2026-08-29",
-    "method": "Independent shallow clone of main. Counted src/**/*.py, floors/*, @app.route in src/, anchored def test_ in tests/, LICENSE, PWA files.",
+    "method": "Independent clone of then-HEAD 32a70dc. Counted src/**/*.py, floors/*, @app.route in src/, anchored def test_ in tests/. Ran pytest --cov=src, bandit -ll, pip-audit.",
     "src_python_files": 53,
     "src_python_lines_total": 24441,
     "src_python_lines_noncomment": 19058,
@@ -162,10 +186,18 @@
     "sql_floor_has_sql": true,
     "def_test_grep_anchored": 1606,
     "def_test_grep_unanchored_tests": 1608,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 13.18,
+    "fresh_cov_covered": 7494,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "pip_audit": "clean",
     "pwa_manifest": true,
     "webxr": false,
     "apache_2": true,
     "matches_code_pin_metrics": true,
-    "note": "HEAD is docs-only relative to code pin fdd9762. Do not retarget the pin. Score remains 9/6/1/3 of 19. thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY README badge that current main does not wear."
+    "note": "Then-HEAD was docs-only relative to code pin fdd9762. Do not retarget the pin. Score remains 9/6/1/3 of 19. thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY README badge that current main does not wear."
   }
 }
