@@ -100,7 +100,7 @@
     "def_test_grep_anchored": 1606,
     "def_test_grep_unanchored_tests": 1608,
     "def_test_grep_whole_repo_unanchored": 1626,
-    "fresh_cov_note": "XML 7494/7749 on fdd9762. Identical src/tests at 1a103bf. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
+    "fresh_cov_note": "XML 7494/7749 on fdd9762. Identical src/tests at c783357. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
   },
   "verdicts": {
     "holds": [
@@ -132,7 +132,7 @@
     ]
   },
   "corrections": [
-    "Code pin is fdd9762 (last src/tests change). Docs commit 1a103bf is identical in src/ and tests/. Do not retarget the pin to a docs-only SHA.",
+    "Code pin is fdd9762 (last src/tests change). Docs HEAD c783357 is identical in src/ and tests/ (git log fdd9762..HEAD -- src tests is empty). Do not retarget the pin to a docs-only SHA.",
     "Independent pytest on fdd9762: 1573 passed, 1 skipped, 13.14s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization 1421 lines / 52653 bytes.",
     "Anchored def test_ in tests/ = 1606. Unanchored in tests/ = 1608. Whole-repo unanchored = 1626. 1612 is not a reproducible count.",
     "CI 33212776987 and CD 33212776992 green on fdd9762. CI 33215760008 and CD 33215760012 green on 1a103bf. CI/CD is Holds. Docker stays Partial.",
@@ -141,8 +141,31 @@
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale of current main."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
-  "docs_commit_observed": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
-  "docs_commit_short": "1a103bf",
-  "src_tests_identical_through": "1a103bf198ebb4b795b36d04cdc081d3a1fa4687",
-  "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree."
+  "docs_commit_observed": "c7833576720d381322a2186a26b610715fd6f388",
+  "docs_commit_short": "c783357",
+  "src_tests_identical_through": "c7833576720d381322a2186a26b610715fd6f388",
+  "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree.",
+  "remeasured_head": {
+    "sha": "c7833576720d381322a2186a26b610715fd6f388",
+    "short": "c783357",
+    "at": "2026-08-29",
+    "method": "Independent shallow clone of main. Counted src/**/*.py, floors/*, @app.route in src/, anchored def test_ in tests/, LICENSE, PWA files.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "matches_code_pin_metrics": true,
+    "note": "HEAD is docs-only relative to code pin fdd9762. Do not retarget the pin. Score remains 9/6/1/3 of 19. thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still describes a PRODUCTION READY README badge that current main does not wear."
+  }
 }

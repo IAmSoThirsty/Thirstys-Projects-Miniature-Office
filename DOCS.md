@@ -12,6 +12,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) | Claim-by-claim evidence |
 | [CLAIMS_LEDGER.md](CLAIMS_LEDGER.md) | Score that must sum (9/6/1/3 = 19) |
 | [claims.json](claims.json) | Same score as JSON |
+| [INDEPENDENT_REMEASURE.md](INDEPENDENT_REMEASURE.md) | Clone-time counts on HEAD c783357. Does not retarget the pin. |
 | [LIMITATIONS.md](LIMITATIONS.md) | Current limitations without contradictory percentages |
 | [PRODUCTION_READY.md](PRODUCTION_READY.md) | Superseded certificate, kept as history |
 
