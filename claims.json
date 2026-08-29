@@ -75,6 +75,14 @@
     "cd_a0910d4": {
       "run": 33252125743,
       "conclusion": "success"
+    },
+    "ci_32b08d8": {
+      "run": 33262809624,
+      "conclusion": "success"
+    },
+    "cd_32b08d8": {
+      "run": 33262809630,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -155,7 +163,8 @@
     "Coverage XML may swing by one statement across machines on an identical tree. That is not a parent-pin error.",
     "Score 9/6/1/3 of 19. Production ready remains False.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale of current main.",
-    "CI 33252125717 and CD 33252125743 green on later docs-only a0910d4. Counts on that SHA match the code pin. Pin stays fdd9762. Do not retarget it."
+    "CI 33252125717 and CD 33252125743 green on later docs-only a0910d4. Counts on that SHA match the code pin. Pin stays fdd9762. Do not retarget it.",
+    "CI 33262809624 and CD 33262809630 green on later docs-only 32b08d8 (PR #31 squash). src tree fafbad68 and tests tree 1ddf08f8 match the code pin. Pin stays fdd9762. Do not retarget it. GitHub HTML landing was still stale (27d7fdf) at clone time; API/raw at 32b08d8 are the measured files."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -183,9 +192,20 @@
       "cd": 33252125743,
       "kind": "counts_only",
       "pytest_rerun": false
+    },
+    {
+      "sha": "32b08d8a7cf5808bd188077ff0b32db56c69ee7a",
+      "short": "32b08d8",
+      "ci": 33262809624,
+      "cd": 33262809630,
+      "kind": "counts_only",
+      "pytest_rerun": false,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "a0910d4768f0a9ce05c65b91761ef7dc62e54110",
+  "src_tests_identical_through_at_least": "32b08d8a7cf5808bd188077ff0b32db56c69ee7a",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -239,5 +259,32 @@
     "matches_code_pin_metrics": true,
     "ci": 33252125717,
     "cd": 33252125743
+  },
+  "remeasured_counts_32b08d8": {
+    "sha": "32b08d8a7cf5808bd188077ff0b32db56c69ee7a",
+    "short": "32b08d8",
+    "at": "2026-08-29",
+    "method": "Independent clone of docs successor 32b08d8. Compared git tree SHAs for src/ and tests/ to code pin fdd9762 (identical). Counted src/**/*.py, floors/*, @app.route in src/, anchored ^\\s*def test_ in tests/. Pytest was not re-run. Observed CI 33262809624 and CD 33262809630 success.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "def_test_grep_anchored": 1606,
+    "def_test_module_level": 33,
+    "def_test_class_methods": 1573,
+    "def_test_grep_unanchored_tests": 1608,
+    "pwa_manifest": true,
+    "webxr": false,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 33262809624,
+    "cd": 33262809630
   }
 }
