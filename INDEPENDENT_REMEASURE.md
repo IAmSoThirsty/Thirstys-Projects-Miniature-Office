@@ -6,6 +6,39 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 30 August 2026 — docs successor `268058c` (pytest re-run)
+
+Independent clone of [`268058c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/268058c1b17408691807c20b01e2ba91fa54f4ce). `git log fdd9762..HEAD -- src tests` empty. Git tree objects for `src/` (`fafbad684ed9d61bd5fd347098276eeea4b911d3`) and `tests/` (`1ddf08f8a24d9003054c0a395e06c95470009fe0`) match code pin `fdd9762`.
+
+| Metric | Value |
+| --- | --- |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28 |
+| `floors/sql/schema.sql` | present |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 (33 module-level + 1,573 class methods) |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | **1,619** (not 1,626) |
+| Pytest | **1,573 passed**, 1 skipped, **13.75s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high |
+| Bandit low findings | 13 |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| CI on `268058c` | [33263264093](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33263264093) succeeded |
+| CD on `268058c` | [33263264131](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33263264131) succeeded |
+
+Headline metrics match the code pin. The only live numeric error in canonical files was `claims.json` `def_test_grep_whole_repo_unanchored` **1626**, which independent `*.py` grep (excluding `.git`) measures as **1619**. That field is corrected in the same docs change. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
+GitHub's HTML README on 30 August 2026 matches the raw experimental-prototype text (the earlier `27d7fdf` HTML-staleness note was clone-time history).
+
+
 ## 29 August 2026 — then-HEAD `32a70dc` (pytest run)
 
 Clone of [`32a70dc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/32a70dc7a73d3143a0f06c36361ff2b64a1a9124). `git log fdd9762..HEAD -- src tests` empty.
