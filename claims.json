@@ -83,6 +83,14 @@
     "cd_32b08d8": {
       "run": 33262809630,
       "conclusion": "success"
+    },
+    "ci_268058c": {
+      "run": 33263264093,
+      "conclusion": "success"
+    },
+    "cd_268058c": {
+      "run": 33263264131,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -123,8 +131,8 @@
     ],
     "def_test_grep_anchored": 1606,
     "def_test_grep_unanchored_tests": 1608,
-    "def_test_grep_whole_repo_unanchored": 1626,
-    "fresh_cov_note": "XML 7494/7749 on fdd9762. Re-run 2026-08-29 on then-HEAD 32a70dc (identical src/tests): 7494/7749 in 13.18s. A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs."
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "fresh_cov_note": "XML 7494/7749 on fdd9762. Re-run 2026-08-29 on then-HEAD 32a70dc (identical src/tests): 7494/7749 in 13.18s. Independent pytest 2026-08-30 on 268058c (identical src/tests): 1573 passed, 1 skipped, 13.75s, XML 7494/7749 (96.71%). A later machine may report 7493; that is variance, not a tree change. Do not report 1612 defs. Whole-repo unanchored def test_ is 1619, not 1626."
   },
   "verdicts": {
     "holds": [
@@ -158,13 +166,14 @@
   "corrections": [
     "Code pin is fdd9762 (last src/tests change). Later docs-only commits are identical in src/ and tests/ (git log fdd9762..HEAD -- src tests is empty). Do not name a docs SHA as HEAD and do not retarget the pin to it.",
     "Independent pytest on fdd9762: 1573 passed, 1 skipped, 13.14s. Re-run 2026-08-29 on then-HEAD 32a70dc: 1573 passed, 1 skipped, 13.18s. src 24441/19058; cov 7494/7749 (96.71%); 74 routes; 28 floors; civilization 1421 lines / 52653 bytes.",
-    "Anchored def test_ in tests/ = 1606. Unanchored in tests/ = 1608. Whole-repo unanchored = 1626. 1612 is not a reproducible count.",
+    "Anchored def test_ in tests/ = 1606. Unanchored in tests/ = 1608. Whole-repo unanchored = 1619 (tests/ 1608 + demo_pipeline.py 4 + floors/sql/department_floor.py 2 + src/core/code_civilization.py 5). 1626 is not a reproducible count. 1612 is not a reproducible count.",
     "CI 33212776987 and CD 33212776992 green on fdd9762. Later docs-only commits also green: 1a103bf (33215760008 / 33215760012), 32a70dc (33250434458 / 33250434461). CI/CD is Holds. Docker stays Partial.",
     "Coverage XML may swing by one statement across machines on an identical tree. That is not a parent-pin error.",
     "Score 9/6/1/3 of 19. Production ready remains False.",
     "thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469 and still says the README badges PRODUCTION READY. That portal is stale of current main.",
     "CI 33252125717 and CD 33252125743 green on later docs-only a0910d4. Counts on that SHA match the code pin. Pin stays fdd9762. Do not retarget it.",
-    "CI 33262809624 and CD 33262809630 green on later docs-only 32b08d8 (PR #31 squash). src tree fafbad68 and tests tree 1ddf08f8 match the code pin. Pin stays fdd9762. Do not retarget it. GitHub HTML landing was still stale (27d7fdf) at clone time; API/raw at 32b08d8 are the measured files."
+    "CI 33262809624 and CD 33262809630 green on later docs-only 32b08d8 (PR #31 squash). src tree fafbad68 and tests tree 1ddf08f8 match the code pin. Pin stays fdd9762. Do not retarget it. GitHub HTML landing was still stale (27d7fdf) at clone time; API/raw at 32b08d8 are the measured files.",
+    "Independent pytest 2026-08-30 on docs successor 268058c (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.75s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33263264093 and CD 33263264131 succeeded. Whole-repo unanchored def test_ corrected 1626 \u2192 1619. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -203,9 +212,20 @@
       "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
       "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
       "matches_code_pin_trees": true
+    },
+    {
+      "sha": "268058c1b17408691807c20b01e2ba91fa54f4ce",
+      "short": "268058c",
+      "ci": 33263264093,
+      "cd": 33263264131,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "32b08d8a7cf5808bd188077ff0b32db56c69ee7a",
+  "src_tests_identical_through_at_least": "268058c1b17408691807c20b01e2ba91fa54f4ce",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -286,5 +306,48 @@
     "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
     "ci": 33262809624,
     "cd": 33262809630
+  },
+  "remeasured_pytest_268058c": {
+    "sha": "268058c1b17408691807c20b01e2ba91fa54f4ce",
+    "short": "268058c",
+    "at": "2026-08-30",
+    "method": "Independent clone of 268058c. Counted src/**/*.py, floors/*, @app.route in src/, anchored ^\\s*def test_ in tests/ and whole-repo unanchored def test_. Ran pytest --cov=src, bandit -ll, pip-audit. Observed CI 33263264093 and CD 33263264131 success.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "def_test_grep_anchored": 1606,
+    "def_test_module_level": 33,
+    "def_test_class_methods": 1573,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 13.75,
+    "fresh_cov_covered": 7494,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "entity_types": 7,
+    "relation_types": 8,
+    "patterns": 5,
+    "antipatterns": 4,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 33263264093,
+    "cd": 33263264131,
+    "note": "Docs-only relative to code pin fdd9762. Whole-repo unanchored was recorded as 1626; independent grep of *.py excluding .git is 1619. Pin stays fdd9762. Score remains 9/6/1/3 of 19. thirstysystems.com EC-013 still pins LIMITATIONS.md at 537c469."
   }
 }
