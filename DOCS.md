@@ -22,7 +22,7 @@ Canonical status lives in the files below. Everything else is operator how-to, d
 | --- | --- |
 | [INSTALL.md](INSTALL.md) | Install and run. Browser app on port 5000. PWA shell exists. Not a VR product. |
 | [GETTING_STARTED.md](GETTING_STARTED.md) | First-run path. Compose has **no** default `SECRET_KEY`. |
-| [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. Event hashes are an unsigned chain, optionally JSONL. |
+| [QUICKSTART.md](QUICKSTART.md) | Clone, pip, `python3 run.py`. SHA-256 chain: in-memory unsigned by default; JSONL when `MO_DATA_DIR` is set; HMAC-tagged when a real key is set. |
 | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Short command card |
 | [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | What “runs everywhere” means (Flask + browser + PWA shell) |
 | [EASY_ACCESS.md](EASY_ACCESS.md) | LAN browser access |
