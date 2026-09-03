@@ -122,11 +122,12 @@ done
 curl "http://localhost:5000/api/audit/events?limit=20" | python3 -m json.tool
 ```
 
-You'll see logged events for:
-- Entity creation
-- World ticks
-- State persistence
-- Agent actions
+You'll see logged events such as:
+- Entity creation (`entity_created`)
+- Agent actions (`agent_action`)
+- A per-tick `agent_action` whose data says `state_persisted` — that is a log label. World state stays in-memory.
+
+There is no separate world-tick or persistence event type.
 
 ### 5. View Supply Store Tools
 ```bash
@@ -272,7 +273,7 @@ print('Timestamp:', event['timestamp'])
 "
 ```
 
-Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous event). That is an in-memory hash chain. It is not persisted, not signed, and a process restart drops it. It does not prove a production-grade ledger.
+Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous event). By default that chain is in-memory, unsigned, and dropped on process restart. If `MO_DATA_DIR` is set, events also append to `audit.jsonl`. If `MO_AUDIT_HMAC_KEY` or a non-placeholder `SECRET_KEY` is set, events carry HMAC-SHA256 over the content hash. That is still a local integrity tag, not a production-grade ledger.
 
 ## Troubleshooting
 
