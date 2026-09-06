@@ -115,6 +115,6 @@ Workflow files: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`.
 
 ## Ecosystem
 
-[thirstysystems.com EC-013](https://www.thirstysystems.com/claims) still pins `LIMITATIONS.md` at `537c469` and still says the README badges PRODUCTION READY. That is false of current `main`. The portal is stale.
+[thirstysystems.com EC-013](https://www.thirstysystems.com/claims) now reports that the canonical README no longer badges Production Ready. Status is experimental prototype — not production-ready. Evidence is `CLAIMS_AUDIT.md` at code pin `fdd9762`. Live HTML observed 6 September 2026 23:10 UTC (`x-deployment-id` `psr2.bbb2f268-9743-4de1-96c9-d438c2d1b1ed…`). [/systems/miniature-office](https://www.thirstysystems.com/systems/miniature-office) now cites 1,573 tests and 28 floors, not 1,537 / 30+. EC-013 is Verified of the *status sentence*. Production-ready remains false.
 
 The product remains a Flask office metaphor with templates, an optional HMAC-tagged audit file, a jailed workspace API, a browser editor, a PWA shell, and in-memory world state. It is not a civilization-tier IDE.

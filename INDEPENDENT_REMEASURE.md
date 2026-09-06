@@ -6,6 +6,36 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 6 September 2026 23:10 UTC — observed main `0aaf783` (pytest re-run)
+
+Independent clone of [`0aaf783`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/0aaf7839d6dd2943647a2d0b87da83b2608a1d56) (PR #35, docs-only). `git log fdd9762..HEAD -- src tests` empty. Git tree objects for `src/` (`fafbad684ed9d61bd5fd347098276eeea4b911d3`) and `tests/` (`1ddf08f8a24d9003054c0a395e06c95470009fe0`) match code pin `fdd9762`.
+
+| Metric | Value |
+| --- | --- |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28 |
+| `floors/sql/schema.sql` | present |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **13.09s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low; 1 skipped_tests) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| CI on `0aaf783` | [33817498446](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33817498446) succeeded |
+| CD on `0aaf783` | [33817498306](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/33817498306) succeeded |
+| Live EC-013 | matches tree (experimental prototype; pin `fdd9762`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 30 August 2026 — docs successor `268058c` (pytest re-run)
 
 Independent clone of [`268058c`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/268058c1b17408691807c20b01e2ba91fa54f4ce). `git log fdd9762..HEAD -- src tests` empty. Git tree objects for `src/` (`fafbad684ed9d61bd5fd347098276eeea4b911d3`) and `tests/` (`1ddf08f8a24d9003054c0a395e06c95470009fe0`) match code pin `fdd9762`.
@@ -79,6 +109,6 @@ Clone of [`32b08d8`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature
 
 Clone of [`c783357`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/c7833576720d381322a2186a26b610715fd6f388). Counts matched the pin. Pytest was **not** run in that clone.
 
-## Still false outside this repository
+## Outside this repository (updated 6 September 2026 23:10 UTC)
 
-[thirstysystems.com EC-013](https://www.thirstysystems.com/claims) still pins `LIMITATIONS.md` at `537c469` and still describes a README PRODUCTION READY badge. Current `main` does not wear that badge. The portal is stale of this tree.
+Live [thirstysystems.com/claims](https://www.thirstysystems.com/claims) EC-013 now reports that the README no longer badges Production Ready and pins `CLAIMS_AUDIT.md` at `fdd9762`. [/systems/miniature-office](https://www.thirstysystems.com/systems/miniature-office) now cites 1,573 tests and 28 floors. The February `537c469` / PRODUCTION READY sentence is historical. Production-ready remains false.
