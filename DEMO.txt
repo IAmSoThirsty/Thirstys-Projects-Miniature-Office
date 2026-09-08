@@ -32,11 +32,16 @@ LINUX USERS:
 DOCKER USERS (ALL PLATFORMS):
 ------------------------------
 1. Open Terminal/Command Prompt
-2. Run: docker compose up --build
+2. Export a real SECRET_KEY, then compose up:
+   export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+   mkdir -p user_workspace data logs
+   chmod 777 user_workspace data logs
+   docker compose up --build
 3. Wait for server to start
 4. Open browser to: http://localhost:5000
 
-   Default SECRET_KEY is a placeholder. State is in-memory.
+   Compose interpolates SECRET_KEY with no default. Production refuses
+   placeholders. State is in-memory.
 
 MOBILE/TABLET USERS:
 --------------------
@@ -48,7 +53,8 @@ MOBILE/TABLET USERS:
 4. Go to: http://[YOUR_IP]:5000
    Example: http://192.168.1.100:5000
 5. Optional: bookmark, or "Add to Home Screen"
-   (a browser shortcut — this repo is not a PWA)
+   (supporting browsers can install the PWA shell from manifest.json + sw.js;
+    that is still the Flask HTML UI, not a native app)
 
 HEADSET BROWSERS (not a VR product):
 ------------------------------------
