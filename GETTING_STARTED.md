@@ -227,7 +227,7 @@ chmod +x install.sh start.sh start.command
 
 Once you're in:
 
-1. **Explore the Interface**: Vault-Tec pixel art design
+1. **Explore the Interface**: green-on-navy Flask HTML UI (canvas world view, textarea editor, terminal). Not pixel-art sprites and not a Vault-Tec product.
 2. **Check World Metrics**: See floors, agents, tasks
 3. **View Active Agents**: Watch the simulation
 4. **Step Through Time**: Use simulation controls
