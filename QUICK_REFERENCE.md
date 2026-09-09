@@ -105,7 +105,7 @@ Look for: inet 192.168.x.x
 | Problem | Solution |
 |---------|----------|
 | Python not found | Install Python 3.10+ from python.org |
-| Port 5000 in use | Edit run.py, change port to 8080 |
+| Port 5000 in use | Edit `run.py`, change port to 8080. `HOST` / `PORT` env vars are **not** read |
 | Can't connect from phone | Same WiFi? Firewall off? |
 | Permission denied | Run: `chmod +x install.sh start.sh start.command` |
 
@@ -118,4 +118,4 @@ Look for: inet 192.168.x.x
 
 ---
 
-**Remember**: Once the server is running, you can access it from ANY device on your network! 🌐
+**Remember**: LAN devices can open `http://LAN_IP:5000` if the host firewall allows port 5000. That is the Flask HTML UI, not a native app.

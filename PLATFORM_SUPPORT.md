@@ -1,5 +1,7 @@
 # Platform support
 
+**Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
 Miniature Office is a **local Flask app**. You start a Python (or Docker) process and open it in a browser. That is the entire platform story.
 
 There is a small PWA shell (`manifest.json` + `sw.js`). There is no native desktop app, no store client, and no WebXR. The service worker installs only from a secure context (`https` or `http://localhost` / `http://127.0.0.1`). A LAN `http://IP:5000` origin is not a secure context.
@@ -10,7 +12,7 @@ There is a small PWA shell (`manifest.json` + `sw.js`). There is no native deskt
 | --- | --- |
 | `python3 run.py` | Flask + Flask-SocketIO on port 5000 |
 | `./install.sh` / `install.ps1` | `pip install -r requirements.txt` into the **current** Python (no venv). Requires Python **3.10+** (`pytest==9.0.3` does not install on 3.9) |
-| `./start.sh` / `start.bat` / `start.command` | Activates the venv and runs `run.py` |
+| `./start.sh` / `start.bat` / `start.command` | Runs `python3 run.py` (Unix) or `python run.py` (Windows) in the **current** interpreter. Does not create or activate a venv |
 | `docker compose up --build` | gunicorn in a container, port 5000. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders |
 
 `install.sh` is not a native OS installer. `start.command` is a shell wrapper, not a signed macOS app.

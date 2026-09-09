@@ -1,5 +1,7 @@
 # Easy access
 
+**Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
 Miniature Office is a local Flask app you open in a browser.
 
 There is no phone-native installer and no VR/WebXR client. A phone, tablet, or headset browser on the same network can load the Flask URL. The PWA shell (`manifest.json` + `sw.js`) installs only from a secure context (`https` or `http://localhost`). A LAN `http://IP:5000` origin is not a secure context; bookmarking still works. That is still the Flask HTML UI, not a native app.
