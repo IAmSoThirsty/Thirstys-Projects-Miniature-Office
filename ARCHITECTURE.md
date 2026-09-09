@@ -112,7 +112,15 @@ Tools have metadata:
 
 ### Layer 7: Contract System (`src/interfaces/contract.py`)
 
-**Contract Syntax:**
+**Shipped module:**
+- `Contract` is a Python `Entity` with `APIEndpoint`, `VersionBoundary`, and `FailureMode` dataclasses
+- There is no parsed contract DSL. The `Contract <Name> { API: ... }` block below is design prose, not a grammar the tree implements
+- `ElevatorProtocol` registers contracts, records `InvocationRecord`s, and treats compatibility as “consumer exists in the registry”
+- Not a service mesh. It does not enforce “no implicit coupling”
+
+**Intended, not implemented:** a typed contract language with automated compatibility beyond registry presence.
+
+**Contract Syntax (intent, not a parser):**
 ```
 Contract <Name> {
     API: /<path>(<params>) -> <return>
@@ -121,13 +129,14 @@ Contract <Name> {
 }
 ```
 
-**Elevator Protocol:**
-- Carries contracts between departments
-- Performs automated compatibility checks
-- Records invocation telemetry
-- Enforces no implicit coupling
-
 ### Layer 8: World Structure (`src/core/world.py`)
+
+**Shipped module:**
+- `World` / `Floor` / `Office` Python objects with `to_dict()` and `*Schema` dataclasses
+- There is **no `codex/` directory** and no JSON Schema files (`codex/office.json` is not in the tree)
+- Default world in `src/server/app.py` seeds **Python and JavaScript** floors, not the 28 toy language-floor directories
+
+**Intended, not implemented:** JSON Schema-validated world files.
 
 ```
 World
@@ -137,11 +146,16 @@ World
             └── Agents
 ```
 
-**JSON Schema Compliant:** All entities serialize to formal schema.
-
 ### Layer 9: Simulation Engine (`src/core/simulation.py`)
 
-**Tick-based Processing:**
+**Shipped module:**
+- Tick loop processes floors / offices / agents / managers in-process
+- `persist_state()` logs an `agent_action` whose data says `state_persisted`. World and registries stay **in-memory**
+- Default tick period is `SimulationConfig.tick_duration_ms = 100`, not a measured 10–50ms SLA
+
+**Intended, not implemented:** database or file persistence of world state.
+
+**Tick-based Processing (in-process; persist is a log label):**
 ```python
 while world.isActive:
     world.time += 1
@@ -152,7 +166,7 @@ while world.isActive:
                     for agent in office.agents:
                         processAgent(agent)
                     processManager(office.manager)
-    persistState(world)
+    persistState(world)  # logs agent_action; does not write the world
 ```
 
 **Agent Execution:**
@@ -169,7 +183,9 @@ while world.isActive:
 
 ### Layer 10: API Server (`src/server/app.py`)
 
-**REST Endpoints:**
+**Shipped:** Flask + Flask-SocketIO, **74** `@app.route` entries (67 in `app.py` + 7 `/api/ide/*`). World state is in-memory.
+
+**REST Endpoints (subset of the 74):**
 - `GET /api/world/state` - Current simulation state
 - `POST /api/world/step` - Advance one tick
 - `POST /api/world/start` - Start continuous simulation
@@ -179,11 +195,13 @@ while world.isActive:
 - `GET /api/departments` - List departments
 - `GET /api/supply-store` - Tool inventory
 - `GET /api/audit/events` - Audit trail
+- `GET /health` - liveness 200
+- `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
 
 **WebSocket Events:**
 - `tick_start` - Tick begins
 - `tick_end` - Tick completes
-- `state_update` - State changed
+- `state_update` - emitted on `request_state`, not automatically on every tick
 
 ### Layer 11: Spatial UI (`src/client/index.html`)
 
@@ -234,21 +252,19 @@ Compute and agent time are finite resources with budgeting.
 
 ## Scaling Considerations
 
-### Horizontal Scaling
-- Each department can run on separate worker
-- Contract invocations are async-ready
-- Audit log can be sharded by time window
+The shipped engine is **one Python process** with in-memory world state.
 
-### Vertical Scaling
-- Simulation tick rate is configurable
-- Agent pool sizes are dynamic
-- Tool concurrency limits prevent resource exhaustion
+**Intended, not implemented:**
+- Each department on a separate worker
+- Async contract invocations as a service mesh
+- Audit log sharded by time window
+- Multi-world instances
 
-### Governance Scaling
-- Codex itself is versioned
-- Agents can propose amendments
-- Meta-agents evaluate proposals
-- Backward compatibility enforced
+### Vertical Scaling (partial, in-process)
+
+- Simulation tick rate is configurable (`tick_duration_ms`, default 100)
+- Agent pool sizes are whatever the in-memory registry holds
+- There is no measured production capacity figure
 
 ## Future Extensions
 
@@ -280,27 +296,31 @@ Compute and agent time are finite resources with budgeting.
 
 ## Performance Characteristics
 
-- **Simulation Tick:** ~10-50ms depending on entity count
-- **Audit Log Write:** O(1) append
-- **Causality Query:** O(log n) with indexing
-- **Consensus Calculation:** O(voters) linear
-- **State Serialization:** O(entities) but lazy
+These are not SLOs.
+
+- **Simulation Tick:** configured 100ms sleep target (`SimulationConfig.tick_duration_ms`). Not a measured 10–50ms SLA
+- **Audit Log Write:** in-memory list append; optional JSONL when `MO_DATA_DIR` is set
+- **Causality Query:** not implemented as O(log n) indexed lookup. Events are a list
+- **Consensus Calculation:** in-process walk of the current agent list
+- **State Serialization:** `to_dict()` of in-memory objects. Not lazy
 
 ## Testing Strategy
 
-1. **Unit Tests:** Each system layer independently
-2. **Integration Tests:** Cross-layer interactions
-3. **Simulation Tests:** Full tick cycles
-4. **UI Tests:** Browser automation
-5. **Audit Tests:** Verify immutability and integrity
-6. **Consensus Tests:** Edge cases in voting
+Measured suite: **1,573 passed**, 1 skipped on code pin `fdd9762`. See [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
+1. **Unit Tests:** pytest under `tests/`
+2. **Integration Tests:** Flask client tests against in-memory app
+3. **Simulation Tests:** tick / step helpers
+4. **UI Tests:** not a Playwright/Cypress suite; the browser UI is exercised indirectly
+5. **Audit Tests:** hash-chain and optional HMAC tests exist; they do **not** prove immutability
+6. **Consensus Tests:** voting helpers in-process
 
 ## Troubleshooting
 
 **Import Errors:** Ensure Python path includes project root
 **Port Conflicts:** Change port in `run.py`
-**Memory Growth:** Audit log can be archived after N events
-**Slow Ticks:** Reduce agent count or tick frequency
+**Memory Growth:** in-memory audit list grows until process exit. There is no shipped “archive after N events” job.
+**Slow Ticks:** default tick period is 100ms; there is no production tuner.
 
 ## Contributing
 
