@@ -6,6 +6,46 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 23:18 UTC — observed main `99ea1b5` (pytest re-run)
+
+Independent clone of live main started at [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945); after squash-merge of PR [#46](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/46) observed main is [`99ea1b5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/99ea1b55c2f80adcce1d0e0ad9ed33ddf8af7f56) (docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `f25adcf` itself (identical `src/`/`tests/` to `99ea1b5`).
+
+Present-tense miss: [INSTALL.md](INSTALL.md) still said “**Edit the run.py file** or use environment variables” for bind address after [`.env.example`](.env.example) (PR #45) listed `HOST` / `PORT` as unread. It also led without experimental-prototype status, called the pip scripts a “One-Click Installer”, and said the app is accessible from “any device with a modern web browser.” [ARCHITECTURE.md](ARCHITECTURE.md) Vertical Scaling still said “Simulation tick rate is configurable (`tick_duration_ms`, default 100)” after Layer 9 / Performance recorded Flask `init_simulation()` hardcoding 1000ms and `TICK_DURATION_MS` unread. GETTING_STARTED troubleshooting now names Python 3.10+ and the unread `HOST` / `PORT` vars.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`99ea1b5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/99ea1b55c2f80adcce1d0e0ad9ed33ddf8af7f56) |
+| Pytest tree | [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945) (src/tests identical) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| `k8s/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **12.98s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| `package.json` keywords | flask / prototype / agents / experimental |
+| CI on `f25adcf` | [34412193707](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34412193707) succeeded |
+| CD on `f25adcf` | [34412193733](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34412193733) succeeded |
+| CI on `99ea1b5` | [34416318379](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34416318379) succeeded |
+| CD on `99ea1b5` | [34416318389](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34416318389) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`; limitation line still names docs HEAD `268058c`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 22:33 UTC — observed main `f25adcf` (pytest re-run)
 
 Independent clone of live main [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945) (PR [#45](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/45), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `f25adcf` itself.

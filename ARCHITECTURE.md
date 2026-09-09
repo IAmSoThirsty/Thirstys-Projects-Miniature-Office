@@ -270,7 +270,7 @@ The shipped engine is **one Python process** with in-memory world state.
 
 ### Vertical Scaling (partial, in-process)
 
-- Simulation tick rate is configurable (`tick_duration_ms`, default 100)
+- Simulation tick rate: dataclass default is 100ms; shipped Flask `init_simulation()` hardcodes 1000ms. `TICK_DURATION_MS` is not read
 - Agent pool sizes are whatever the in-memory registry holds
 - There is no measured production capacity figure
 
