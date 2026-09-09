@@ -199,13 +199,14 @@ docker compose up --build
 ## ❓ Troubleshooting
 
 ### "Python not found"
-- **Windows**: Download from python.org (check "Add to PATH"!)
-- **Mac**: Run `brew install python3`
-- **Linux**: Run `sudo apt install python3 python3-pip`
+- **Windows**: Download from python.org (3.10+, check "Add to PATH")
+- **Mac**: `brew install python@3.12` (3.10+ required; `pytest==9.0.3` does not install on 3.9)
+- **Linux**: `sudo apt install python3 python3-pip` — confirm `python3 --version` is 3.10+
 
 ### "Port 5000 already in use"
 - Another program is using port 5000
 - Edit `run.py` and change `port=5000` to `port=8080`
+- `HOST` / `PORT` environment variables are **not** read
 - Then use `http://localhost:8080` instead
 
 ### "Can't connect from phone"

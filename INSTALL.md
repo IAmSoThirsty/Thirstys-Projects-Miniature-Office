@@ -1,10 +1,12 @@
-# Installation Guide - Miniature Office
+# Installation Guide
 
-**Access: local Flask app in a browser (desktop and mobile). There is a small PWA shell. There is no native VR client.**
+**Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
+Access: local Flask app in a browser (desktop and mobile). There is a small PWA shell. There is no native VR client. `HOST` / `PORT` environment variables are **not** read.
 
 ## Easiest Option: Use Your Web Browser (All Platforms)
 
-The Miniature Office runs as a web application, accessible from **any device with a modern web browser**:
+The Miniature Office is a Flask HTML UI. A modern desktop, phone, tablet, or headset browser can load it. That is not a native app and not WebXR.
 
 1. Someone starts the server (see options below)
 2. Open your browser to: `http://localhost:5000` (or the server's IP address)
@@ -20,7 +22,7 @@ This means:
 
 ## Desktop Installation (Windows, macOS, Linux)
 
-### Option 1: One-Click Installer (Recommended)
+### Option 1: Installer scripts
 
 #### Windows
 1. Download the repository or clone it
@@ -129,12 +131,13 @@ A Quest (or other) browser can load `http://YOUR_COMPUTER_IP:5000` the same way 
 
 ### Make it Accessible on Your Network
 
-**Edit the run.py file** or use environment variables:
+`run.py` already binds `0.0.0.0:5000`. `HOST` / `PORT` environment variables are **not** read (see `.env.example`). To change the port, edit `run.py`:
+
 ```python
-run_server(host='0.0.0.0', port=5000)  # Already set to accept connections
+run_server(host='0.0.0.0', port=8080)
 ```
 
-Now anyone on your network can access it at: `http://YOUR_IP:5000`
+Anyone on the same network can then open `http://YOUR_IP:PORT`.
 
 ### Security Note
 When opening to your network:
@@ -203,9 +206,9 @@ run_server(host='0.0.0.0', port=8080)
 ```
 
 ### Python Not Found
-- Windows: Install from [python.org](https://www.python.org/downloads/) (3.10+)
-- macOS: `brew install python3`
-- Linux: `sudo apt install python3 python3-pip` (Ubuntu/Debian)
+- Windows: Install from [python.org](https://www.python.org/downloads/) (3.10+; `pytest==9.0.3` does not install on 3.9)
+- macOS: `brew install python@3.12` (need 3.10 or newer; `brew install python3` may still be 3.9 on older machines)
+- Linux: `sudo apt install python3 python3-pip` — confirm `python3 --version` is 3.10+
 
 ### Permission Denied on Scripts
 ```bash
