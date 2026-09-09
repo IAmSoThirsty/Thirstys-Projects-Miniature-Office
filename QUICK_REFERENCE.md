@@ -38,14 +38,16 @@ Double-click: start.command
 ## Docker (All Platforms)
 
 ```bash
-# One command - no installation needed
+export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+mkdir -p user_workspace data logs
+chmod 777 user_workspace data logs
 docker compose up --build
-
 
 # Stop
 docker compose down
-
 ```
+
+Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders.
 
 ## Access URLs
 
@@ -60,7 +62,7 @@ docker compose down
 1. Start server on computer (see above)
 2. Find computer's IP address
 3. Open phone browser → `http://YOUR_IP:5000`
-4. Optional: bookmark it. “Add to Home Screen” is a browser shortcut, not a PWA.
+4. Optional: bookmark it. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
 
 
 ## Headsets
