@@ -187,18 +187,21 @@ while world.isActive:
 
 ### Layer 11: Spatial UI (`src/client/index.html`)
 
-**Vault-Tec Aesthetic:**
-- Retro-futuristic color palette (orange #ff9f00, green #00ff41)
-- Terminal-style monospace fonts
-- Scanline and CRT effects
-- Industrial panel design
+**Shipped client** (green-on-navy Flask HTML, not a Vault-Tec product):
+- Color palette in the file is orange `#ff9f00` and green `#00ff41` on navy `#0d1f2a`
+- Courier New monospace
+- World canvas is `fillRect` / `strokeRect` / `fillText` rectangles, not pixel-art sprites
+- No scanline or CRT shader
+- Textarea editor, file tree, HTTP terminal form — not Monaco, not LSP
 
-**Components:**
-1. **World Canvas** - Pixel-art visualization of floors/offices
-2. **Control Panel** - Simulation controls
-3. **Metrics Dashboard** - Real-time counts
-4. **Agent List** - Live agent status
-5. **Event Log** - Scrolling audit events
+**Intended, not implemented:** a richer spatial / pixel-art office visualization.
+
+**Components that exist as HTML:**
+1. **World Canvas** - colored rectangles for floors and offices
+2. **Control Panel** - simulation controls
+3. **Metrics Dashboard** - real-time counts
+4. **Agent List** - live agent status
+5. **Event Log** - scrolling audit events
 
 ## Design Principles
 
