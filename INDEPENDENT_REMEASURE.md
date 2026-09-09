@@ -6,6 +6,44 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 23:27 UTC — observed main `d433ff2` (pytest re-run)
+
+Independent clone of live main [`d433ff2`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/d433ff233796dbf52d97bbecc94e2cb490cd2502) (PR [#47](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/47), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `d433ff2` itself.
+
+Present-tense miss: [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) still said start scripts “Activates the venv and runs `run.py`” after PR #45 recorded that the installer does not create a venv. `start.sh` runs `python3 run.py`; `start.bat` runs `python run.py`; `start.command` execs `start.sh`. [QUICK_REFERENCE.md](QUICK_REFERENCE.md) still said “access it from ANY device on your network.” `install.sh` still printed `brew install python3` after [INSTALL.md](INSTALL.md) required 3.10+ (`pytest==9.0.3` does not install on 3.9). EASY_ACCESS now leads with experimental-prototype status.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`d433ff2`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/d433ff233796dbf52d97bbecc94e2cb490cd2502) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| `k8s/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **12.68s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| `package.json` keywords | flask / prototype / agents / experimental |
+| Start scripts activate a venv | **no** (`python3 run.py` / `python run.py`) |
+| CI on `d433ff2` | [34416782846](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34416782846) succeeded |
+| CD on `d433ff2` | [34416782810](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34416782810) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`; limitation line still names docs HEAD `268058c`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 23:18 UTC — observed main `99ea1b5` (pytest re-run)
 
 Independent clone of live main started at [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945); after squash-merge of PR [#46](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/46) observed main is [`99ea1b5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/99ea1b55c2f80adcce1d0e0ad9ed33ddf8af7f56) (docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `f25adcf` itself (identical `src/`/`tests/` to `99ea1b5`).

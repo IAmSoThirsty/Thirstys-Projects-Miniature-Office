@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 if ! command -v python3 &> /dev/null; then
     echo -e "${RED}❌ Python 3 is not installed!${NC}"
     echo "Please install Python 3.10 or higher:"
-    echo "  - macOS: brew install python3"
+    echo "  - macOS: brew install python@3.12  # 3.10+ required; brew install python3 may still be 3.9"
     echo "  - Ubuntu/Debian: sudo apt install python3 python3-pip"
     echo "  - Fedora: sudo dnf install python3 python3-pip"
     exit 1
