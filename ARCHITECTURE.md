@@ -4,7 +4,7 @@
 
 ## System Overview
 
-The Miniature Office is a **Civilization-Tier Cognitive IDE** that implements software development as a living organizational simulation. It transforms coding from "writing text files" into "managing a software company in miniature."
+The intended product is a spatial office metaphor for software work. The running tree is an experimental Flask prototype, not a completed “Civilization-Tier Cognitive IDE.” The layers below describe that intent.
 
 ## Core Innovation: Spatial Cognition
 
@@ -34,16 +34,16 @@ All objects in the system inherit from `Entity` with formal types:
 
 **Relationship Matrix:** Entities must declare relationships before interaction.
 
-### Layer 2: Immutable Audit (`src/core/audit.py`)
+### Layer 2: Audit chain (`src/core/audit.py`)
 
-Every action creates an `AuditEvent` with:
-- Cryptographic hash (SHA-256)
-- Timestamp
-- Actor ID (who did it)
-- Target ID (what was affected)
-- Causality links (parent events)
+**Shipped module:**
+- SHA-256 of each event's fields plus `prev_hash` (previous event, or 64 zero hex digits for genesis) and parent hashes
+- Optional HMAC-SHA256 over the content hash when `MO_AUDIT_HMAC_KEY` or a real `SECRET_KEY` is set
+- Optional JSONL append when `MO_DATA_DIR` / `persist_path` is set
+- In-memory by default; restart drops the chain unless JSONL persistence is on
+- Not a public ledger, not PKI, not tamper-proof on every read
 
-Forms a **Causality Graph** for complete change lineage.
+**Intended, not implemented:** an immutable cryptographic ledger with tamper detection on every read.
 
 ### Layer 3: Mission Logic (`src/core/mission.py`)
 
@@ -269,9 +269,9 @@ Compute and agent time are finite resources with budgeting.
 - **Operations:** Logged with cryptographic hashes
 
 ### Audit Integrity
-- SHA-256 hash per event
-- Tamper detection on every read
-- Immutable append-only log
+- SHA-256 chain per event (shipped)
+- HMAC tag only when a real key is set
+- Not tamper detection on every read; not an immutable public ledger
 
 ### Capability Enforcement
 - Tools require matching agent capabilities
