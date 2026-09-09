@@ -6,6 +6,40 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 12:30 UTC — observed main `526721e` (pytest re-run)
+
+Independent clone of live main [`526721e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/526721e2faf1ec81d31229f71e0c377cbf61d78b) (PR [#40](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/40), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `526721e` itself.
+
+Present-tense miss in design notes: `ARCHITECTURE.md` Layer 11 named `src/client/index.html` and described a Vault-Tec / pixel-art / CRT UI. The shipped canvas is `fillRect` rectangles; there is no scanline shader. Banner already said intent-not-done; Layer 11 now matches the file.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`526721e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/526721e2faf1ec81d31229f71e0c377cbf61d78b) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28 |
+| `floors/sql/schema.sql` | present |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **13.09s** |
+| Coverage XML `--cov=src` | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low; 1 skipped_tests) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| CI on `526721e` | [34347045367](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34347045367) succeeded |
+| CD on `526721e` | [34347045102](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34347045102) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`; limitation line still names docs HEAD `268058c`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 6 September 2026 23:10 UTC — observed main `0aaf783` (pytest re-run)
 
 Independent clone of [`0aaf783`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/0aaf7839d6dd2943647a2d0b87da83b2608a1d56) (PR #35, docs-only). `git log fdd9762..HEAD -- src tests` empty. Git tree objects for `src/` (`fafbad684ed9d61bd5fd347098276eeea4b911d3`) and `tests/` (`1ddf08f8a24d9003054c0a395e06c95470009fe0`) match code pin `fdd9762`.
