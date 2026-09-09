@@ -107,9 +107,12 @@ Bookmarking or “Add to Home Screen” on `http://LAN_IP:5000` pins a shortcut.
 ### Method 3: Run on Your Phone (Advanced)
 
 **Android (Termux)**:
+This path is untested and is not a supported platform. The same Python **3.10+** requirement applies (`pytest==9.0.3` does not install on 3.9). Confirm `python --version` before `pip install`.
+
 ```bash
 # Install Termux from F-Droid or Play Store
 pkg install python git
+python --version   # must be 3.10 or newer
 git clone https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office.git
 cd Thirstys-Projects-Miniature-Office
 pip install -r requirements.txt

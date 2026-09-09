@@ -2,6 +2,8 @@
 
 **Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
 
+Python **3.10+** is required (`pytest==9.0.3` does not install on 3.9).
+
 ## Installation
 
 ```bash
