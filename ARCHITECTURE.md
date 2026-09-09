@@ -23,7 +23,15 @@ Miniature Office organizes code through:
 
 ### Layer 1: Entity Ontology (`src/core/entity.py`)
 
-All objects in the system inherit from `Entity` with formal types:
+**Shipped module:**
+- 7 `EntityType` values and 8 `RelationType` values
+- In-memory `EntityRegistry` / `GlobalRegistry` with `threading.RLock`
+- `declare_relationship()` appends a `Relationship` dataclass. `Department.add_agent` calls it as a side effect
+- There is **no** runtime gate that refuses interaction when no relationship was declared
+
+**Intended, not implemented:** a relationship matrix that blocks undeclared interaction.
+
+All objects inherit from `Entity` with formal types:
 - **Architectures** - Structural blueprints
 - **Departments** - Language/runtime domains
 - **Agents** - Autonomous workers
@@ -31,8 +39,6 @@ All objects in the system inherit from `Entity` with formal types:
 - **Tools** - Compilers, linters, MCP servers
 - **Artifacts** - Code outputs, documents
 - **Contracts** - Inter-department interfaces
-
-**Relationship Matrix:** Entities must declare relationships before interaction.
 
 ### Layer 2: Audit chain (`src/core/audit.py`)
 
@@ -151,7 +157,9 @@ World
 **Shipped module:**
 - Tick loop processes floors / offices / agents / managers in-process
 - `persist_state()` logs an `agent_action` whose data says `state_persisted`. World and registries stay **in-memory**
-- Default tick period is `SimulationConfig.tick_duration_ms = 100`, not a measured 10–50ms SLA
+- Dataclass default is `SimulationConfig.tick_duration_ms = 100`
+- The shipped Flask `init_simulation()` in `src/server/app.py` hardcodes `tick_duration_ms=1000` (1 second per tick)
+- `.env.example` lists `TICK_DURATION_MS`; that name is **not** `getenv`'d
 
 **Intended, not implemented:** database or file persistence of world state.
 
@@ -298,7 +306,7 @@ The shipped engine is **one Python process** with in-memory world state.
 
 These are not SLOs.
 
-- **Simulation Tick:** configured 100ms sleep target (`SimulationConfig.tick_duration_ms`). Not a measured 10–50ms SLA
+- **Simulation Tick:** shipped Flask init hardcodes 1000ms sleep. Dataclass default is 100ms. Neither is a measured SLA. `TICK_DURATION_MS` is not read
 - **Audit Log Write:** in-memory list append; optional JSONL when `MO_DATA_DIR` is set
 - **Causality Query:** not implemented as O(log n) indexed lookup. Events are a list
 - **Consensus Calculation:** in-process walk of the current agent list
@@ -320,7 +328,7 @@ Measured suite: **1,573 passed**, 1 skipped on code pin `fdd9762`. See [CLAIMS_A
 **Import Errors:** Ensure Python path includes project root
 **Port Conflicts:** Change port in `run.py`
 **Memory Growth:** in-memory audit list grows until process exit. There is no shipped “archive after N events” job.
-**Slow Ticks:** default tick period is 100ms; there is no production tuner.
+**Slow Ticks:** shipped Flask init sleeps 1000ms per tick; dataclass default is 100ms. There is no env tuner.
 
 ## Contributing
 

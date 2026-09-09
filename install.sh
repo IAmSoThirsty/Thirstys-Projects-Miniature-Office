@@ -18,7 +18,7 @@ NC='\033[0m' # No Color
 # Check if Python 3 is installed
 if ! command -v python3 &> /dev/null; then
     echo -e "${RED}❌ Python 3 is not installed!${NC}"
-    echo "Please install Python 3.9 or higher:"
+    echo "Please install Python 3.10 or higher:"
     echo "  - macOS: brew install python3"
     echo "  - Ubuntu/Debian: sudo apt install python3 python3-pip"
     echo "  - Fedora: sudo dnf install python3 python3-pip"
@@ -28,6 +28,12 @@ fi
 # Check Python version
 PYTHON_VERSION=$(python3 --version | cut -d' ' -f2)
 echo -e "${GREEN}✓${NC} Found Python $PYTHON_VERSION"
+PY_OK=$(python3 -c 'import sys; print(1 if sys.version_info >= (3, 10) else 0)')
+if [ "$PY_OK" != "1" ]; then
+    echo -e "${RED}❌ Python 3.10 or higher is required${NC}"
+    echo "pytest==9.0.3 in requirements.txt does not install on 3.9"
+    exit 1
+fi
 
 # Check if pip is installed
 if ! command -v pip3 &> /dev/null; then

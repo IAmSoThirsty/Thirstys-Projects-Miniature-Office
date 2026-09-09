@@ -9,7 +9,7 @@ There is a small PWA shell (`manifest.json` + `sw.js`). There is no native deskt
 | Path | What it is |
 | --- | --- |
 | `python3 run.py` | Flask + Flask-SocketIO on port 5000 |
-| `./install.sh` / `install.ps1` | Creates a venv and `pip install -r requirements.txt` |
+| `./install.sh` / `install.ps1` | `pip install -r requirements.txt` into the **current** Python (no venv). Requires Python **3.10+** (`pytest==9.0.3` does not install on 3.9) |
 | `./start.sh` / `start.bat` / `start.command` | Activates the venv and runs `run.py` |
 | `docker compose up --build` | gunicorn in a container, port 5000. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders |
 
