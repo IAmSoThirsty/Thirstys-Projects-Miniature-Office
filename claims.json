@@ -123,6 +123,14 @@
     "cd_d61d253": {
       "run": 34393910832,
       "conclusion": "success"
+    },
+    "ci_8fdaca0": {
+      "run": 34406238644,
+      "conclusion": "success"
+    },
+    "cd_8fdaca0": {
+      "run": 34406238661,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -208,7 +216,8 @@
     "Independent pytest 2026-08-30 on docs successor 268058c (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.75s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33263264093 and CD 33263264131 succeeded. Whole-repo unanchored def test_ corrected 1626 \u2192 1619. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-06 23:10 UTC on observed main 0aaf783 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.09s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33817498446 and CD 33817498306 succeeded on 0aaf783. Live thirstysystems.com EC-013 matches the tree. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-09 19:11 UTC on observed main a153b92 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34358022421 and CD 34358022556 succeeded. ARCHITECTURE.md Layers 7-10 no longer claim a contract DSL, JSON Schema files, world persistence, a 10-50ms tick, or O(log n) causality indexing. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-09 21:16 UTC on observed main d61d253 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.16s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34393910856 and CD 34393910832 succeeded. package.json keywords no longer list pixel-art. ARCHITECTURE.md Contributing no longer points at missing README contribution guidelines. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-09 21:16 UTC on observed main d61d253 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.16s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34393910856 and CD 34393910832 succeeded. package.json keywords no longer list pixel-art. ARCHITECTURE.md Contributing no longer points at missing README contribution guidelines. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-09 22:22 UTC on observed main 8fdaca0 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.34s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34406238644 and CD 34406238661 succeeded. install.sh/ps1 no longer say Python 3.9+; PLATFORM_SUPPORT.md no longer claims the installer creates a venv; ARCHITECTURE Layer 9 records Flask init 1000ms vs dataclass 100ms; .env.example/compose no longer list unread HOST/PORT/WORKERS/TICK_DURATION_MS/LOG_*. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -313,9 +322,20 @@
       "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
       "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
       "matches_code_pin_trees": true
+    },
+    {
+      "sha": "8fdaca0d561bc6c572913a460de9e7d5c1409e8f",
+      "short": "8fdaca0",
+      "ci": 34406238644,
+      "cd": 34406238661,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "d61d253e7e9ebd93d9f5e1c7d7b244e610966d7c",
+  "src_tests_identical_through_at_least": "8fdaca0d561bc6c572913a460de9e7d5c1409e8f",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -535,6 +555,60 @@
     "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
     "ci": 34393910856,
     "cd": 34393910832,
+    "note": "Docs-only relative to code pin fdd9762. Coverage XML 7493/7749 is the documented one-statement variance. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
+  },
+  "remeasured_pytest_8fdaca0": {
+    "sha": "8fdaca0d561bc6c572913a460de9e7d5c1409e8f",
+    "short": "8fdaca0",
+    "at": "2026-09-09T22:22:00Z",
+    "method": "Independent clone of 8fdaca0. Counted src/**/*.py, floors/*, @app.route in src/, anchored ^\\s*def test_ in tests/ and whole-repo unanchored def test_. Ran pytest --cov=src, bandit -ll, pip-audit. Observed CI 34406238644 and CD 34406238661 success. Found installer 3.9+ message, PLATFORM_SUPPORT venv claim, dataclass 100ms vs Flask init 1000ms, unread .env/compose vars.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "codex_directory": false,
+    "k8s_directory": false,
+    "package_json_pixel_art_keyword": false,
+    "installer_python_floor": "3.10+",
+    "installer_creates_venv": false,
+    "flask_init_tick_duration_ms": 1000,
+    "simulation_config_tick_duration_ms_default": 100,
+    "tick_duration_ms_env_read": false,
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 12.34,
+    "fresh_cov_covered": 7493,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.7,
+    "pin_cov_covered": 7494,
+    "pin_cov_statements": 7749,
+    "pin_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "entity_types": 7,
+    "relation_types": 8,
+    "patterns": 5,
+    "antipatterns": 4,
+    "tick_duration_ms_default": 100,
+    "world_persist_is_log_only": true,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 34406238644,
+    "cd": 34406238661,
     "note": "Docs-only relative to code pin fdd9762. Coverage XML 7493/7749 is the documented one-statement variance. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
   }
 }

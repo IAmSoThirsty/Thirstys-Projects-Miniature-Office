@@ -14,7 +14,7 @@ if (-not $pythonCmd) {
 
 if (-not $pythonCmd) {
     Write-Host "❌ Python 3 is not installed!" -ForegroundColor Red
-    Write-Host "Please install Python 3.9 or higher from:"
+    Write-Host "Please install Python 3.10 or higher from:"
     Write-Host "  https://www.python.org/downloads/"
     Write-Host ""
     Write-Host "Make sure to check 'Add Python to PATH' during installation!"
@@ -27,6 +27,12 @@ $python = $pythonCmd.Source
 # Check Python version
 $pythonVersion = & $python --version 2>&1
 Write-Host "✓ Found $pythonVersion" -ForegroundColor Green
+$pyOk = & $python -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Python 3.10 or higher is required" -ForegroundColor Red
+    Write-Host "pytest==9.0.3 in requirements.txt does not install on 3.9"
+    exit 1
+}
 
 # Check if pip is installed
 $pipCheck = & $python -m pip --version 2>&1

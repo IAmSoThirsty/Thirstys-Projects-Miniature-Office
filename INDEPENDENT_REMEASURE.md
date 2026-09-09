@@ -6,6 +6,45 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 22:22 UTC — observed main `8fdaca0` (pytest re-run)
+
+Independent clone of live main [`8fdaca0`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/8fdaca0d561bc6c572913a460de9e7d5c1409e8f) (PR [#44](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/44), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `8fdaca0` itself.
+
+Present-tense miss: `install.sh` / `install.ps1` still said “Python 3.9 or higher” after README / INSTALL / LIMITATIONS required 3.10+ (`pytest==9.0.3`). [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) said the installer “Creates a venv”; both scripts `pip install -r requirements.txt` into the current interpreter. `ARCHITECTURE.md` Layer 9 / Performance / Troubleshooting treated `SimulationConfig.tick_duration_ms = 100` as the running tick; `src/server/app.py` `init_simulation()` hardcodes `tick_duration_ms=1000`, and `TICK_DURATION_MS` is never `getenv`'d. `.env.example` listed HOST/PORT/WORKERS/TICK_DURATION_MS/AUTO_ASSIGN_TASKS/LOG_FILE; compose passed HOST/PORT/WORKERS/LOG_LEVEL; `run.py` and the Docker gunicorn CMD ignore them. Installer message is now 3.10+ with a version check. `.env.example` and compose only list read vars. Layer 1 now states `declare_relationship()` is a side effect, not a runtime gate.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`8fdaca0`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/8fdaca0d561bc6c572913a460de9e7d5c1409e8f) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| `k8s/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **12.34s** |
+| Coverage XML `--cov=src` | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low; 1 skipped_tests) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| Installer Python floor | 3.10+ (was 3.9+) |
+| Installer venv | none (pip into current interpreter) |
+| Flask init tick | 1000ms hardcoded; dataclass default 100ms; env unread |
+| CI on `8fdaca0` | [34406238644](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34406238644) succeeded |
+| CD on `8fdaca0` | [34406238661](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34406238661) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`; limitation line still names docs HEAD `268058c`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 21:16 UTC — observed main `d61d253` (pytest re-run)
 
 Independent clone of live main [`d61d253`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/d61d253e7e9ebd93d9f5e1c7d7b244e610966d7c) (PR [#43](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/43), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `d61d253` itself.
