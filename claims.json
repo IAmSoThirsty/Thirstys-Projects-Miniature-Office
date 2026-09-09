@@ -131,6 +131,14 @@
     "cd_8fdaca0": {
       "run": 34406238661,
       "conclusion": "success"
+    },
+    "ci_f25adcf": {
+      "run": 34412193707,
+      "conclusion": "success"
+    },
+    "cd_f25adcf": {
+      "run": 34412193733,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -217,7 +225,8 @@
     "Independent pytest 2026-09-06 23:10 UTC on observed main 0aaf783 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.09s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33817498446 and CD 33817498306 succeeded on 0aaf783. Live thirstysystems.com EC-013 matches the tree. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-09 19:11 UTC on observed main a153b92 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34358022421 and CD 34358022556 succeeded. ARCHITECTURE.md Layers 7-10 no longer claim a contract DSL, JSON Schema files, world persistence, a 10-50ms tick, or O(log n) causality indexing. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-09 21:16 UTC on observed main d61d253 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.16s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34393910856 and CD 34393910832 succeeded. package.json keywords no longer list pixel-art. ARCHITECTURE.md Contributing no longer points at missing README contribution guidelines. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-09 22:22 UTC on observed main 8fdaca0 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.34s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34406238644 and CD 34406238661 succeeded. install.sh/ps1 no longer say Python 3.9+; PLATFORM_SUPPORT.md no longer claims the installer creates a venv; ARCHITECTURE Layer 9 records Flask init 1000ms vs dataclass 100ms; .env.example/compose no longer list unread HOST/PORT/WORKERS/TICK_DURATION_MS/LOG_*. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-09 22:22 UTC on observed main 8fdaca0 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.34s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34406238644 and CD 34406238661 succeeded. install.sh/ps1 no longer say Python 3.9+; PLATFORM_SUPPORT.md no longer claims the installer creates a venv; ARCHITECTURE Layer 9 records Flask init 1000ms vs dataclass 100ms; .env.example/compose no longer list unread HOST/PORT/WORKERS/TICK_DURATION_MS/LOG_*. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-09 22:33 UTC on observed main f25adcf (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 7.63s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34412193707 and CD 34412193733 succeeded. GETTING_STARTED.md now leads with experimental prototype status. Lint/vulns Holds is the Python pip-audit / bandit -ll gate; Dependabot PR #13 (flatted CWE-1321 in toy floors/typescript) is outside that gate. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -333,9 +342,20 @@
       "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
       "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
       "matches_code_pin_trees": true
+    },
+    {
+      "sha": "f25adcf8602663631acc54e7f1777b536fada945",
+      "short": "f25adcf",
+      "ci": 34412193707,
+      "cd": 34412193733,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "8fdaca0d561bc6c572913a460de9e7d5c1409e8f",
+  "src_tests_identical_through_at_least": "f25adcf8602663631acc54e7f1777b536fada945",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -610,5 +630,49 @@
     "ci": 34406238644,
     "cd": 34406238661,
     "note": "Docs-only relative to code pin fdd9762. Coverage XML 7493/7749 is the documented one-statement variance. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
+  },
+  "remeasured_pytest_f25adcf": {
+    "sha": "f25adcf8602663631acc54e7f1777b536fada945",
+    "short": "f25adcf",
+    "at": "2026-09-09T22:33:00Z",
+    "method": "Independent clone of f25adcf. Counted src/**/*.py, floors/*, @app.route in src/, anchored def test_ in tests/. Ran pytest --cov=src (1573 passed, 7.63s, 7494/7749), bandit -ll, pip-audit. Observed CI 34412193707 and CD 34412193733 success.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 7.63,
+    "fresh_cov_covered": 7494,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.71,
+    "pin_cov_covered": 7494,
+    "pin_cov_statements": 7749,
+    "pin_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "entity_types": 7,
+    "relation_types": 8,
+    "patterns": 5,
+    "antipatterns": 4,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 34412193707,
+    "cd": 34412193733,
+    "note": "Docs-only relative to code pin fdd9762. GETTING_STARTED.md now leads with experimental prototype. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
   }
 }

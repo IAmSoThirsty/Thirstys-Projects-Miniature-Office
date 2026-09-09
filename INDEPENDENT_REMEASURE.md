@@ -6,6 +6,43 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 22:33 UTC — observed main `f25adcf` (pytest re-run)
+
+Independent clone of live main [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945) (PR [#45](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/45), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `f25adcf` itself.
+
+Present-tense miss: [GETTING_STARTED.md](GETTING_STARTED.md) opened “Welcome to Miniature Office! This guide will help you get started no matter what device you're using.” Other operator how-tos (QUICKSTART, INSTALL, QUICK_REFERENCE) lead with experimental / not production-ready / not WebXR. GETTING_STARTED now does too. Lint/vulns Holds is unchanged: `pip-audit` of `requirements.txt` and `bandit -ll` on `src/`. Open Dependabot PR [#13](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/13) (`flatted` 3.3.3 → 3.4.2, CWE-1321) is in toy `floors/typescript` and is not that Python gate.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`f25adcf`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/f25adcf8602663631acc54e7f1777b536fada945) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| `k8s/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **7.63s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| `package.json` keywords | flask / prototype / agents / experimental |
+| CI on `f25adcf` | [34412193707](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34412193707) succeeded |
+| CD on `f25adcf` | [34412193733](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34412193733) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`; limitation line still names docs HEAD `268058c`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 22:22 UTC — observed main `8fdaca0` (pytest re-run)
 
 Independent clone of live main [`8fdaca0`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/8fdaca0d561bc6c572913a460de9e7d5c1409e8f) (PR [#44](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/44), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `8fdaca0` itself.

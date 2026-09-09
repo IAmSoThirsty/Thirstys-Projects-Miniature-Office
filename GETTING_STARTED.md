@@ -1,6 +1,8 @@
-# 🎯 Getting Started - Choose Your Platform
+# Getting Started
 
-Welcome to Miniature Office! This guide will help you get started no matter what device you're using.
+**Status: experimental Flask prototype — not production-ready.** Measured status: [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md).
+
+This guide is how to run the Flask HTML UI in a browser. A phone, tablet, or headset browser can load that page. There is no native app and no WebXR.
 
 ## Quick Decision Tree
 
