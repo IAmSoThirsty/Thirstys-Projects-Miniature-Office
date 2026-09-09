@@ -29,19 +29,32 @@ LINUX USERS:
 4. Run: ./start.sh
 5. Open browser to: http://localhost:5000
 
-DOCKER USERS (ALL PLATFORMS):
-------------------------------
-1. Open Terminal/Command Prompt
-2. Export a real SECRET_KEY, then compose up:
+DOCKER (bash / WSL / Git Bash — not Windows cmd.exe):
+-----------------------------------------------------
+1. Open a bash-like shell
+2. Generate SECRET_KEY once and reuse it. A new key on a later
+   compose up cannot verify an HMAC-tagged audit JSONL already
+   in ./data:
    export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
    mkdir -p user_workspace data logs
+   # chmod 777 is the CD bind-mount workaround, not a default.
    chmod 777 user_workspace data logs
    docker compose up --build
 3. Wait for server to start
 4. Open browser to: http://localhost:5000
 
    Compose interpolates SECRET_KEY with no default. Production refuses
-   placeholders. State is in-memory.
+   placeholders. World state is in-memory.
+
+DOCKER ON WINDOWS (PowerShell):
+-------------------------------
+$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
+New-Item -ItemType Directory -Force -Path user_workspace, data, logs | Out-Null
+docker compose up --build
+
+Reuse the same SECRET_KEY on later runs if ./data already has an
+HMAC-tagged audit log. Skip chmod 777 unless the container cannot
+write the bind mounts.
 
 MOBILE/TABLET USERS:
 --------------------
@@ -52,9 +65,12 @@ MOBILE/TABLET USERS:
 3. Open phone browser
 4. Go to: http://[YOUR_IP]:5000
    Example: http://192.168.1.100:5000
-5. Optional: bookmark, or "Add to Home Screen"
-   (supporting browsers can install the PWA shell from manifest.json + sw.js;
-    that is still the Flask HTML UI, not a native app)
+5. Optional: bookmark the page. "Add to Home Screen" can pin a
+   shortcut. The PWA shell (manifest.json + sw.js) only installs
+   from a secure context (https, or http://localhost / 127.0.0.1).
+   A plain http://LAN_IP:5000 origin is not a secure context, so
+   the service worker will not register there. Either way this is
+   still the Flask HTML UI, not a native app.
 
 HEADSET BROWSERS (not a VR product):
 ------------------------------------

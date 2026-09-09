@@ -13,7 +13,7 @@ The Miniature Office runs as a web application, accessible from **any device wit
 This means:
 - **Desktop**: Chrome, Firefox, Safari, Edge on Windows/Mac/Linux
 - **Mobile / tablet**: any phone or tablet browser pointed at the Flask server
-- **PWA**: `manifest.json` + `sw.js` ship with the Flask client. Supporting browsers can install the shell. That is still the Flask HTML UI, not a native app.
+- **PWA**: `manifest.json` + `sw.js` ship with the Flask client. Supporting browsers can install the shell from a **secure context** (`https`, or `http://localhost` / `http://127.0.0.1`). A plain `http://LAN_IP:5000` origin is not a secure context; bookmarking still works, the service worker will not register there. That is still the Flask HTML UI, not a native app.
 - **Not included**: a store client, Electron package, or WebXR session
 
 ---
@@ -43,7 +43,11 @@ This means:
 4. Run: `./start.sh` to launch the application
 5. Open your browser to `http://localhost:5000`
 
-### Option 2: Docker (Easiest, All Platforms)
+### Option 2: Docker
+
+Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders. Generate the key once and reuse it; a new key cannot verify an HMAC-tagged `audit.jsonl` already in `./data`. `chmod 777` is the CD bind-mount workaround, not a hardened default.
+
+**bash / WSL / Git Bash** (not Windows cmd.exe):
 
 ```bash
 export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
@@ -52,9 +56,17 @@ chmod 777 user_workspace data logs
 docker compose up --build
 ```
 
+**Windows PowerShell:**
+
+```powershell
+$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
+New-Item -ItemType Directory -Force -Path user_workspace, data, logs | Out-Null
+docker compose up --build
+```
+
 Then open: `http://localhost:5000`
 
-**Prerequisites**: Install [Docker Desktop](https://www.docker.com/products/docker-desktop). Compose has **no** default `SECRET_KEY`.
+**Prerequisites**: Install [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
 ### Option 3: Manual Installation
 
@@ -86,9 +98,9 @@ The Miniature Office is a **web-based application** that works on mobile devices
 
 **Example**: If your computer's IP is `192.168.1.100`, go to `http://192.168.1.100:5000`
 
-### Method 2: Install the PWA shell (optional)
+### Method 2: Shortcut / PWA shell (optional)
 
-Supporting browsers can install the Flask client from `manifest.json` / `sw.js` (or use “Add to Home Screen”). That is the same HTML UI, not a native app and not WebXR.
+Bookmarking or “Add to Home Screen” on `http://LAN_IP:5000` pins a shortcut. That origin is **not** a secure context, so the service worker in `src/client/index.html` will not register. The PWA shell (`manifest.json` / `sw.js`) installs from `https` or `http://localhost`. That is the same HTML UI, not a native app and not WebXR.
 
 ### Method 3: Run on Your Phone (Advanced)
 
@@ -126,7 +138,7 @@ Now anyone on your network can access it at: `http://YOUR_IP:5000`
 
 ### Security Note
 When opening to your network:
-1. Set a strong `SECRET_KEY` (compose has **no** default)
+1. Set a strong `SECRET_KEY` (compose has **no** default). Reuse it if `./data` already has an HMAC-tagged audit log.
 2. `/api/ide/*` is open unless `MO_IDE_TOKEN` is set (required when `FLASK_ENV=production`)
 3. Restarting the process drops in-memory world state and audit events
 4. Use firewall rules to limit access. This is a local prototype, not a hardened service.
@@ -155,7 +167,8 @@ start.bat            # Start the application
 ./start.sh          # Start the application
 ```
 
-### Docker (All Platforms)
+### Docker (bash / WSL / Git Bash)
+
 ```bash
 export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 mkdir -p user_workspace data logs
@@ -163,6 +176,8 @@ chmod 777 user_workspace data logs
 docker compose up --build    # Start everything
 docker compose down          # Stop everything
 ```
+
+PowerShell: `$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"` then `docker compose up --build`. Reuse the key across restarts.
 
 ---
 

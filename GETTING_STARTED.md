@@ -9,8 +9,8 @@ What device do you have?
 │
 ├─ 🖥️  Desktop Computer (Windows/Mac/Linux)
 │   │
-│   ├─ Have Docker installed? 
-│   │   └─ YES → Run: docker compose up --build
+│   ├─ Have Docker installed?
+│   │   └─ YES → Set SECRET_KEY once, then: docker compose up --build
 │   │   └─ NO  → Run the installer script (install.sh or install.ps1)
 │   │
 │   └─ Then open browser to: http://localhost:5000
@@ -21,8 +21,9 @@ What device do you have?
 │   │   └─ YES → Open browser to: http://[server-ip]:5000
 │   │   └─ NO  → Need someone to start the server first
 │   │
-│   └─ Optional: bookmark the URL, or use the browser’s “Add to Home Screen”
-│       (the Flask client ships manifest.json + sw.js; still not a native app)
+│   └─ Optional: bookmark the URL. “Add to Home Screen” pins a shortcut.
+│       The PWA shell (manifest.json + sw.js) installs only from a
+│       secure context (https or localhost). http://LAN_IP:5000 is not one.
 
 │
 └─ Headset browser
@@ -137,21 +138,19 @@ Look for an address like `192.168.1.100`
 
 ### Step 3: Add to Home Screen (Optional)
 
+Bookmarking and “Add to Home Screen” can pin a shortcut on `http://LAN_IP:5000`. That origin is **not** a secure context, so `navigator.serviceWorker` will not register there. The PWA shell (`manifest.json` + `sw.js`) installs from `https` or `http://localhost` / `http://127.0.0.1`. Either way this is still the Flask HTML UI, not a native app.
+
 **iPhone/iPad:**
 1. Tap the Share button (square with arrow)
 2. Scroll down and tap "Add to Home Screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
-
 
 **Android:**
 1. Tap the menu button (⋮) in the browser
 2. Tap "Add to Home screen"
 3. Give it a name: "Miniature Office"
 4. Tap "Add"
-5. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
-
 
 ---
 
@@ -161,36 +160,37 @@ There is no WebXR session and no VR-native UI. A Quest (or other) browser can lo
 
 ---
 
-## 🐳 Docker - Universal Method
+## 🐳 Docker
 
-Works on Windows, Mac, and Linux!
+Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders. Generate the key once and reuse it; a new key cannot verify an HMAC-tagged `audit.jsonl` already in `./data`.
 
-### Prerequisites
-Install Docker Desktop: https://www.docker.com/products/docker-desktop
+### bash / WSL / Git Bash
 
-### Steps
+Not Windows cmd.exe.
 
-1. **Open Terminal/Command Prompt**
+```bash
+git clone https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office.git
+cd Thirstys-Projects-Miniature-Office
+export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+mkdir -p user_workspace data logs
+# chmod 777 is the CD bind-mount workaround, not a hardened default
+chmod 777 user_workspace data logs
+docker compose up --build
+```
 
-2. **Clone the project** (or download and extract):
-   ```bash
-   git clone https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office.git
-   cd Thirstys-Projects-Miniature-Office
-   ```
+Then open `http://localhost:5000`. Stop with `Ctrl+C` or `docker compose down`.
 
-3. **Start with one command**:
-   ```bash
-   export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
-   mkdir -p user_workspace data logs
-   chmod 777 user_workspace data logs
-   docker compose up --build
-   ```
-   Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders.
-4. **Wait for it to start** (10-30 seconds)
+**Prerequisites**: [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-5. **Open browser to**: `http://localhost:5000`
+### Windows PowerShell
 
-6. **To stop**: Press `Ctrl+C` or run `docker compose down`
+```powershell
+git clone https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office.git
+cd Thirstys-Projects-Miniature-Office
+$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
+New-Item -ItemType Directory -Force -Path user_workspace, data, logs | Out-Null
+docker compose up --build
+```
 
 ---
 
@@ -240,9 +240,8 @@ Once you're in:
 - **Bookmark it**: Save the URL for quick access
 - **Keep the process running**: Restarting drops in-memory world state
 - **LAN access**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
-- **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY` (compose has **no** default)
+- **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY` (compose has **no** default). Reuse that key across restarts if `./data` already has an HMAC-tagged audit log.
 
 ---
 
 This is a Flask prototype, not a production IDE.
-

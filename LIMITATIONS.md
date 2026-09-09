@@ -7,7 +7,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 ## What is implemented
 
 - Flask app + Socket.IO (`src/server/app.py`), static client (`src/client/index.html`) with file tree, textarea editor, and terminal
-- PWA shell: `manifest.json` + `sw.js`. No WebXR
+- PWA shell: `manifest.json` + `sw.js`. No WebXR. Service worker requires a secure context (`https` or localhost); a LAN `http://IP:5000` origin is not one
 - Entity registry, departments, agents, supply store, task state machine — in-process Python objects
 - `threading.RLock` on `EntityRegistry` and `GlobalRegistry`
 - Audit events with a SHA-256 **chain**. Optional HMAC-SHA256 when `MO_AUDIT_HMAC_KEY` or a non-placeholder `SECRET_KEY` is set
@@ -62,13 +62,13 @@ There is no single 99% of the whole tree.
 
 - World / simulation / registries: in-process. Restart drops them.
 - Workspace files: on disk under `MO_WORKSPACE` (default `./user_workspace`).
-- Audit chain: in-process unless `MO_DATA_DIR` is set, in which case `audit.jsonl` is appended. HMAC-tagged when a real key is set.
+- Audit chain: in-process unless `MO_DATA_DIR` is set, in which case `audit.jsonl` is appended. HMAC-tagged when a real key is set. Reloading that file with a **rotated** `MO_AUDIT_HMAC_KEY` / `SECRET_KEY` fails HMAC verification and raises `ValueError`.
 
 ## Security
 
 - Non-root Docker user: yes
 - Security headers module: yes
-- SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one
+- SECRET_KEY: compose has no default; production refuses placeholders; `.env.example` still has one. Generate once and reuse if `./data/audit.jsonl` exists.
 - Bandit `-ll`: clean (B104 nosec on `run_server`). JSON dump in CI also uses `-ll`.
 - pip-audit: clean on `fdd9762`
 - `MO_IDE_TOKEN` required when `FLASK_ENV=production`
@@ -78,14 +78,3 @@ There is no single 99% of the whole tree.
 
 1. Docker stays Partial until the stack is more than a compose healthcheck (in-memory world, `chmod 777`).
 2. Turn HMAC on by default in compose via a generated key.
-3. Replace identity codegen with spec-mapped generators, or stop listing a pipeline.
-4. Include every `src/` module in coverage reports.
-5. Archive historical `*_COMPLETE.md` files so they cannot be cited even below the banner.
-
-## Contributing
-
-When you add behavior:
-
-1. Add a test that would fail if the route or module is not wired.
-2. Update [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md) and [claims.json](claims.json) in the same change if a headline number moves.
-3. Do not describe planned work as done.

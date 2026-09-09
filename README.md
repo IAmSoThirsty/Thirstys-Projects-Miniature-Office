@@ -86,6 +86,8 @@ chmod 777 user_workspace data logs
 docker compose up --build
 ```
 
+Generate `SECRET_KEY` once and reuse it. A new key cannot verify an HMAC-tagged `audit.jsonl` already in `./data`. `chmod 777` is the CD bind-mount workaround, not a hardened default. The snippet is bash / WSL / Git Bash; PowerShell is `$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"`.
+
 Linux: `./install.sh` then `./start.sh`. macOS: `./install.sh` then `./start.command` (or `./start.sh`). Windows: `install.ps1` then `start.bat`.
 
 ## Documentation
