@@ -324,8 +324,6 @@ Measured suite: **1,573 passed**, 1 skipped on code pin `fdd9762`. See [CLAIMS_A
 
 ## Contributing
 
-See main README for contribution guidelines. Key points:
-- Follow the Codex principles
-- All changes must be auditable
-- New agents must have capability profiles
-- Contracts required for new integrations
+There is no `CONTRIBUTING.md`, and [README.md](README.md) has no contribution section.
+
+Measured status is [CLAIMS_AUDIT.md](CLAIMS_AUDIT.md). Historical `*_CODEX.md` files are bannered; they are not a current contribution gate. The tree does not require capability profiles or contracts as a merge check.
