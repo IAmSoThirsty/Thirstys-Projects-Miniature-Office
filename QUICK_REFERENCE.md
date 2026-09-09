@@ -35,11 +35,16 @@ Double-click: start.command
 ./start.sh
 ```
 
-## Docker (All Platforms)
+## Docker (bash / WSL / Git Bash)
+
+Not Windows cmd.exe. PowerShell snippet is below.
+
+Generate `SECRET_KEY` **once** and reuse it. A new key cannot verify an HMAC-tagged `audit.jsonl` already in `./data`.
 
 ```bash
 export SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 mkdir -p user_workspace data logs
+# chmod 777 is the CD bind-mount workaround, not a hardened default
 chmod 777 user_workspace data logs
 docker compose up --build
 
@@ -48,6 +53,16 @@ docker compose down
 ```
 
 Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders.
+
+### Docker on Windows (PowerShell)
+
+```powershell
+$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
+New-Item -ItemType Directory -Force -Path user_workspace, data, logs | Out-Null
+docker compose up --build
+```
+
+Reuse the same `$env:SECRET_KEY` on later runs if `./data` already holds an HMAC-tagged audit log.
 
 ## Access URLs
 
@@ -62,7 +77,7 @@ Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeh
 1. Start server on computer (see above)
 2. Find computer's IP address
 3. Open phone browser → `http://YOUR_IP:5000`
-4. Optional: bookmark it. Supporting browsers can install the PWA shell (`manifest.json` + `sw.js`). That is still the Flask HTML UI, not a native app.
+4. Optional: bookmark it. “Add to Home Screen” can pin a shortcut. The PWA shell (`manifest.json` + `sw.js`) installs only from a **secure context** (`https`, or `http://localhost` / `http://127.0.0.1`). A plain `http://LAN_IP:5000` origin is not a secure context, so the service worker will not register there. That is still the Flask HTML UI, not a native app.
 
 
 ## Headsets
