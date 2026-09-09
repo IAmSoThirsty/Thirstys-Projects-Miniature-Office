@@ -10,7 +10,7 @@
     "flask",
     "prototype",
     "agents",
-    "pixel-art"
+    "experimental"
   ],
   "author": "IAmSoThirsty",
   "license": "Apache-2.0"
