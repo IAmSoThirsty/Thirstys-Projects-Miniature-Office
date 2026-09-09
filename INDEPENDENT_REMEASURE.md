@@ -6,6 +6,42 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 9 September 2026 19:11 UTC — observed main `a153b92` (pytest re-run)
+
+Independent clone of live main [`a153b92`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a153b923db3c0bcf6f92f757fb72c249d59c0808) (PR [#42](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/42), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `a153b92` itself.
+
+Present-tense miss in design notes: `ARCHITECTURE.md` Layer 7 showed a contract DSL the tree does not parse (`Contract <Name> { API: ... }`); `ElevatorProtocol.check_compatibility` is “consumer exists in the registry.” Layer 8 said entities were JSON Schema compliant (`codex/office.json`); there is no `codex/` directory. Layer 9 showed `persistState(world)` as persistence; `SimulationEngine.persist_state` logs an `agent_action` and the world stays in-memory. Performance claimed a ~10–50ms tick and O(log n) causality indexing; `tick_duration_ms` defaults to 100 and events are a list. Testing Strategy said audit tests verify immutability. Banner already said intent-not-done; those layers now match the files.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`a153b92`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a153b923db3c0bcf6f92f757fb72c249d59c0808) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28 |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **12.56s** |
+| Coverage XML `--cov=src` | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low; 1 skipped_tests) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| `k8s/` directory | absent |
+| CI on `a153b92` | [34358022421](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34358022421) succeeded |
+| CD on `a153b92` | [34358022556](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34358022556) succeeded |
+| Live EC-013 | Verified (experimental prototype; pin `fdd9762`) |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 13:26 UTC — observed main `a1db8ae` (pytest re-run)
 
 Independent clone of live main [`a1db8ae`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a1db8ae7351fadc8d499a2ee4f764e973bf72c72) (PR [#41](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/41), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. `git log fdd9762..HEAD -- src tests` empty. Pytest ran on `a1db8ae` itself.

@@ -91,6 +91,30 @@
     "cd_268058c": {
       "run": 33263264131,
       "conclusion": "success"
+    },
+    "ci_a1db8ae": {
+      "run": 34351639115,
+      "conclusion": "success"
+    },
+    "cd_a1db8ae": {
+      "run": 34351639093,
+      "conclusion": "success"
+    },
+    "ci_526721e": {
+      "run": 34347045367,
+      "conclusion": "success"
+    },
+    "cd_526721e": {
+      "run": 34347045102,
+      "conclusion": "success"
+    },
+    "ci_a153b92": {
+      "run": 34358022421,
+      "conclusion": "success"
+    },
+    "cd_a153b92": {
+      "run": 34358022556,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -174,7 +198,8 @@
     "CI 33252125717 and CD 33252125743 green on later docs-only a0910d4. Counts on that SHA match the code pin. Pin stays fdd9762. Do not retarget it.",
     "CI 33262809624 and CD 33262809630 green on later docs-only 32b08d8 (PR #31 squash). src tree fafbad68 and tests tree 1ddf08f8 match the code pin. Pin stays fdd9762. Do not retarget it. GitHub HTML landing was still stale (27d7fdf) at clone time; API/raw at 32b08d8 are the measured files.",
     "Independent pytest 2026-08-30 on docs successor 268058c (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.75s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33263264093 and CD 33263264131 succeeded. Whole-repo unanchored def test_ corrected 1626 \u2192 1619. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-06 23:10 UTC on observed main 0aaf783 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.09s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33817498446 and CD 33817498306 succeeded on 0aaf783. Live thirstysystems.com EC-013 matches the tree. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-06 23:10 UTC on observed main 0aaf783 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 13.09s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 33817498446 and CD 33817498306 succeeded on 0aaf783. Live thirstysystems.com EC-013 matches the tree. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-09 19:11 UTC on observed main a153b92 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34358022421 and CD 34358022556 succeeded. ARCHITECTURE.md Layers 7-10 no longer claim a contract DSL, JSON Schema files, world persistence, a 10-50ms tick, or O(log n) causality indexing. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -235,9 +260,42 @@
       "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
       "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
       "matches_code_pin_trees": true
+    },
+    {
+      "sha": "526721e2faf1ec81d31229f71e0c377cbf61d78b",
+      "short": "526721e",
+      "ci": 34347045367,
+      "cd": 34347045102,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
+    },
+    {
+      "sha": "a1db8ae7351fadc8d499a2ee4f764e973bf72c72",
+      "short": "a1db8ae",
+      "ci": 34351639115,
+      "cd": 34351639093,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
+    },
+    {
+      "sha": "a153b923db3c0bcf6f92f757fb72c249d59c0808",
+      "short": "a153b92",
+      "ci": 34358022421,
+      "cd": 34358022556,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "0aaf7839d6dd2943647a2d0b87da83b2608a1d56",
+  "src_tests_identical_through_at_least": "a153b923db3c0bcf6f92f757fb72c249d59c0808",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -361,5 +419,53 @@
     "ci": 33263264093,
     "cd": 33263264131,
     "note": "Docs-only relative to code pin fdd9762. Whole-repo unanchored was recorded as 1626; independent grep of *.py excluding .git is 1619. Pin stays fdd9762. Score remains 9/6/1/3 of 19. thirstysystems.com EC-013 still pinned (as of that remeasure) LIMITATIONS.md at 537c469."
+  },
+  "remeasured_pytest_a153b92": {
+    "sha": "a153b923db3c0bcf6f92f757fb72c249d59c0808",
+    "short": "a153b92",
+    "at": "2026-09-09T19:11:00Z",
+    "method": "Independent clone of a153b92. Counted src/**/*.py, floors/*, @app.route in src/, anchored ^\\s*def test_ in tests/ and whole-repo unanchored def test_. Ran pytest --cov=src, bandit -ll, pip-audit. Observed CI 34358022421 and CD 34358022556 success. Confirmed no codex/ and no k8s/ directories.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "codex_directory": false,
+    "k8s_directory": false,
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 12.56,
+    "fresh_cov_covered": 7493,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.70,
+    "pin_cov_covered": 7494,
+    "pin_cov_statements": 7749,
+    "pin_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "entity_types": 7,
+    "relation_types": 8,
+    "patterns": 5,
+    "antipatterns": 4,
+    "tick_duration_ms_default": 100,
+    "world_persist_is_log_only": true,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 34358022421,
+    "cd": 34358022556,
+    "note": "Docs-only relative to code pin fdd9762. Coverage XML 7493/7749 is the documented one-statement variance. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
   }
 }
