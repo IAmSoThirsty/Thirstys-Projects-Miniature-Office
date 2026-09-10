@@ -6,6 +6,40 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 19:22 UTC — observed main `a7f66bc` (pytest re-run; agents empty-200 before /health; /api/floors is 28 specs; audit_events_total omits directive_created)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree.
+
+Present-tense miss on `a7f66bc`:
+
+1. `GET /api/agents` before any lazy-init is **HTTP 200** `{"agents": []}`. Same empty-200 for `/api/departments`, `/api/supply-store`, `/api/audit/events`, `/api/tasks`. Those routes read empty process globals; they do not 500. Only `/api/world/state` / `/step` / `/start` / `/stop` 500, and `/metrics` 503, until `/health`.
+2. `GET /api/floors` is **28** `FloorSpecification` dataclasses from `get_all_floors()` (python, rust, c, … rust_async). It does not need `/health`. That is not `world.floors` (**2**: `floor-python` / `floor-javascript`). Python spec `requires_contracts_for` lists **27** other languages; default `EntityType.CONTRACT` is **0**.
+3. `GET /metrics` HELP `minioffice_audit_events_total` says “Total number of audit events”. The counter sums `ENTITY_CREATED` / `ENTITY_UPDATED` / `RELATIONSHIP_DECLARED` / `TASK_STATE_CHANGED` / `AGENT_ACTION` / `SECURITY_EVENT` and **omits** `DIRECTIVE_CREATED`. After `/health`: metrics **42**, `GET /api/audit/events` **43** (`entity_created` 30 + `agent_action` 11 + `task_state_changed` 1 + `directive_created` 1).
+
+Independent Flask test client (fresh process): `/api/agents` 200 `[]` then `/health` 200 then `/api/agents` 200 list of 11; `/api/floors` 200 list of 28 both before and after `/health`.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `world.floors` after `/health` | **2** (`floor-python`, `floor-javascript`) |
+| `GET /api/floors` | **28** `FloorSpecification` dataclasses |
+| `GET /api/agents` before `/health` | **HTTP 200** `{"agents": []}` |
+| `GET /metrics` audit_events_total | **42** (omits `directive_created`) |
+| `GET /api/audit/events` | **43** |
+| pytest | **1,573 passed**, 1 skipped, **12.94s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching pin |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
