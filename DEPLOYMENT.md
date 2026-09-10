@@ -14,7 +14,10 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. Body `"simulation": "running"` means the global object exists (lazy init), **not** that `POST /api/world/start` ran. Independent `GET /api/world/state` `"is_running"` is false until START. `"status": "healthy"` is the liveness string. |
 | `GET /metrics` | Prometheus text of in-memory counts. **503** while `simulation` is `None`. After `/health` lazy-init: HTTP 200. HELP `minioffice_floors_total` says “Total number of floors”; the value is `len(world.floors)` (**2** `World.Floor` objects: Python, JavaScript), not 28 language floors. `minioffice_agents_total` is 11. `minioffice_artifacts_total` is 0. |
 | `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. |
-| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
+| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck`. Does **not** init the simulation. Dockerfile `HEALTHCHECK` curls `/health` (does init). |
+| `POST /api/security/grant` | `granted: true` and `GET /api/security/permissions` lists the grant. `GET /api/canonical-bundle/authority-ledger` stays `total_grants: 0`. |
+| `POST /api/security/lockdown` | Building lockdown is `is_active: true` on Head of Security. `GET /api/canonical-bundle/freeze-protocol` stays `is_frozen: false`. STEP still ticks. |
+| `POST /api/security/block` | `is_blocked: true` on Head of Security. `security-dossiers` / `override-ledger` stay 0. |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |
 | systemd unit | **Not in the tree.** |
 | GHCR | CD may push `ghcr.io/iamsothirsty/thirstys-projects-miniature-office`. That image is the same in-memory prototype, not a hardened service. |

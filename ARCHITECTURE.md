@@ -242,6 +242,8 @@ while world.isActive:
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
 - `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
 - `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+- `POST /api/security/grant` (`entity_id` / `resource` / `justification`) returns `granted: true`. `GET /api/security/permissions` lists 1 item and `active_permissions` is **1**. `GET /api/canonical-bundle/authority-ledger` stays `total_grants: 0` / `active_grants: 0`
+- `POST /api/security/lockdown` `scope=building` returns `is_active: true` (`active_lockdowns: 1`). `GET /api/canonical-bundle/freeze-protocol` stays `is_frozen: false` / `access_locked: false`. `POST /api/world/step` still succeeds. `POST /api/security/block` of `task-001` is `is_blocked: true`; `security-dossiers` `total_decisions: 0`; `override-ledger` `total_overrides: 0`
 
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
@@ -257,7 +259,7 @@ while world.isActive:
 - `GET /api/audit/events` - Audit trail
 - `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
 - `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
-- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
+- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence. Security POSTs mutate Head-of-Security JSON only; they do not write authority-ledger / freeze-protocol / security-dossiers / override-ledger
 
 **WebSocket Events:**
 - `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)
