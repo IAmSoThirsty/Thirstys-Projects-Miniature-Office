@@ -54,6 +54,9 @@ docker compose down
 
 Compose interpolates `SECRET_KEY` with **no default**. Production refuses placeholders.
 
+Dockerfile CMD is gunicorn `--workers 4`. Each worker has its own in-memory world. This is not `python3 run.py`.
+
+
 ### Docker on Windows (PowerShell)
 
 ```powershell

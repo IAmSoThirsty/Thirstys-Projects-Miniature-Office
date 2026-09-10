@@ -119,6 +119,14 @@ Each floor *in the design* has a department representing a language domain.
 
 ### Layer 6: Tool & Supply Store (`src/tools/supply_store.py`)
 
+**Shipped module:**
+- Tool metadata: tag, version, trust_score, security_rating, capabilities set, `requires_justification`
+- `check_out_tool` refuses a missing tool, an unavailable tool, a missing justification when required, and a missing agent id
+- The comment “Check agent capabilities match tool requirements” is **not implemented**. There is no comparison of agent capabilities to `tool.metadata_info.capabilities`
+- Default seed does not check out tools. Assistants are not ticked
+
+**Intended, not implemented:** capability matching at checkout; default-seed agents using the supply store.
+
 Tools have metadata:
 - Tag (compiler, linter, test framework, etc.)
 - Version (semver)
@@ -126,12 +134,12 @@ Tools have metadata:
 - Security rating (1-5)
 - Capabilities set
 
-**Checkout Protocol:**
-1. Agent requests tool
-2. System checks capabilities match
-3. If requires justification, agent must provide
+**Checkout Protocol (partial):**
+1. Caller invokes `check_out_tool(tool_id, agent_id, justification)`
+2. Agent id must exist in the registry. Capabilities are **not** checked
+3. If `requires_justification`, a non-empty justification string is required
 4. Tool marked unavailable while checked out
-5. Agent returns tool when done
+5. `check_in_tool` marks it available again
 
 ### Layer 7: Contract System (`src/interfaces/contract.py`)
 
@@ -239,12 +247,12 @@ while world.isActive:
 
 **Intended, not implemented:** a richer spatial / pixel-art office visualization.
 
-**Components that exist as HTML:**
-1. **World Canvas** - colored rectangles for floors and offices
-2. **Control Panel** - simulation controls
-3. **Metrics Dashboard** - real-time counts
-4. **Agent List** - live agent status
-5. **Event Log** - scrolling audit events
+**Components that exist as HTML** (`src/client/index.html`; names are the `<h2>` / button labels):
+1. **World Canvas** — `fillRect` rectangles for floors and offices
+2. **Simulation** — buttons **STEP / START / STOP / REFRESH** (not a “Control Panel”)
+3. **Metrics** — labels Floors / Agents / Tasks / Tools (not “Metrics Dashboard”)
+4. **Agents** (not “Agent List”)
+5. **Log** (not “Event Log”)
 
 ## Design Principles
 
@@ -277,7 +285,9 @@ Compute and agent time are finite resources with budgeting.
 
 ## Scaling Considerations
 
-The shipped engine is **one Python process** with in-memory world state.
+The shipped `python3 run.py` path is **one Python process** with in-memory world state.
+
+The Docker image CMD is `gunicorn --bind 0.0.0.0:5000 --workers 4 --worker-class eventlet ... src.server.app:app`. That is **four** processes, each with its own `simulation` global. There is no Flask-SocketIO message queue. `POST /api/world/step` on one worker is not visible to `GET /api/world/state` on another. Operator `docker compose up --build` is this 4-worker CMD, not `run.py`.
 
 **Intended, not implemented:**
 - Each department on a separate worker
@@ -315,9 +325,10 @@ The shipped engine is **one Python process** with in-memory world state.
 - Not tamper detection on every read; not an immutable public ledger
 
 ### Capability Enforcement
-- Tools require matching agent capabilities
-- Justification required for sensitive operations
-- Manager approval for production transitions
+- `check_out_tool` records a `USES` relationship if the agent id exists
+- It does **not** compare agent capabilities to `tool.metadata_info.capabilities` (comment-only)
+- Justification is required only when `requires_justification` is set
+- Manager approval for production transitions is design prose
 
 ## Performance Characteristics
 

@@ -10,7 +10,7 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | Path | Reality |
 | --- | --- |
 | `python3 run.py` | Flask + Flask-SocketIO on port 5000 |
-| `docker compose up --build` | gunicorn (`src.server.app:app`, 4 eventlet workers) in a container. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders. |
+| `docker compose up --build` | gunicorn (`src.server.app:app`, **4** eventlet workers) in a container. Each worker has its own in-memory `simulation` global. STEP on one worker is not visible to REFRESH on another. There is no Socket.IO message queue. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders. |
 | `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. |
 | `GET /metrics` | Prometheus text of in-memory counts. Returns **503** only when `simulation` is still `None`. |
 | `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
@@ -36,7 +36,7 @@ Then open `http://127.0.0.1:5000`. Stop with `Ctrl+C` or `docker compose down`.
 
 PowerShell: `$env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"`.
 
-CD `test-docker` curls `/health` **and** `/api/ide/health`. Observed green on code pin `fdd9762` and on later docs-only commits. Docker stays Partial: in-memory world, `chmod 777`.
+CD `test-docker` curls `/health` **and** `/api/ide/health`. Observed green on code pin `fdd9762` and on later docs-only commits. Docker stays Partial: in-memory world, gunicorn `--workers 4` (split-brain), `chmod 777`.
 
 ## Do not
 
