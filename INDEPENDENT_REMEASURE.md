@@ -6,6 +6,38 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 23:16 UTC — observed main `a7f66bc` (pytest re-run; START success does not set is_running; Alice managed_agents []; supply-store versions are labels)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#65](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/65) remain open.
+
+Present-tense miss beyond #59–#65:
+
+1. `GET /api` labels `POST /api/world/start` “Start continuous simulation”. Independent Flask test client after `/health`: that POST returns HTTP 200 `{"success": true, "message": "Simulation started"}`. Immediate `GET /api/world/state` (and +300ms) still has `is_running: false`, `tick_count: 0`, `time: 0`. The handler never assigns `simulation.is_running`; it only calls `socketio.start_background_task(simulation.run)`. Shipped `index.html` `startSimulation()` paints RUNNING from local JS without reading `is_running`.
+2. `Office.set_manager(Alice)` does not write `managed_agents`. Independent seed: Alice `managed_agents == []` and capability sets are empty. The 10 assistants have role capabilities (languages/skills/tools). `ManagerDecisionProtocol.process_manager` iterates `manager.managed_agents`, so even the one manager the tick reaches manages nobody.
+3. `GET /api/supply-store` tool versions are constructor labels: Python Interpreter `3.11.0`, PyTest Framework `7.4.0`. Independent `POST /api/ide/terminal` `python3 --version` is `Python 3.10.21`. `requirements.txt` pins `pytest==9.0.3`.
+4. Compose `healthcheck` is `GET /api/ide/health`. Independent call before `/health`: HTTP 200 `status: ok`, `audit_chain_ok: true`, `audit_events: 0`, `audit_hmac: false`. That route does not lazy-init the simulation. `GET /api/world/state` remains HTTP 500. `GET /api/contracts` is `[]` (`get_elevator_protocol().contracts`).
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| START then `is_running` (test client) | **false**, tick_count **0** |
+| Alice `managed_agents` | **[]** |
+| Supply-store versions | Interpreter **3.11.0** / PyTest **7.4.0** (labels) |
+| Terminal `python3 --version` | **Python 3.10.21** |
+| pytest | **1,573 passed**, 1 skipped, **13.27s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching the pin |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).

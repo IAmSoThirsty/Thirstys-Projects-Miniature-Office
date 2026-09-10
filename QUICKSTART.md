@@ -30,8 +30,8 @@ The server will start on `http://localhost:5000`
 
 2. **Simulation** (right panel in `src/client/index.html`). The buttons are labeled **STEP**, **START**, **STOP**, and **REFRESH** — not “STEP (+1 Tick)” or “REFRESH STATE”:
    - **STEP** — one tick (`SimulationEngine.step` → `tick`)
-   - **START** — continuous loop
-   - **STOP** — halt
+   - **START** — `POST /api/world/start` returns `success: true` / `"Simulation started"`. The handler does **not** set `is_running`; it queues `simulation.run`. Independent Flask test client: `is_running` stays false and `tick_count` stays 0. Live `python3 run.py` can wedge HTTP so STOP cannot be reached. The shipped button paints RUNNING from local JS without reading `is_running`.
+   - **STOP** — `simulation.stop()` sets `world.is_active = False`. That is terminal. Later STEP does not tick. A later START cannot resume because START never sets `is_active` True.
    - **REFRESH** — reload world state
    The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 

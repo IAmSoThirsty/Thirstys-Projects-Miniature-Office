@@ -248,8 +248,8 @@ while world.isActive:
 - `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
 - `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
 - `POST /api/world/step` - Advance one tick
-- `POST /api/world/start` - Start continuous simulation
-- `POST /api/world/stop` - Stop simulation
+- `POST /api/world/start` - Returns `success: true` / `"Simulation started"`. Does **not** set `is_running`. Queues `simulation.run`. Independent test client: `is_running` stays false, `tick_count` 0. Live `python3 run.py` can wedge HTTP.
+- `POST /api/world/stop` - Sets `world.is_active = False` (terminal). START never sets it True
 - `GET /api/agents` - List all agents
 - `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
 - `GET /api/departments` - List departments
