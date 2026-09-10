@@ -14,7 +14,9 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. Body `"simulation": "running"` means the global object exists (lazy init), **not** that `POST /api/world/start` ran. Independent `GET /api/world/state` `"is_running"` is false until START. `"status": "healthy"` is the liveness string. |
 | `GET /metrics` | Prometheus text of in-memory counts. **503** while `simulation` is `None`. After `/health` lazy-init: HTTP 200. HELP `minioffice_floors_total` says “Total number of floors”; the value is `len(world.floors)` (**2** `World.Floor` objects: Python, JavaScript), not 28 language floors. `minioffice_agents_total` is 11. `minioffice_artifacts_total` is 0. |
 | `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. |
-| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
+| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck`. Does **not** init the simulation. `audit_hmac` is false unless a real key is set. |
+| `GET /api/canonical-bundle*` | HTTP 200 `is_complete: true` even before `/health`. Sub-ledgers (`tool-provenance`, `floor-profiles`, `simulation-traces`, `consigliere-logs`, `security-dossiers`, `formal-verification`) stay empty zeros and do not mirror live supply-store / floors / ticks / POSTs. |
+| Consigliere / Security POSTs | Documented as issuing directives / triggering audits. Independent client: `success: true` / `audits: 1` without mutating agent status or writing bundle dossiers. |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |
 | systemd unit | **Not in the tree.** |
 | GHCR | CD may push `ghcr.io/iamsothirsty/thirstys-projects-miniature-office`. That image is the same in-memory prototype, not a hardened service. |

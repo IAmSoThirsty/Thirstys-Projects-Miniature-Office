@@ -236,12 +236,12 @@ while world.isActive:
 
 - `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. That is a route label. Canonical status is experimental Flask prototype — not a Cognitive IDE
 - `GET /health` is HTTP 200 liveness. Body `"simulation": "running"` means the global `simulation` object is not `None` (the handler lazy-inits it). Independent `GET /api/world/state` is `"is_running": false` until `POST /api/world/start`. `"status": "healthy"` is the liveness string, not a production probe
-- `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”
+- `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”. The route is HTTP 200 **before** `/health` lazy-inits the simulation. Sub-ledgers are a parallel empty store, not views of live objects: `tool-provenance` `total_tools: 0` vs supply-store **2**; `floor-profiles` `total_profiles: 0` vs `GET /api/floors` **28**; `simulation-traces` `total_traces: 0` after STEP; `formal-verification` `total_invariants: 0` / `verified_invariants: 0`; `board-resolutions` / `law-failure-matrix` / `execution-kernel.conformance_criteria` empty
 - `GET /api/canonical-bundle/charter` JSON keys are `charter_id`, `version`, `issued_date`, `axioms`, `is_immutable`, `human_readable`. There is **no** `digital_signature` field. The `sha256(b"charter-001")` hex appears only inside `human_readable` (`to_human_readable()`). `CivilizationCharter.verify_signature` **always returns True** and ignores its `public_key` argument
 - `GET /api/canonical-bundle/purpose-lock` returns `"overall_locked": true` with `"subsystems_checked": 0`
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
-- `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
-- `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+- `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere. Correct-shaped POSTs (`explain` / `translate` / `preview` / `draft` / `command/manager` / `command/agent` / `coordinate`) return `success: true` and increment in-memory `draft_count` / `explanation_count` / `preview_count` / `translation_count`, but `GET /api/canonical-bundle/consigliere-logs` stays `total_interactions: 0`. `POST /api/consigliere/command/agent` and `/command/manager` leave the agent `idle` (`current_task_id` null, `task_history` `[]`)
+- `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security. `POST /api/security/audit` increments `audits` to 1 with `is_complete: false`, `findings: []`, and does not write `GET /api/canonical-bundle/security-dossiers` (`total_decisions: 0`)
 
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
@@ -257,7 +257,7 @@ while world.isActive:
 - `GET /api/audit/events` - Audit trail
 - `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
 - `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
-- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
+- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence. Bundle sub-ledgers do not mirror supply-store / floors / traces / Consigliere POSTs / security audits
 
 **WebSocket Events:**
 - `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)
