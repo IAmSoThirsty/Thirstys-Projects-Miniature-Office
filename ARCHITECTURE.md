@@ -242,22 +242,23 @@ while world.isActive:
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
 - `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
 - `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+- `GET /api/floors` returns **28** `FloorSpecification.to_dict()` objects (Python, Rust, C, …). Rust `architectural_constraints` include “Clippy linting enforced” and “Zero undefined behavior tolerated”; `required_checks` include “Miri validation for unsafe code”. Python includes “PEP 8 compliance”. That is not `world.floors` (**2**). No Clippy/Miri/PEP8 process runs
+- `GET /metrics` `minioffice_audit_events_total` HELP says “Total number of audit events”. After `/health` the value is **42**. `GET /api/audit/events` length and `GET /api/ide/health` `audit_events` are **43** (`entity_created` 30 + `agent_action` 11 + `task_state_changed` 1 + `directive_created` 1). Metrics sums six `EventType`s and omits `DIRECTIVE_CREATED`
+- `GET /api/canonical-bundle/metrics-canon` `completeness_metrics` are prose strings (“All directive requirements addressed”, “Complete audit trail exists”). They are not measured against tasks / traces / contracts
 
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
 - `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
-- `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
-- `POST /api/world/step` - Advance one tick
-- `POST /api/world/start` - Start continuous simulation
-- `POST /api/world/stop` - Stop simulation
-- `GET /api/agents` - List all agents
+- `GET /api/agents` / `/api/departments` / `/api/supply-store` / `/api/audit/events` - empty **200** until lazy-init; after `/health`: 11 agents, 2 departments (`is_fully_staffed: true` is the 5-role check, not a manager/office), 2 tools, 43 events
+- `GET /api/floors` - 28 specification dataclasses. Not the 2 World.Floor objects
+- `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs. `audit_events_total` is **42**, not 43
+- `POST /api/world/step` - Advance one tick (**HTTP 500** until `/health`)
+- `POST /api/world/start` - Start continuous simulation (**HTTP 500** until `/health`)
+- `POST /api/world/stop` - Stop simulation (**HTTP 500** until `/health`)
 - `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
-- `GET /api/departments` - List departments
-- `GET /api/supply-store` - Tool inventory
-- `GET /api/audit/events` - Audit trail
-- `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
-- `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
-- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
+- `GET /health` - liveness 200; body `"simulation"` is object-exists, not START. This is the lazy-init route
+- `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set). `/api/ide/health` does **not** init the simulation
+- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence. `metrics-canon` completeness strings are not measured
 
 **WebSocket Events:**
 - `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)

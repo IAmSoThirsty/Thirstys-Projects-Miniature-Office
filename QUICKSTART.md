@@ -53,8 +53,23 @@ The server will start on `http://localhost:5000`
 
 ## Using the API
 
+A fresh `python3 run.py` process does **not** lazy-init on these routes. Independent Flask test client before any `/health`:
+
+- `GET /api/world/state`, `POST /api/world/step`, `POST /api/world/start`, `POST /api/world/stop` → **HTTP 500** `{"error": "Simulation not initialized"}`
+- `GET /api/agents` → `{"agents": []}` (HTTP 200, not 11 agents)
+- `GET /api/departments` → `{"departments": []}` (HTTP 200, not 2 departments)
+- `GET /api/supply-store` → `{"tools": []}` (HTTP 200)
+- `GET /api/audit/events` → `{"events": []}` (HTTP 200)
+- `GET /metrics` → **503** `# Simulation not ready`
+
+`GET /health` is the route that lazy-inits the global. After that, `GET /api/world/state` is 200 with `"is_running": false` until START. Browser STEP / START / STOP / REFRESH hit the same 500 until something has called `/health` (the compose healthcheck uses `/api/ide/health`, which does **not** init the simulation).
+
+`GET /api/floors` does **not** need the simulation. It returns **28** `FloorSpecification` dataclasses (Python objects in `src/core/floor_specifications.py`). That is not `world.floors` (**2**: `floor-python`, `floor-javascript`). Spec strings such as “Clippy linting enforced” / “Miri validation for unsafe code” / “PEP 8 compliance” are not a running toolchain.
+
 ### Get World State
 ```bash
+# HTTP 500 until /health has run in this process
+curl -s -o /tmp/health.json -w "%{http_code}\n" http://localhost:5000/health
 curl http://localhost:5000/api/world/state | python3 -m json.tool
 ```
 

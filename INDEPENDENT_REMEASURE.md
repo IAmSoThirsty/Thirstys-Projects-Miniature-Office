@@ -6,6 +6,46 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 19:22 UTC — observed main `ef936f3` then `a7f66bc` (pytest re-run; QUICKSTART curls 500; /api/floors specs claim Clippy; metrics undercount)
+
+Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58) later squash-merged as [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (docs-only; src/tests unchanged).
+
+Present-tense miss on `ef936f3` / `a7f66bc` beyond #58:
+
+1. [QUICKSTART.md](QUICKSTART.md) “Using the API” presented `curl /api/world/state` and `POST /api/world/step` as the first operator actions. Independent Flask test client before any lazy-init: those routes are **HTTP 500** `{"error": "Simulation not initialized"}`. `GET /api/agents` / `/api/departments` / `/api/supply-store` / `/api/audit/events` are empty **200**s (`agents: []`, `departments: []`, `tools: []`, `events: []`). `GET /metrics` is **503**. `/health` is the lazy-init route; `/api/ide/health` does not init the simulation.
+2. `GET /api/floors` returns **28** `FloorSpecification` dataclasses (`python`, `rust`, `c`, … `rust_async`). Rust `architectural_constraints` include “Clippy linting enforced” and “Zero undefined behavior tolerated”; `required_checks` include “Miri validation for unsafe code”. Python includes “PEP 8 compliance”. `world.floors` after `/health` is **2** (`floor-python`, `floor-javascript`). No Clippy/Miri/PEP8 process runs.
+3. `GET /metrics` `minioffice_audit_events_total` HELP says “Total number of audit events”. After `/health` the value is **42**. `GET /api/audit/events` length is **43** (`entity_created` 30, `agent_action` 11, `task_state_changed` 1, `directive_created` 1). `GET /api/ide/health` `audit_events` is **43**. Metrics sums six `EventType`s and omits `DIRECTIVE_CREATED`.
+4. `GET /api/canonical-bundle/metrics-canon` `completeness_metrics` strings are “All directive requirements addressed” / “Complete audit trail exists” / “Full documentation provided”. Default `GET /api/tasks` is `[]`; `/api/canonical-bundle/simulation-traces` `total_traces` is **0**; `GET /api/contracts` is `[]`.
+
+Independent Flask test client (fresh process, no `SECRET_KEY`): `/api/ide/health` 200 `audit_hmac: false`, `audit_events: 0`, `audit_chain_ok: true` (empty chain). `/health` 200 lazy-init; then `/api/world/state` 200 `is_running: false`; `world.floors[1].offices` is `[]` (JavaScript has no office).
+
+| Metric | Value |
+| --- | --- |
+| Observed main at clone | [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) |
+| Later docs HEAD | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR #58) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `GET /api/floors` | **28** specification dataclasses |
+| `world.floors` after `/health` | **2** (`floor-python`, `floor-javascript`) |
+| `GET /api/world/state` before `/health` | **HTTP 500** |
+| `GET /api/agents` before `/health` | `{"agents": []}` HTTP 200 |
+| `GET /metrics` floors_total | **2** |
+| `GET /metrics` audit_events_total | **42** |
+| `GET /api/audit/events` after `/health` | **43** |
+| Charter JSON `digital_signature` | **absent** |
+| metrics-canon completeness | prose strings, not measured |
+| pytest | **1,573 passed**, 1 skipped, **13.08s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching the pin |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34518600732](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34518600732) succeeded |
+| CD | [34518600776](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34518600776) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
@@ -38,6 +78,7 @@ Independent Flask test client (fresh process): `/api` 200 (names Cognitive IDE);
 | CD | [34518600776](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34518600776) succeeded |
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 
 ## 10 September 2026 18:12 UTC — observed main `e3d316e` (pytest re-run; live JSON Cognitive IDE / bundle complete / health running)
 

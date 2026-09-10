@@ -68,6 +68,10 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.tick()`: 11 agents stay `idle`. Metrics Agents is 11; WORLD canvas paints **Agents: 0** (`office.roles`). `GET /api/tasks` is `[]` (local `task-001` is never registered, but still writes `directive_created` / `task_state_changed` to the audit log)
 - `GET /api` still names the product a “Cognitive IDE”. `GET /health` body `"simulation": "running"` means the object exists, not that START is on. `GET /api/canonical-bundle` `is_complete: true` is 27 non-None slots (empty archives count). Charter `verify_signature` always returns True. Consigliere / Head of Security JSON flags are hardcoded; no UI chrome. Shipped client loads Socket.IO from `cdn.socket.io`
 - `GET /api/world/state` is **HTTP 500** until something else lazy-inits the global (`/health` does; this route does not). `GET /metrics` is **503** until then; HELP `minioffice_floors_total` says “floors” and counts `len(world.floors)` (**2**), not 28 language floors. Charter HTTP JSON has **no** `digital_signature` field (the hash is only inside `human_readable`)
+- QUICKSTART’s first API curls (`/api/world/state`, `POST /step`) are **HTTP 500** on a fresh process until `/health` lazy-inits. `/api/agents` / `/departments` / `/supply-store` / `/audit/events` are empty 200s until then
+- `GET /api/floors` is 28 specification dataclasses (“Clippy linting enforced”, “PEP 8 compliance”), not `world.floors` (2)
+- `GET /metrics` `audit_events_total` is 42 after `/health`; `GET /api/audit/events` is 43 (`directive_created` is omitted from the Prometheus sum)
+- `GET /api/canonical-bundle/metrics-canon` completeness strings are not measured (`GET /api/tasks` is `[]`; traces 0)
 
 ## Quick start
 
