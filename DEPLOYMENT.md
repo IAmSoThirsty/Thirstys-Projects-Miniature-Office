@@ -11,7 +11,7 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | --- | --- |
 | `python3 run.py` | Flask + Flask-SocketIO on port 5000 |
 | `docker compose up --build` | gunicorn (`src.server.app:app`, **4** eventlet workers) in a container. Each worker has its own in-memory `simulation` global. STEP on one worker is not visible to REFRESH on another. There is no Socket.IO message queue. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders. |
-| `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. |
+| `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. Body `"simulation": "running"` means the global object exists (lazy init), **not** that `POST /api/world/start` ran. Independent `GET /api/world/state` `"is_running"` is false until START. `"status": "healthy"` is the liveness string. |
 | `GET /metrics` | Prometheus text of in-memory counts. Returns **503** only when `simulation` is still `None`. |
 | `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |

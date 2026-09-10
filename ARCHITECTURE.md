@@ -232,24 +232,37 @@ while world.isActive:
 
 **Shipped:** Flask + Flask-SocketIO, **74** `@app.route` entries (67 in `app.py` + 7 `/api/ide/*`). World state is in-memory.
 
+**Live JSON that is not the product status.** Independent Flask test client on this tree:
+
+- `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. That is a route label. Canonical status is experimental Flask prototype — not a Cognitive IDE
+- `GET /health` is HTTP 200 liveness. Body `"simulation": "running"` means the global `simulation` object is not `None` (the handler lazy-inits it). Independent `GET /api/world/state` is `"is_running": false` until `POST /api/world/start`. `"status": "healthy"` is the liveness string, not a production probe
+- `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”
+- `GET /api/canonical-bundle/charter` returns `"is_immutable": true` (dataclass default). `digital_signature` is `hashlib.sha256(b"charter-001").hexdigest()`. `CivilizationCharter.verify_signature` **always returns True**
+- `GET /api/canonical-bundle/purpose-lock` returns `"overall_locked": true` with `"subsystems_checked": 0`
+- `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
+- `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
+- `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+
 **REST Endpoints (subset of the 74):**
-- `GET /api/world/state` - Current simulation state
+- `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
+- `GET /api/world/state` - Current in-memory world (`is_running` is the START loop flag)
 - `POST /api/world/step` - Advance one tick
 - `POST /api/world/start` - Start continuous simulation
 - `POST /api/world/stop` - Stop simulation
 - `GET /api/agents` - List all agents
-- `GET /api/tasks` - List all tasks
+- `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
 - `GET /api/departments` - List departments
 - `GET /api/supply-store` - Tool inventory
 - `GET /api/audit/events` - Audit trail
-- `GET /health` - liveness 200
+- `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
 - `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
+- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
 
 **WebSocket Events:**
-- `tick_start` - Tick begins
-- `tick_end` - Tick completes
-- `state_update` - emitted on `request_state`, not automatically on every tick
-
+- `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)
+- `tick_end` - Tick completes. Shipped `index.html` listens and then **HTTP GET** `/api/world/state`
+- `state_update` - emitted on `request_state`, not automatically on every tick. The shipped client does not send `request_state`
+- The shipped client loads Socket.IO from `https://cdn.socket.io/4.5.4/socket.io.min.js`. STEP / REFRESH are same-origin `fetch`. START live refresh needs that CDN plus `tick_end`
 ### Layer 11: Spatial UI (`src/client/index.html`)
 
 **Shipped client** (green-on-navy Flask HTML, not a Vault-Tec product):
@@ -339,15 +352,15 @@ The Docker image CMD is `gunicorn --bind 0.0.0.0:5000 --workers 4 --worker-class
 ## Security Model
 
 ### Trust Levels
-- **Tools:** Trust score 0.0-1.0, security rating 1-5
-- **Agents:** Security clearance 1-5
-- **Operations:** Logged with cryptographic hashes
+- **Tools:** Trust score 0.0-1.0, security rating 1-5 (fields on Tool metadata)
+- **Agents:** Security clearance 1-5 (Alice default is **1**)
+- **Operations:** only events passed to `AuditLog.log_event` join the SHA-256 chain. `GET /api`, `GET /health`, `GET /api/canonical-bundle*`, and `GET /api/consigliere` do **not** write audit events. Charter `verify_signature` always returns True
 
 ### Audit Integrity
-- SHA-256 chain per event (shipped)
+- SHA-256 chain per logged event (shipped)
 - HMAC tag only when a real key is set
 - Not tamper detection on every read; not an immutable public ledger
-
+- Canonical-bundle `is_immutable` / purpose-lock `LOCKED` are dataclass defaults on empty in-memory objects, not this chain
 ### Capability Enforcement
 - `check_out_tool` records a `USES` relationship if the agent id exists
 - It does **not** compare agent capabilities to `tool.metadata_info.capabilities` (comment-only)

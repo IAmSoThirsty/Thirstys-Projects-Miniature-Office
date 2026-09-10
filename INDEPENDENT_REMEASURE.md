@@ -6,6 +6,59 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 18:12 UTC — observed main `e3d316e` (pytest re-run; live JSON Cognitive IDE / bundle complete / health running)
+
+Independent clone of live main [`e3d316e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/e3d316e7243ec003381a81251c5d41b131091755) (PR [#56](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/56), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `e3d316e` itself. Honesty PRs [#52](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/52)–[#55](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/55) were closed unmerged when #56 landed.
+
+Present-tense miss on `e3d316e`:
+
+1. `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. Canonical README status is experimental Flask prototype.
+2. `GET /health` body `"simulation": "running"` / `"status": "healthy"` means the global object exists (lazy init). Independent `GET /api/world/state` `"is_running"` is **false** until START.
+3. `GET /api/canonical-bundle` `is_complete: true` — `verify_bundle_completeness()` only checks 27 slots are not `None`. Empty archives still count. Report says “Complete: Yes”.
+4. Charter `is_immutable: true`. `digital_signature` is `hashlib.sha256(b"charter-001").hexdigest()`. `verify_signature` always returns True.
+5. Purpose lock `overall_locked: true` with `subsystems_checked: 0`. Authority ledger grants 0.
+6. Consigliere JSON: `can_alter_execution` / `can_issue_commands` / `can_manage_agents` are methods that `return True`. Head of Security JSON: `can_force_rearchitecture` / `can_freeze_building` true. `src/client/index.html` never calls those routes. Tick does not import them.
+7. Shipped client loads Socket.IO from `https://cdn.socket.io/4.5.4/socket.io.min.js`. START live refresh is `tick_end` then HTTP GET. STEP / REFRESH are same-origin `fetch`.
+8. Security Model still said “Operations: Logged with cryptographic hashes.” Only `AuditLog.log_event` writes the chain.
+
+Independent `init_simulation()` + `sim.tick()`:
+
+- 11 `EntityType.AGENT` (10 assistants + Alice); **0** `EntityType.MANAGER`
+- Python `office-1.manager` = Alice; **`office-1.agents == []`**
+- All 11 agents stay `idle` after 1 tick
+- Tools: Python Interpreter, PyTest Framework
+- Registered tasks: **0**
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`e3d316e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/e3d316e7243ec003381a81251c5d41b131091755) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| Default `EntityType.MANAGER` objects | **0** |
+| Default `EntityType.AGENT` objects | **11** |
+| `office-1.agents` | **[]** |
+| Registered tasks (`GET /api/tasks`) | **[]** |
+| `GET /api` name | Miniature Office - Cognitive IDE |
+| `GET /health` simulation | **running** (object exists) |
+| `GET /api/world/state` is_running | **false** |
+| Canonical bundle is_complete | **true** (27 non-None slots) |
+| Charter verify_signature | **always True** |
+| Purpose-lock subsystems_checked | **0** |
+| Consigliere / Security UI chrome | **none** |
+| Socket.IO client | `cdn.socket.io/4.5.4` |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Pytest | **1,573 passed**, 1 skipped, **13.83s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) matching the pin |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| CI on `e3d316e` | [34507228912](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34507228912) succeeded |
+| CD on `e3d316e` | [34507228822](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34507228822) succeeded |
+
+Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Open Dependabot PR [#13](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/13) (`flatted` in toy `floors/typescript`) is outside the Python pip-audit / bandit `-ll` gate.
+
 ## 10 September 2026 17:15 UTC — observed main `88e23a5` (pytest re-run; Core Innovation / MCP tools / ghost task audit)
 
 Independent clone of live main [`88e23a5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/88e23a5d830f5a5634f4e57a45f4de58c073ae9f) (PR [#51](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/51), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `88e23a5` itself.
