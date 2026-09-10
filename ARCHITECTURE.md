@@ -13,11 +13,13 @@ Traditional IDEs organize code through:
 - Tabs and windows
 - Text-based navigation
 
-Miniature Office organizes code through:
-- **Spatial floors** (departments by language/domain)
-- **Office rooms** (teams and projects)
-- **Agent entities** (autonomous workers with roles)
-- **Physical metaphors** (supply store, elevators, meeting rooms)
+**Intended, not the default seed.** The running tree is a Flask HTML page. The WORLD canvas paints `fillRect` rectangles for two floors and one office.
+
+Miniature Office *intends* to organize code through:
+- **Spatial floors** (departments by language/domain) — default seed has two in-memory floors (Python, JavaScript), not the 28 toy `floors/` directories
+- **Office rooms** (teams and projects) — only Python `office-1`; `office.agents` is `[]`
+- **Agent entities** (autonomous workers with roles) — 11 `EntityType.AGENT` objects. Independent `sim.tick()` leaves them `idle`. They are not autonomous in the default seed
+- **Physical metaphors** (supply store, elevators, meeting rooms) — supply store is a Python object with **2** tools. `ElevatorProtocol.check_compatibility` is “consumer exists in the registry.” `MeetingSystem.hold_meeting()` is a library call the tick never makes. There is no meeting-room rectangle on the canvas
 
 ## Architecture Layers
 
@@ -32,14 +34,14 @@ Miniature Office organizes code through:
 
 **Intended, not implemented:** a relationship matrix that blocks undeclared interaction. A distinct runtime Manager entity type.
 
-All objects inherit from `Entity` with formal types:
-- **Architectures** - Structural blueprints
-- **Departments** - Language/runtime domains
-- **Agents** - Autonomous workers
-- **Managers** - Meta-agents for consensus
-- **Tools** - Compilers, linters, MCP servers
-- **Artifacts** - Code outputs, documents
-- **Contracts** - Inter-department interfaces
+All objects inherit from `Entity` with formal types (enum values; default seed counts in parentheses):
+- **Architectures** - Structural blueprints (**0** objects)
+- **Departments** - Language/runtime domains (**2**: Python Development, Frontend Development)
+- **Agents** - Autonomous workers (**11** `EntityType.AGENT`; all `idle` after `sim.tick()`)
+- **Managers** - Meta-agents for consensus (enum exists; shipped `Manager` class registers as `AGENT`; **0** `EntityType.MANAGER`)
+- **Tools** - Compilers, linters, MCP servers are `ToolTag` values. Default seed tools are **Python Interpreter** (`COMPILER`) and **PyTest Framework** (`TEST_FRAMEWORK`). No linter Tool and no MCP Tool are in the supply store. Verifier capability sets include the string `"linter"`; that is not a Tool entity
+- **Artifacts** - Code outputs, documents, and `Task`/`Directive` objects (**0** registered; unregistered `task-001` still writes audit events)
+- **Contracts** - Inter-department interfaces (**0** objects)
 
 ### Layer 2: Audit chain (`src/core/audit.py`)
 
@@ -54,24 +56,37 @@ All objects inherit from `Entity` with formal types:
 
 ### Layer 3: Mission Logic (`src/core/mission.py`)
 
-**Directive Tree:**
+**Shipped module:**
+- `TaskState` enum and `Directive` / `Task` objects with optional precondition / postcondition / acceptance callables
+- `Task` does **not** auto-register in `EntityRegistry` (Agent / Tool / Department do). `GET /api/tasks` lists `EntityType.ARTIFACT` instances that are `Task`
+- Default `init_simulation()` constructs `task-001` ("Implement User Authentication") as a **local**. It is never `registry.register`'d and never `assign_task`'d. After init returns, `GET /api/tasks` is `[]`. The Metrics **Tasks** count is 0
+- Constructing that local still logs `directive_created` and `task_state_changed` targeting `task-001`. The audit JSONL/API can show a task that `GET /api/tasks` cannot
+- Preconditions added as description strings without a `checker` callable leave `is_satisfied` False. `all([])` is True only when the list is empty
+- `MeetingSystem.hold_meeting()` exists and writes a `DecisionTranscript` (unit-tested). The tick loop does **not** call it
+- `AgentExecutionEngine.process_agent`: if `task.needs_meeting()`, sets `agent.status = "in_meeting"` and returns. No transcript
+- `SimulationConfig.auto_assign_tasks` and `auto_resolve_meetings` are stored on the dataclass and **never read**. Flask init hardcodes `auto_assign_tasks=True` with no effect
+- Alice's `managed_agents` is `[]`. `ManagerDecisionProtocol.process_manager` walks that list
+
+**Intended, not implemented:** a registered, assigned default task; tick-loop meetings that call `hold_meeting()`; auto-assign from the config flag.
+
+**Directive Tree (in-process objects, not a running pipeline):**
 ```
 User Intent
   └── Architect Intent
        └── Task Nodes
 ```
 
-Each node has:
-- **Preconditions** - Must be true to start
-- **Postconditions** - Must be true when done
-- **Acceptance Criteria** - For production readiness
+Each node *can* have:
+- **Preconditions** - optional callables; no checker means `is_satisfied` stays False
+- **Postconditions** - same
+- **Acceptance Criteria** - same
 
-**Task Lifecycle:**
+**Task Lifecycle (enum + `can_transition_to`, not the default seed):**
 ```
 Scheduled → InReview → Blocked → Approval → Merged → Deployed
 ```
 
-**Meeting System:** Tasks with ambiguity ≥ threshold trigger meetings that produce Decision Transcripts.
+**Meeting System (library, not the tick):** `hold_meeting()` produces a Decision Transcript when a caller invokes it. Ambiguity ≥ threshold does not, by itself, hold a meeting.
 
 ### Layer 4: Agent System (`src/agents/agent.py`)
 
@@ -90,18 +105,15 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 4. **Security** - Threat modeling
 5. **DocAgent** - Documentation & communication
 
-**Capability Profiles:** Each agent has:
-- Languages (e.g., Python, Rust)
-- Tools (e.g., pytest, cargo)
-- Domains (e.g., backend, frontend)
-- Skills (e.g., testing, security)
-- Security clearance (1-5)
+**Capability Profiles:** `CapabilityProfile` fields exist. Independent default seed:
+- Assistants get `languages={department.domain.lower()}`, role skills, and a clearance. **All 11 `domains == set()`** — `_default_capabilities_for_role` never writes `domains`
+- Builder tools `{"compiler", "interpreter"}`; Verifier tools `{"linter", "test_framework"}`. Those are strings on the profile, not Tool checkouts
+- Alice (`Manager.__init__`) does **not** call that helper. Her languages/tools/domains/skills are empty; clearance **1**; `managed_agents == []`
 
-**Consensus System:**
-- Managers initiate consensus decisions
-- Agents vote with weights
-- Threshold determines outcome (default: 2/3 majority)
-- Overrides are logged (nothing silently overrides)
+**Consensus System (library, not the default tick):**
+- `ConsensusVote` / `ConsensusDecision` dataclasses exist. `issue_override` writes `override_log`
+- `ManagerDecisionProtocol.process_manager` walks `manager.managed_agents`. Default Alice list is `[]`, so the tick does not initiate consensus, does not call `assign_task`, and does not call `can_handle_task`
+- Threshold default 2/3 exists on the in-process helper
 
 ### Layer 5: Department Management (`src/departments/department.py`)
 
@@ -109,7 +121,7 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 - `Department.get_missing_roles()` checks five required roles: architect, builder, verifier, security, doc_agent. **Manager is not required.**
 - `DepartmentRegistry.register_department()` calls `auto_spawn_assistants()` for those missing roles. Assistants are added to the **department**, not to an office
 - Default Flask world (`init_simulation()` in `src/server/app.py`) seeds **Python and JavaScript** departments only. Python gets `office-1` with `office.manager = Alice` (`mgr-001`). **`office-1.agents` is `[]`** — `init_simulation()` never calls `Office.add_agent`. JavaScript gets auto-spawned assistants, no office, no manager
-- Independent seed on `7542ad6`: 11 `EntityType.AGENT` (10 assistants + Alice), 0 `EntityType.MANAGER`
+- Independent seed: 11 `EntityType.AGENT` (10 assistants + Alice), 0 `EntityType.MANAGER`
 - The 28 toy `floors/` directories are not this in-memory world
 
 **Intended, not implemented:** one office and one manager per language floor; assistants sitting in `office.agents` so the tick loop processes them.
@@ -185,8 +197,10 @@ World
 - Dataclass default is `SimulationConfig.tick_duration_ms = 100`
 - The shipped Flask `init_simulation()` in `src/server/app.py` hardcodes `tick_duration_ms=1000` (1 second per tick)
 - `.env.example` lists `TICK_DURATION_MS`; that name is **not** `getenv`'d
+- `auto_assign_tasks` / `auto_resolve_meetings` are dataclass fields. Flask init sets `auto_assign_tasks=True`. **Neither flag is read.** `OfficeProcessor.process_office` does not assign tasks
+- Default seed `task-001` is not in the registry, so there is nothing to assign
 
-**Intended, not implemented:** database or file persistence of world state; ticking department-level assistants that were never added to an office.
+**Intended, not implemented:** database or file persistence of world state; ticking department-level assistants that were never added to an office; auto-assign / auto-resolve from the config flags.
 
 **Tick-based Processing (in-process; persist is a log label):**
 ```python
@@ -202,17 +216,17 @@ while world.isActive:
     persistState(world)  # logs agent_action; does not write the world
 ```
 
-**Agent Execution:**
-1. Check if agent has task
-2. Verify capabilities cover preconditions
-3. Execute or request support
-4. Errors trigger blocking
+**Agent Execution (only agents already in `office.agents` with `current_task_id`):**
+1. If no current task: return
+2. `task.check_preconditions()` — optional callables, not agent-capability matching
+3. If `needs_meeting()`: set `in_meeting` and return (no `hold_meeting()`, no transcript)
+4. Else SCHEDULED → IN_REVIEW, or IN_REVIEW → APPROVAL when postconditions pass
 
-**Manager Decision:**
-1. Review tasks in approval state
-2. Initiate consensus if needed
-3. Approve or reject based on voting
-4. Transition task state
+**Manager Decision (walks `manager.managed_agents`, default `[]`):**
+1. Review tasks in approval state on those managed agents
+2. Initiate consensus if `is_ready_for_commit()`
+3. Manager casts a weight-2 vote and finalizes
+4. Transition MERGED only if consensus finalizes
 
 ### Layer 10: API Server (`src/server/app.py`)
 
@@ -248,40 +262,50 @@ while world.isActive:
 **Intended, not implemented:** a richer spatial / pixel-art office visualization.
 
 **Components that exist as HTML** (`src/client/index.html`; names are the `<h2>` / button labels):
-1. **World Canvas** — `fillRect` rectangles for floors and offices
+1. **World Canvas** — `fillRect` rectangles for floors and offices. Each office box labels `Agents: ` + `office.roles.length`. `Office.to_schema()` sets `roles=self.agents`. Default `office-1.agents` is `[]`, so the canvas paints **Agents: 0**. Metrics **Agents** is `GET /api/agents` (**11**). The WORLD tab does not draw the 10 department assistants or Alice inside the office rectangle
 2. **Simulation** — buttons **STEP / START / STOP / REFRESH** (not a “Control Panel”)
-3. **Metrics** — labels Floors / Agents / Tasks / Tools (not “Metrics Dashboard”)
-4. **Agents** (not “Agent List”)
+3. **Metrics** — labels Floors / Agents / Tasks / Tools (not “Metrics Dashboard”). Default counts: Floors **2**, Agents **11**, Tasks **0**, Tools **2**
+4. **Agents** (not “Agent List”) — lists `GET /api/agents` (11 rows, all `idle`)
 5. **Log** (not “Event Log”)
 
 ## Design Principles
 
+**Shipped vs intended.** The four headings below were written as running laws. They are design prose unless a caller invokes the matching library. Independent `init_simulation()` + `sim.tick()` does not enforce any of them.
+
 ### 1. Law of Least Ambiguity
-Every interface must resolve unambiguously before use. No implicit assumptions.
+
+**Intended.** There is no runtime gate that refuses an interface until ambiguity is resolved. `Task.needs_meeting()` is a boolean on an in-process object.
 
 ### 2. Decoupling Principle
-Departments integrate only through formal contracts. No direct coupling.
+
+**Intended.** Departments do not “integrate only through formal contracts.” `ElevatorProtocol.check_compatibility` is “consumer exists in the registry.” Layer 7 already records that it does not enforce “no implicit coupling.” Default `EntityType.CONTRACT` count is **0**.
 
 ### 3. Safety First Doctrine
-Security constraints are first-class citizens, not add-ons.
+
+**Partial library.** Tools have `trust_score` / `security_rating`. Agents have `security_clearance`. `check_out_tool` does not compare capabilities. `MO_IDE_TOKEN` gates `/api/ide/*` only when set.
 
 ### 4. Economic Resource Allocation
-Compute and agent time are finite resources with budgeting.
+
+**Library, not the tick.** `src/core/scarcity_economics.py` defines `ResourceType` (`agent_time`, `manager_attention`, `consensus_bandwidth`, `tool_slots`, `simulation_budget`) and a ledger. Unit tests cover the module. `SimulationEngine.tick` and `init_simulation()` do **not** import it. Independent `sim.tick()` does not spend those resources. Default allocations stay 0.
+
+**Intended, not implemented:** tick-time budget consumption that forces judgment.
 
 ## Data Flow Example
 
-**User wants to implement authentication:**
+**Intended pipeline, not the default seed.** `init_simulation()` constructs unregistered `task-001` and never assigns it. Assistants are not in `office.agents`. `auto_assign_tasks` is unread. Independent `sim.tick()` does not run the steps below. Constructing the local task still writes `directive_created` / `task_state_changed` to the audit log.
+
+**User wants to implement authentication (design prose):**
 
 1. **Directive Created:** User intent → Architect intent → Task nodes
-2. **Task Assigned:** Manager finds idle Builder agent with matching capabilities
-3. **Agent Executes:** Builder checks preconditions, starts work
-4. **State Transition:** Task moves from Scheduled → InReview
-5. **Verification:** Verifier agent runs tests (postconditions)
-6. **Security Review:** Security agent performs threat analysis
-7. **Meeting (if needed):** If ambiguity ≥ threshold, meeting produces Decision Transcript
-8. **Consensus:** Manager initiates consensus vote
-9. **Approval:** If 2/3 agents approve → Task transitions to Merged
-10. **Audit Trail:** Every step logged with causality links
+2. **Task Assigned:** *Intended.* Manager does not auto-assign. `assign_task` is a method a caller must invoke
+3. **Agent Executes:** *Intended.* `process_agent` only runs for agents in `office.agents`
+4. **State Transition:** *Intended.* SCHEDULED → IN_REVIEW when a ticked agent has a task
+5. **Verification:** *Intended.* No default verifier loop
+6. **Security Review:** *Intended.* No default security loop
+7. **Meeting (if needed):** *Intended.* Tick only sets `in_meeting`. `hold_meeting()` is a library call
+8. **Consensus:** *Intended.* `process_manager` walks `managed_agents` (default `[]`)
+9. **Approval:** *Intended.* MERGED only if consensus finalizes
+10. **Audit Trail:** SHA-256 chain of events that actually ran. Default init logs `directive_created` + `task_state_changed` for unregistered `task-001`. Default tick logs `state_persisted`
 
 ## Scaling Considerations
 
@@ -337,7 +361,7 @@ These are not SLOs.
 - **Simulation Tick:** shipped Flask init hardcodes 1000ms sleep. Dataclass default is 100ms. Neither is a measured SLA. `TICK_DURATION_MS` is not read
 - **Audit Log Write:** in-memory list append; optional JSONL when `MO_DATA_DIR` is set
 - **Causality Query:** not implemented as O(log n) indexed lookup. Events are a list
-- **Consensus Calculation:** in-process walk of the current agent list
+- **Consensus Calculation:** `process_manager` walks `manager.managed_agents` (default `[]`). It is not a walk of the current agent list
 - **State Serialization:** `to_dict()` of in-memory objects. Not lazy
 
 ## Testing Strategy
