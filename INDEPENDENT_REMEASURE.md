@@ -6,6 +6,39 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
+
+Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
+
+Present-tense miss on `ef936f3`:
+
+1. `GET /api/world/state` before any lazy-init is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits the global; `/api/world/state` / `/step` / `/start` / `/stop` do not. After `/health`, `is_running` is still **false**.
+2. `GET /metrics` before lazy-init is **503** `# Simulation not ready`. HELP `minioffice_floors_total` says “Total number of floors”. After `/health` the value is `len(world.floors)` (**2**: `floor-python` / `floor-javascript`). That is not the 28 toy `floors/` directories. `minioffice_agents_total` is 11; `minioffice_artifacts_total` is 0; `minioffice_audit_events_total` is 42.
+3. `GET /api/canonical-bundle/charter` JSON keys are `charter_id`, `version`, `issued_date`, `axioms`, `is_immutable`, `human_readable`. There is **no** `digital_signature` field. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `CivilizationCharter.verify_signature` always returns True.
+
+Independent Flask test client (fresh process): `/api` 200 (names Cognitive IDE); `/health` 200 lazy-init; then `/api/world/state` 200 `is_running: false`; `world.floors[0]` is `{floorId: floor-python, language: Python, offices: [{manager: mgr-001, officeId: office-1, roles: []}]}`.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `world.floors` after `/health` | **2** (`floor-python`, `floor-javascript`) |
+| `GET /metrics` floors_total | **2** |
+| `GET /api/world/state` before `/health` | **HTTP 500** |
+| Charter JSON `digital_signature` | **absent** |
+| pytest | **1,573 passed**, 1 skipped, **12.68s** |
+| Coverage XML | **7,493 / 7,749** (96.70%); pin **7,494 / 7,749** |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34518600732](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34518600732) succeeded |
+| CD | [34518600776](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34518600776) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 18:12 UTC — observed main `e3d316e` (pytest re-run; live JSON Cognitive IDE / bundle complete / health running)
 
 Independent clone of live main [`e3d316e`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/e3d316e7243ec003381a81251c5d41b131091755) (PR [#56](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/56), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `e3d316e` itself. Honesty PRs [#52](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/52)–[#55](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/55) were closed unmerged when #56 landed.

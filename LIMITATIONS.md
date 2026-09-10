@@ -47,6 +47,9 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | Canonical bundle `is_complete` / charter `is_immutable` / purpose-lock LOCKED | `verify_bundle_completeness()` checks 27 slots are not `None`. Empty archives still count. Charter signature is `sha256(b"charter-001")`; `verify_signature` always returns True. Purpose lock `overall_locked=True` with **0** subsystems checked. Authority ledger grants **0**. |
 | Consigliere / Head of Security JSON is the running executive layer | `can_alter_execution` / `can_force_rearchitecture` are hardcoded `True`. `src/client/index.html` never calls those routes. The tick does not import them. |
 | START live-updates without the internet | Shipped client loads Socket.IO from `cdn.socket.io`. STEP / REFRESH are same-origin `fetch`. |
+| `GET /api/world/state` is always the running world | No. Before any lazy-init it is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits; `/api/world/state` / `/step` / `/start` / `/stop` do not. |
+| `GET /metrics` `floors_total` is 28 language floors | No. HELP text is “Total number of floors”. After `/health` lazy-init the value is `len(world.floors)` (**2**: `floor-python`, `floor-javascript`). 28 toy dirs live under `floors/`. Hitting `/metrics` first is **503**. |
+| Charter HTTP JSON includes `digital_signature` | No. Keys are `charter_id` / `version` / `issued_date` / `axioms` / `is_immutable` / `human_readable`. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `verify_signature` always returns True. |
 
 ## Code generation pipeline
 
