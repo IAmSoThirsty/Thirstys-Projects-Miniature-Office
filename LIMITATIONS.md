@@ -50,6 +50,12 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | `GET /api/world/state` is always the running world | No. Before any lazy-init it is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits; `/api/world/state` / `/step` / `/start` / `/stop` do not. |
 | `GET /metrics` `floors_total` is 28 language floors | No. HELP text is “Total number of floors”. After `/health` lazy-init the value is `len(world.floors)` (**2**: `floor-python`, `floor-javascript`). 28 toy dirs live under `floors/`. Hitting `/metrics` first is **503**. |
 | Charter HTTP JSON includes `digital_signature` | No. Keys are `charter_id` / `version` / `issued_date` / `axioms` / `is_immutable` / `human_readable`. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `verify_signature` always returns True. |
+| `GET /api/floors/<directory>` looks up `floors/` | No. It parses `ProgrammingLanguage`. `GET /api/floors/wasm` / `/cuda` / `/matlab` / `/objective-c` / `/rust-async` are **HTTP 404**. Keys are `webassembly` / `cuda_gpu` / `matlab_octave` / `objective_c` / `rust_async`. `GET /api/floors` is 28 spec dataclasses, not `world.floors` (**2**). |
+| `GET /api` documents the 74 routes | No. `endpoints` lists **33**. It omits all 7 `/api/ide/*` and all 28 `/api/canonical-bundle*` routes. |
+| Canonical bundle report `CIVILIZATION LAYER: FINISHED` | No. `is_complete` is 27 non-None slots. The report also prints Legitimate / Auditable / Reproducible / Governed / Bounded / Trustworthy: **Yes**. `GET /api/tasks` is `[]`; simulation-traces `total_traces` is **0**. |
+| `POST /api/consigliere/assess` measures feasibility | No. Unless the request contains `impossible` / `cannot` / `unable`, it returns `"feasible": true` with hardcoded `agent_time` 15 / `manager_attention` 3. |
+| `POST /api/security/audit` is a completed full-system audit | No. Independent client: `"audit_type": "full_system"`, `"findings": []`, `"is_complete": false`. |
+| Opening `http://localhost:5000` inits the world | No. `GET /` serves `index.html` and does not lazy-init. Shipped client Socket.IO `connect` → `refreshState` → `GET /api/world/state` is **HTTP 500** until `/health`. Compose healthcheck is `/api/ide/health`, which also does not init. |
 
 ## Code generation pipeline
 
