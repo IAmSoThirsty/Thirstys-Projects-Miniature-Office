@@ -36,6 +36,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
 | Hardened Docker | CD `test-docker` green. World is in-memory. Workflow `chmod 777`s host dirs. |
+| Default tick processes department assistants | No. Assistants live on the department. `init_simulation()` never calls `Office.add_agent`, so `office-1.agents` is `[]`. `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Independent `sim.step()`: all 11 `EntityType.AGENT` objects stay `idle`. JavaScript has no office. |
 
 ## Code generation pipeline
 

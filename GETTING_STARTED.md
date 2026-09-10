@@ -231,11 +231,10 @@ chmod +x install.sh start.sh start.command
 Once you're in:
 
 1. **Explore the Interface**: green-on-navy Flask HTML UI (canvas world view, textarea editor, terminal). Not pixel-art sprites and not a Vault-Tec product.
-2. **Check World Metrics**: See floors, agents, tasks
-3. **View Active Agents**: Watch the simulation
-4. **Step Through Time**: Use simulation controls
-5. **Read the Docs**: Check out QUICKSTART.md for features
-
+2. **Check Metrics**: the right panel heading is **Metrics**. Labels are Floors, Agents, Tasks, Tools.
+3. **View Agents**: the heading is **Agents**. Default-seed assistants stay idle — they are on the department, not in `office-1.agents`, so the tick loop does not process them.
+4. **STEP / START / STOP / REFRESH**: those are the simulation button labels (not “STEP (+1 Tick)” or “REFRESH STATE”).
+5. **Read the Docs**: Check out QUICKSTART.md for the API and the actual default seed.
 ---
 
 ## 💡 Pro Tips

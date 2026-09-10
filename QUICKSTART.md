@@ -28,25 +28,28 @@ The server will start on `http://localhost:5000`
 
 1. **Open Browser:** Navigate to `http://localhost:5000`
 
-2. **Simulation Controls:**
-   - **STEP (+1 Tick):** Advance simulation by one time step
-   - **START:** Begin continuous simulation
-   - **STOP:** Halt simulation
-   - **REFRESH STATE:** Update UI with latest data
+2. **Simulation** (right panel in `src/client/index.html`). The buttons are labeled **STEP**, **START**, **STOP**, and **REFRESH** — not “STEP (+1 Tick)” or “REFRESH STATE”:
+   - **STEP** — one tick (`SimulationEngine.step` → `tick`)
+   - **START** — continuous loop
+   - **STOP** — halt
+   - **REFRESH** — reload world state
+   The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 
-3. **World Metrics:** View real-time counts of:
-   - Floors (the UI label is Floors; default world has two floors, each with one department)
-   - Agents (workers)
-   - Tasks (work items)
-   - Tools Available (in supply store)
+3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”:
+   - Floors — default world has two floors (Python, JavaScript), each with one department
+   - Agents
+   - Tasks
+   - Tools
 
-4. **Active Agents:** See all agents and their current status:
+4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values:
    - `idle` - Waiting for work
    - `working` - Executing task
    - `blocked` - Waiting on dependencies
    - `in_meeting` - Resolving ambiguity
 
-5. **Event Log:** Scrolling audit trail of all actions
+   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them.
+
+5. **Log** (the heading is **Log**, not “Event Log”): scrolling audit trail
 
 ## Using the API
 
