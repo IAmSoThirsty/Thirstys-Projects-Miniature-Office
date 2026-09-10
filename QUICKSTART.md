@@ -35,17 +35,17 @@ The server will start on `http://localhost:5000`
    - **REFRESH** — reload world state
    The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 
-3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”:
-   - Floors — default world has two floors (Python, JavaScript), each with one department
-   - Agents
-   - Tasks
-   - Tools
+3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”. Default counts after `init_simulation()`:
+   - Floors — **2** (Python, JavaScript)
+   - Agents — **11** (`GET /api/agents`: 10 assistants + Alice)
+   - Tasks — **0** (`GET /api/tasks` is `[]`; the WORLD canvas office box also shows `Agents: 0` because it reads `office.roles`, which is `office.agents`)
+   - Tools — **2** (Python Interpreter, PyTest Framework)
 
-4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values:
-   - `idle` - Waiting for work
-   - `working` - Executing task
-   - `blocked` - Waiting on dependencies
-   - `in_meeting` - Resolving ambiguity
+4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values the enum/strings allow:
+   - `idle` - default seed; independent `sim.tick()` leaves all 11 here
+   - `working` - `process_agent` sets this when a ticked agent has a current task (default seed does not)
+   - `blocked` - preconditions failed (default seed does not)
+   - `in_meeting` - `needs_meeting()` was true; the tick sets the string and returns. It does not mean a Decision Transcript exists
 
    Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them.
 
@@ -104,13 +104,15 @@ You should see 2 departments (Python Development and Frontend Development). Each
 curl http://localhost:5000/api/agents | python3 -m json.tool
 ```
 
-`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent` and registers as that type (`EntityType.MANAGER` stays 0 in the default world), so Alice is in this list. Independent `init_simulation()` on `7542ad6`:
+`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent` and registers as that type (`EntityType.MANAGER` stays 0 in the default world), so Alice is in this list. Independent `init_simulation()`:
 
 - 11 `EntityType.AGENT` objects: 10 assistants + Alice
 - Python department: 5 assistants **on the department**, plus Manager Alice (`mgr-001`) set as `office-1.manager`
 - `office-1.agents` is **`[]`**. `init_simulation()` never calls `Office.add_agent`
 - JavaScript department: 5 assistants, **no** manager, **no** office
 - Tick processing (`OfficeProcessor.process_office`) walks `office.get_agents()` then `process_manager`. Default assistants are **not ticked**. `POST /api/world/step` still logs a `state_persisted` `agent_action`
+- `GET /api/tasks` is `[]`. Constructing local `task-001` still writes `directive_created` and `task_state_changed` targeting `task-001`
+- Default `EntityType.ARCHITECTURE` / `CONTRACT` / `MANAGER` counts are **0**
 
 There is not one Manager per department.
 
@@ -140,9 +142,10 @@ curl "http://localhost:5000/api/audit/events?limit=20" | python3 -m json.tool
 You'll see logged events such as:
 - Entity creation (`entity_created`)
 - Agent actions (`agent_action`)
-- A per-tick `agent_action` whose data says `state_persisted` — that is a log label. World state stays in-memory.
+- A per-tick `agent_action` whose data says `state_persisted` — that is a log label. World state stays in-memory
+- `directive_created` and `task_state_changed` targeting **`task-001`** even though `GET /api/tasks` is `[]`. Constructing the local `Task` logs those events. `Task` does not auto-register. HMAC is empty unless a real key is set
 
-There is no separate world-tick or persistence event type.
+There is no separate world-tick or persistence event type. There is no Decision Transcript event on the default tick.
 
 ### 5. View Supply Store Tools
 ```bash
