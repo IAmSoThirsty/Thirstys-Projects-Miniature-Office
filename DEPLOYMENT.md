@@ -15,6 +15,8 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | `GET /metrics` | Prometheus text of in-memory counts. **503** while `simulation` is `None`. After `/health` lazy-init: HTTP 200. HELP `minioffice_floors_total` says “Total number of floors”; the value is `len(world.floors)` (**2** `World.Floor` objects: Python, JavaScript), not 28 language floors. `minioffice_agents_total` is 11. `minioffice_artifacts_total` is 0. |
 | `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. |
 | `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
+| `POST /api/consigliere/preview` | Keyword table, not a model of lockdown/world. `"freeze building"` claims execution stops. After a building lockdown, STEP / START / IDE terminal still succeed. |
+| `GET /api/agents/<id>` | Flask 404 HTML. Use `GET /api/agents/<id>/status`. |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |
 | systemd unit | **Not in the tree.** |
 | GHCR | CD may push `ghcr.io/iamsothirsty/thirstys-projects-miniature-office`. That image is the same in-memory prototype, not a hardened service. |

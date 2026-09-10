@@ -6,6 +6,41 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 22:25 UTC — observed main `a7f66bc` (Consigliere preview of freeze is canned; lockdown does not stop STEP/START/IDE)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#63](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/63) remain open. `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`.
+
+Independent pytest **1,573 passed**, 1 skipped, **12.73s**. Coverage XML **7,494 / 7,749** (96.71%) matching the pin. Bandit `-ll` 0 medium/high (13 low). `pip-audit` clean. CI [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) / CD [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded on `a7f66bc`.
+
+Present-tense miss beyond #59–#63:
+
+1. `GET /api` labels `POST /api/consigliere/preview` “Preview consequences”. `POST /api/consigliere/preview` `{"action":"freeze building"}` returns `consequences: ["All execution stops immediately", "Current work is preserved", "No new tasks can start", "Audit continues recording"]` and `resource_costs.system_availability: -100`. `preview_consequences()` is `"freeze" in proposed_action.lower()`, not a world model.
+2. After `POST /api/security/lockdown` `scope=building` (`is_active: true`, `active_lockdowns: 1`): `GET /api/canonical-bundle/freeze-protocol` stays `is_frozen: false` / `access_locked: false`. `POST /api/world/step` still returns `success: true`. `POST /api/world/start` still returns `success: true`. `POST /api/ide/terminal` `{"command":"echo hello"}` exits 0 (`stdout: "hello\n"`).
+3. `GET /api/agents/mgr-001` is Flask **404** HTML. The shipped route is `GET /api/agents/mgr-001/status` (Alice `idle`). `POST /api/security/audit` `type=floor` is **400** `Unknown audit type: floor`. `GET /metrics` HELP `audit_events_total` counted **54** of **57** events (omits `directive_created` 2 and `terminal_run` 1; PR #60 already recorded the `directive_created` undercount).
+
+Independent Flask test client: pre-health world/state 500, agents `[]`, supply-store empty, floors 28 specs, consigliere/security/bundle 200. `/health` lazy-inits; then the POSTs above.
+
+| Metric | Value |
+| --- | --- |
+| Observed main at clone | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/` tree | `fafbad684ed9d61bd5fd347098276eeea4b911d3` |
+| `tests/` tree | `1ddf08f8a24d9003054c0a395e06c95470009fe0` |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 |
+| Floor directories | 28 |
+| pytest | **1,573 passed**, 1 skipped, **12.73s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching pin |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| preview freeze vs lockdown | canned “execution stops”; STEP/START/IDE still succeed |
+| `GET /api/agents/mgr-001` | **404** HTML |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
