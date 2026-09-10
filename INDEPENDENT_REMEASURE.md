@@ -6,6 +6,40 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 22:15 UTC — observed main `a7f66bc` (security grant/lockdown/block do not write bundle ledgers)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#62](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/62) remain open. `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`.
+
+Independent pytest **1,573 passed**, 1 skipped, **12.13s**. Coverage XML **7,494 / 7,749** (96.71%) matching the pin. CI [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) / CD [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded on `a7f66bc`.
+
+Present-tense miss beyond #59–#62:
+
+1. `POST /api/security/grant` with `entity_id=mgr-001`, `resource=building`, `justification=test grant` returns `granted: true`. `GET /api/security/permissions` lists 1 item. `GET /api/security` `active_permissions` is **1**. `GET /api/canonical-bundle/authority-ledger` stays `total_grants: 0` / `active_grants: 0`.
+2. `POST /api/security/lockdown` `scope=building` returns `is_active: true` (`lockdown_id` `lockdown_building_*`). `GET /api/security` `active_lockdowns` is **1**. `GET /api/canonical-bundle/freeze-protocol` stays `is_frozen: false` / `access_locked: false` / `frozen_at: null`. `POST /api/world/step` still returns `success: true` (`tick_count` 1). Bundle `is_complete` stays true.
+3. `POST /api/security/block` of `task-001` returns `is_blocked: true`. `GET /api/security/blocked` lists the block. `GET /api/canonical-bundle/security-dossiers` stays `total_decisions: 0`. `override-ledger` stays `total_overrides: 0`.
+
+Independent Flask test client: `/health` lazy-inits; then the POSTs above. `python3 run.py` still eager-inits via `run_server()`. Compose `healthcheck` is `/api/ide/health` (no init); Dockerfile `HEALTHCHECK` is `/health` (inits).
+
+| Metric | Value |
+| --- | --- |
+| Observed main at clone | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/` tree | `fafbad684ed9d61bd5fd347098276eeea4b911d3` |
+| `tests/` tree | `1ddf08f8a24d9003054c0a395e06c95470009fe0` |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 |
+| Floor directories | 28 |
+| pytest | **1,573 passed**, 1 skipped, **12.13s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching pin |
+| grant → authority-ledger | **0** / **0** after `granted: true` |
+| lockdown → freeze-protocol | `is_frozen: false`; STEP still ticks |
+| block → security-dossiers | **0** |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
