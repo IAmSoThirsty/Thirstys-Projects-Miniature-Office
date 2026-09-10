@@ -6,6 +6,23 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 21:16 UTC — observed main `a7f66bc` (canonical-bundle sub-ledgers empty; Consigliere success does not mutate agents)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#61](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/61) remain open. `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`.
+
+Independent pytest **1,573 passed**, 1 skipped, **13.22s**. Coverage XML **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%). Bandit `-ll` 0 medium/high (13 low). `pip-audit` clean. CI [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) / CD [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded on `a7f66bc`.
+
+Present-tense miss beyond #59–#61:
+
+1. `GET /api/canonical-bundle` is HTTP 200 `is_complete: true` **before** `/health` lazy-inits the simulation. Completeness is 27 non-None dataclass slots.
+2. After `/health`, live objects and bundle sub-ledgers disagree: `GET /api/supply-store` **2** tools vs `tool-provenance` `total_tools: 0`; `GET /api/floors` **28** specs vs `floor-profiles` `total_profiles: 0`; `POST /api/world/step` vs `simulation-traces` `total_traces: 0`; `formal-verification` `total_invariants: 0` / `verified_invariants: 0`; `board-resolutions` `total_resolutions: 0`; `law-failure-matrix` `total_mappings: 0`; `execution-kernel.conformance_criteria` `[]`.
+3. Correct-shaped Consigliere POSTs return `success: true` (and increment `draft_count` / `explanation_count` / `preview_count` / `translation_count` on `GET /api/consigliere`) but `consigliere-logs` stays `total_interactions: 0`. `POST /api/consigliere/command/agent` and `/command/manager` leave the agent `idle` with `current_task_id` null and `task_history` `[]`.
+4. `POST /api/security/audit` increments `GET /api/security` `audits` to 1 with `is_complete: false`, `findings: []`. `security-dossiers` stays `total_decisions: 0`.
+
+Independent Flask test client (fresh process): `GET /` 200 does not init; `GET /api/world/state` 500; `GET /api/canonical-bundle` 200 complete; `GET /api/ide/health` `audit_hmac: false` without a key. After `/health`: agents 11 idle; `office-1.roles` `[]`.
+
+Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).
