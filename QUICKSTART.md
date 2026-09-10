@@ -108,12 +108,13 @@ curl http://localhost:5000/api/agents | python3 -m json.tool
 
 There is not one Manager per department.
 
-Assistant names look like:
+Assistant names come from `Assistant {role.value.title()}`:
 - Assistant Architect
 - Assistant Builder
 - Assistant Verifier
 - Assistant Security
-- Assistant DocAgent
+- Assistant Doc_Agent
+
 
 
 ### 3. Run Simulation Steps
