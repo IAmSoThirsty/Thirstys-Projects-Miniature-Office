@@ -236,7 +236,7 @@ Once you're in:
 1. **Explore the Interface**: green-on-navy Flask HTML UI (canvas world view, textarea editor, terminal). Not pixel-art sprites and not a Vault-Tec product.
 2. **Check Metrics**: the right panel heading is **Metrics**. Labels are Floors, Agents, Tasks, Tools. Default counts: Floors **2**, Agents **11**, Tasks **0**, Tools **2**. Default **Tasks** is 0 because `task-001` is constructed and never registered. The WORLD canvas office box shows **Agents: 0** (`office.roles` = `office.agents`); Metrics Agents is `GET /api/agents` (**11**).
 3. **View Agents**: the heading is **Agents**. Default-seed assistants stay idle — they are on the department, not in `office-1.agents`, so the tick loop does not process them.
-4. **STEP / START / STOP / REFRESH**: those are the simulation button labels (not “STEP (+1 Tick)” or “REFRESH STATE”).
+4. **STEP / START / STOP / REFRESH**: those are the simulation button labels (not “STEP (+1 Tick)” or “REFRESH STATE”). STOP is terminal (`world.is_active = False`). STEP after STOP still returns `success: true` and does not tick. START does not revive `is_active`. On `python3 run.py`, START can wedge HTTP so the STOP button cannot be reached.
 5. **Read the Docs**: Check out QUICKSTART.md for the API and the actual default seed.
 ---
 

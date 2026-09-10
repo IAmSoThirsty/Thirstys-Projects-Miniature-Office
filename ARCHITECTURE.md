@@ -247,9 +247,9 @@ while world.isActive:
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
 - `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
 - `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
-- `POST /api/world/step` - Advance one tick
-- `POST /api/world/start` - Start continuous simulation
-- `POST /api/world/stop` - Stop simulation
+- `POST /api/world/step` - Advance one tick **only while `world.is_active`**. After STOP, returns `success: true` with unchanged `tick_count`
+- `POST /api/world/start` - `socketio.start_background_task(simulation.run)`. Does not set `is_active` True. On `python3 run.py`, subsequent HTTP (including STOP / `/health`) can time out
+- `POST /api/world/stop` - Sets `is_running = False` **and** `world.is_active = False`. Terminal, not a pause. `GET /api/canonical-bundle/shutdown-protocol` stays `is_shutdown: false`
 - `GET /api/agents` - List all agents
 - `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
 - `GET /api/departments` - List departments

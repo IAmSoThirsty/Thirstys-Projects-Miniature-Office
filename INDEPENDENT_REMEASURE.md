@@ -6,6 +6,42 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 22:27 UTC — observed main `a7f66bc` (STOP is terminal; START on run.py wedges HTTP)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#63](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/63) remain open. `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`.
+
+Independent pytest **1,573 passed**, 1 skipped, **13.08s**. Coverage XML **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%). Bandit `-ll` 0 medium/high (13 low). `pip-audit` clean. CI [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) / CD [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded on `a7f66bc`.
+
+Present-tense miss beyond #59–#63:
+
+1. Independent Flask test client after `/health`: `POST /api/world/step` twice yields `tick_count` **2**. `POST /api/world/stop` returns `success: true` and sets `world.is_active = False`. Later STEP still returns `success: true` with `tick_count` **2**. `POST /api/world/start` returns `success: true` and does **not** set `is_active` True. `GET /api/canonical-bundle/shutdown-protocol` stays `is_shutdown: false`.
+2. Live `python3 run.py` (eager `init_simulation()`): STEP works (`tick_count` 1). START returns `success: true`. Then `GET /health`, `GET /api/world/state`, and `POST /api/world/stop` time out at 2s. The shipped START button paints RUNNING and cannot reach STOP.
+3. `GET /api/agents/mgr-001/status` capabilities are empty (`languages` / `skills` / `tools` / `domains` all `[]`, `security_clearance` 1). Department assistants have languages/skills; Alice does not.
+
+`SimulationEngine.stop()` sets `self.world.is_active = False`. `tick()` returns immediately when that flag is false. `run()` loops `while self.is_running and self.world.is_active`. START never writes `is_active = True`.
+
+| Metric | Value |
+| --- | --- |
+| Observed main at clone | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/` tree | `fafbad684ed9d61bd5fd347098276eeea4b911d3` |
+| `tests/` tree | `1ddf08f8a24d9003054c0a395e06c95470009fe0` |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 |
+| Floor directories | 28 |
+| pytest | **1,573 passed**, 1 skipped, **13.08s** |
+| Coverage XML | **7,493 / 7,749** (96.70%); pin **7,494 / 7,749** |
+| STEP then STEP | `tick_count` **2** |
+| STEP after STOP | `success: true`, `tick_count` still **2** |
+| START after STOP `is_active` | **False** |
+| shutdown-protocol after STOP | `is_shutdown: false` |
+| START on `python3 run.py` then `/health` | **timeout** |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).

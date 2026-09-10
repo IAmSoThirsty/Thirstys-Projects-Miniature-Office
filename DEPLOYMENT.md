@@ -13,7 +13,10 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | `docker compose up --build` | gunicorn (`src.server.app:app`, **4** eventlet workers) in a container. Each worker has its own in-memory `simulation` global. STEP on one worker is not visible to REFRESH on another. There is no Socket.IO message queue. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders. |
 | `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. Body `"simulation": "running"` means the global object exists (lazy init), **not** that `POST /api/world/start` ran. Independent `GET /api/world/state` `"is_running"` is false until START. `"status": "healthy"` is the liveness string. |
 | `GET /metrics` | Prometheus text of in-memory counts. **503** while `simulation` is `None`. After `/health` lazy-init: HTTP 200. HELP `minioffice_floors_total` says “Total number of floors”; the value is `len(world.floors)` (**2** `World.Floor` objects: Python, JavaScript), not 28 language floors. `minioffice_agents_total` is 11. `minioffice_artifacts_total` is 0. |
-| `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. |
+| `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START's background task actually sets the flag. After STOP, STEP/START cannot tick because `world.is_active` stays False. |
+| `POST /api/world/step` | Returns `success: true` even when `tick()` no-ops because `world.is_active` is False (after STOP). |
+| `POST /api/world/start` | `socketio.start_background_task(simulation.run)`. Does not set `is_active` True. On `python3 run.py`, subsequent HTTP including `/health` and STOP can time out. |
+| `POST /api/world/stop` | Terminal: `world.is_active = False`. `GET /api/canonical-bundle/shutdown-protocol` stays `is_shutdown: false`. |
 | `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |
 | systemd unit | **Not in the tree.** |
