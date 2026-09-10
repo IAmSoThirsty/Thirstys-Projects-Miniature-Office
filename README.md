@@ -66,6 +66,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
 - Docker is a compose healthcheck, not a hardened stack (in-memory world, gunicorn `--workers 4`, `chmod 777` in CD)
 - Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.tick()`: 11 agents stay `idle`. Metrics Agents is 11; WORLD canvas paints **Agents: 0** (`office.roles`). `GET /api/tasks` is `[]` (local `task-001` is never registered, but still writes `directive_created` / `task_state_changed` to the audit log)
+- `GET /api` still names the product a “Cognitive IDE”. `GET /health` body `"simulation": "running"` means the object exists, not that START is on. `GET /api/canonical-bundle` `is_complete: true` is 27 non-None slots (empty archives count). Charter `verify_signature` always returns True. Consigliere / Head of Security JSON flags are hardcoded; no UI chrome. Shipped client loads Socket.IO from `cdn.socket.io`
 
 ## Quick start
 
