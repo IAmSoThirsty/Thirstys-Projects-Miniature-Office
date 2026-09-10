@@ -35,7 +35,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | VR | Browser + PWA only. No WebXR. |
 | 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
-| Hardened Docker | CD `test-docker` green. World is in-memory. Workflow `chmod 777`s host dirs. |
+| Hardened Docker | CD `test-docker` green. World is in-memory. Dockerfile CMD is gunicorn `--workers 4` (four in-memory worlds). Workflow `chmod 777`s host dirs. |
 | Default tick processes department assistants | No. Assistants live on the department. `init_simulation()` never calls `Office.add_agent`, so `office-1.agents` is `[]`. `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Independent `sim.step()`: all 11 `EntityType.AGENT` objects stay `idle`. JavaScript has no office. |
 
 ## Code generation pipeline
@@ -77,5 +77,5 @@ There is no single 99% of the whole tree.
 
 ## Roadmap (not done)
 
-1. Docker stays Partial until the stack is more than a compose healthcheck (in-memory world, `chmod 777`).
+1. Docker stays Partial until the stack is more than a compose healthcheck (in-memory world, gunicorn `--workers 4`, `chmod 777`).
 2. Turn HMAC on by default in compose via a generated key.

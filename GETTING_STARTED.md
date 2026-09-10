@@ -182,7 +182,10 @@ docker compose up --build
 
 Then open `http://localhost:5000`. Stop with `Ctrl+C` or `docker compose down`.
 
+Dockerfile CMD is gunicorn `--workers 4 --worker-class eventlet`. Each worker has its own in-memory simulation. Compose is **not** the same as `python3 run.py`. STEP / REFRESH can hit different workers.
+
 **Prerequisites**: [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
 
 ### Windows PowerShell
 
@@ -242,7 +245,7 @@ Once you're in:
 - **Bookmark it**: Save the URL for quick access
 - **Keep the process running**: Restarting drops in-memory world state
 - **LAN access**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
-- **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY` (compose has **no** default). Reuse that key across restarts if `./data` already has an HMAC-tagged audit log.
+- **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY` (compose has **no** default). Reuse that key across restarts if `./data` already has an HMAC-tagged audit log. The image runs gunicorn `--workers 4` (split in-memory world), not `run.py`.
 
 ---
 

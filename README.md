@@ -53,7 +53,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Real terminal: one PATH program + args, no shell operators, 15s default timeout
 - Browser IDE chrome: file tree, editor, terminal (HTTP API, not Monaco/LSP)
 - AST-backed pattern / flow / metrics / dependency analyzers (small named set)
-- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `fdd9762`.
+- Docker Compose files that start gunicorn on port 5000 (`docker compose up --build`). Dockerfile CMD is `--workers 4` eventlet — each worker has its own in-memory simulation, unlike `python3 run.py`. No default `SECRET_KEY`. Production refuses placeholders. CD `test-docker` green on `fdd9762`.
 - GitHub Actions unit-test + security jobs (bandit `-ll`, `pip-audit`); Python 3.10–3.12 — **green** on `fdd9762` and on later docs-only commits
 
 ## What does not work as advertised
@@ -64,7 +64,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - Bandit still reports 13 **low** findings
 - There is no WebXR
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
-- Docker is a compose healthcheck, not a hardened stack (in-memory world, `chmod 777` in CD)
+- Docker is a compose healthcheck, not a hardened stack (in-memory world, gunicorn `--workers 4`, `chmod 777` in CD)
 - Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.step()`: 11 agents stay `idle`.
 
 ## Quick start

@@ -68,7 +68,8 @@ docker compose up --build
 
 Then open: `http://localhost:5000`
 
-**Prerequisites**: Install [Docker Desktop](https://www.docker.com/products/docker-desktop).
+Dockerfile CMD is gunicorn `--workers 4 --worker-class eventlet`. Each worker has its own in-memory simulation. This is **not** the same as `python3 run.py` (one process). STEP / REFRESH can hit different workers.
+
 
 ### Option 3: Manual Installation
 
@@ -235,7 +236,7 @@ chmod +x install.sh start.sh start.command
 1. **Bookmark it**: Save `http://localhost:5000` on the machine that runs the server
 2. **LAN only**: Other devices on the same network can open `http://LAN_IP:5000`. There is no account system.
 3. **Keep the process running**: Restarting drops in-memory world state
-4. **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY`
+4. **Docker**: `docker compose up --build` if you have Docker; you must export `SECRET_KEY`. The image is gunicorn `--workers 4`, not one `run.py` process.
 
 ---
 
