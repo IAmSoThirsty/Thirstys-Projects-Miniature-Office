@@ -163,6 +163,14 @@
     "cd_d5de225": {
       "run": 34417563253,
       "conclusion": "success"
+    },
+    "ci_7542ad6": {
+      "run": 34418505373,
+      "conclusion": "success"
+    },
+    "cd_7542ad6": {
+      "run": 34418505473,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -254,7 +262,8 @@
     "Independent pytest 2026-09-09 23:18 UTC on observed main 99ea1b5 after PR #46 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.98s on f25adcf (identical src/tests); coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34412193707 and CD 34412193733 succeeded on f25adcf. INSTALL.md no longer tells operators to use HOST/PORT env vars; ARCHITECTURE Vertical Scaling no longer calls the 100ms dataclass default the running tick. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-09 23:27 UTC on observed main d433ff2 after PR #47 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.68s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34416782846 and CD 34416782810 succeeded. PLATFORM_SUPPORT.md no longer says start scripts activate a venv; QUICK_REFERENCE.md no longer says ANY device; install.sh brew hint is python@3.12. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-09 23:45 UTC on observed main d5de225 after PR #48 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.24s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34417563379 and CD 34417563253 succeeded. INSTALL.md Termux path and QUICKSTART.md clone/pip path now state Python 3.10+. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-10 11:20 UTC on observed main 7542ad6 after PR #49 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.90s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART.md no longer claims one Manager per department; init_simulation() only creates Alice on the Python office. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-10 11:20 UTC on observed main 7542ad6 after PR #49 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.90s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART.md no longer claims one Manager per department; init_simulation() only creates Alice on the Python office. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-10 12:20 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.54s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. init_simulation() never calls Office.add_agent: office-1.agents is empty; OfficeProcessor.process_office does not tick department assistants; Manager registers as EntityType.AGENT (0 EntityType.MANAGER). Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -792,5 +801,40 @@
     "ci": 34418505373,
     "cd": 34418505473,
     "note": "Docs-only relative to code pin fdd9762. Coverage XML 7493/7749 is the documented one-statement variance. QUICKSTART no longer claims one Manager per department. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
+  },
+  "remeasured_pytest_7542ad6_office": {
+    "sha": "7542ad64de7c20d06e530c8f340d6e69d06893fc",
+    "short": "7542ad6",
+    "at": "2026-09-10T12:20:00Z",
+    "method": "Independent clone of 7542ad6. Ran pytest --cov=src (1573 passed, 12.54s, 7493/7749), bandit -ll, pip-audit. Called init_simulation() and one tick. office-1.agents is empty; EntityType.MANAGER count 0; 11 EntityType.AGENT; assistants not ticked.",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "floor_directories": 28,
+    "def_test_grep_anchored": 1606,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 12.54,
+    "fresh_cov_covered": 7493,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.70,
+    "pin_cov_covered": 7494,
+    "pin_cov_statements": 7749,
+    "pin_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "default_world_managers": 1,
+    "default_entitytype_manager_objects": 0,
+    "default_entitytype_agent_objects": 11,
+    "office_1_agents": [],
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 34418505373,
+    "cd": 34418505473,
+    "note": "Docs-only relative to code pin fdd9762. office-1.agents is empty; tick does not process department assistants. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
   }
 }

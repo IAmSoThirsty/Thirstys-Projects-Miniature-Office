@@ -6,6 +6,41 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 12:20 UTC — observed main `7542ad6` (pytest re-run; office.agents)
+
+Independent clone of live main [`7542ad6`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/7542ad64de7c20d06e530c8f340d6e69d06893fc) (PR [#49](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/49), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `7542ad6` itself.
+
+Present-tense miss: even after correcting “one Manager per department,” [QUICKSTART.md](QUICKSTART.md) still nested the five Python assistants under `office-1`. Independent `init_simulation()`:
+
+- Python `office-1.manager` is Alice (`mgr-001`); **`office-1.agents == []`**
+- `init_simulation()` never calls `Office.add_agent`
+- `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Default assistants are not ticked (status unchanged after 1 tick)
+- `GET /api/agents` returns 11 `EntityType.AGENT` (10 assistants + Alice). `EntityType.MANAGER` count is **0** (`Manager` subclasses `Agent`)
+- JavaScript: 5 department assistants, no office, no manager
+- Tools: Python Interpreter, PyTest Framework
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`7542ad6`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/7542ad64de7c20d06e530c8f340d6e69d06893fc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| Entity types / relations | 7 / 8 |
+| Default `EntityType.MANAGER` objects | **0** |
+| Default `EntityType.AGENT` objects | **11** |
+| `office-1.agents` | **[]** |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Pytest | **1,573 passed**, 1 skipped, **12.54s** |
+| Coverage XML `--cov=src` | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| CI on `7542ad6` | [34418505373](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34418505373) succeeded |
+| CD on `7542ad6` | [34418505473](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34418505473) succeeded |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 10 September 2026 11:20 UTC — observed main `7542ad6` (pytest re-run)
 
 Independent clone of live main [`7542ad6`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/7542ad64de7c20d06e530c8f340d6e69d06893fc) (PR [#49](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/49), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `7542ad6` itself.

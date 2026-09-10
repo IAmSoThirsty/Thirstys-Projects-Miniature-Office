@@ -35,7 +35,7 @@ The server will start on `http://localhost:5000`
    - **REFRESH STATE:** Update UI with latest data
 
 3. **World Metrics:** View real-time counts of:
-   - Floors (departments)
+   - Floors (the UI label is Floors; default world has two floors, each with one department)
    - Agents (workers)
    - Tasks (work items)
    - Tools Available (in supply store)
@@ -101,10 +101,13 @@ You should see 2 departments (Python Development and Frontend Development). Each
 curl http://localhost:5000/api/agents | python3 -m json.tool
 ```
 
-`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent`, so Alice is in this list. The seed from `init_simulation()` is:
+`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent` and registers as that type (`EntityType.MANAGER` stays 0 in the default world), so Alice is in this list. Independent `init_simulation()` on `7542ad6`:
 
-- Python: 5 assistant agents plus **one** Manager (`mgr-001`, Alice Manager) on `office-1`
-- JavaScript: 5 assistant agents, **no** manager, **no** office
+- 11 `EntityType.AGENT` objects: 10 assistants + Alice
+- Python department: 5 assistants **on the department**, plus Manager Alice (`mgr-001`) set as `office-1.manager`
+- `office-1.agents` is **`[]`**. `init_simulation()` never calls `Office.add_agent`
+- JavaScript department: 5 assistants, **no** manager, **no** office
+- Tick processing (`OfficeProcessor.process_office`) walks `office.get_agents()` then `process_manager`. Default assistants are **not ticked**. `POST /api/world/step` still logs a `state_persisted` `agent_action`
 
 There is not one Manager per department.
 
@@ -153,14 +156,17 @@ Should show 2 tools:
 World: "Miniature Office IDE"
 ├── Floor: Python
 │   ├── Department: Python Development
+│   │   └── Agents: 5 assistants + Manager Alice (mgr-001) on the department
 │   └── Office: office-1
-│       ├── Manager: Alice Manager
-│       └── Agents: 5 assistant agents (one per required role)
+│       ├── Manager: Alice Manager (office.manager)
+│       └── office.agents: []   # never Office.add_agent
 └── Floor: JavaScript
     ├── Department: Frontend Development
-    └── (no office, no manager)
-        └── Agents: 5 assistant agents on the department
+    │   └── Agents: 5 assistants (no manager)
+    └── (no office)
 ```
+
+`OfficeProcessor.process_office` only walks `office.get_agents()` (empty) and then `process_manager` when `office.manager` is set. Default assistants stay `idle` across ticks.
 
 The 28 toy language-floor directories under `floors/` are **not** seeded into this default world.
 
@@ -307,6 +313,7 @@ Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous eve
 
 ### Agents Not Working
 - Check agent status: `curl http://localhost:5000/api/agents`
+- Default-seed assistants live on the **department**, not in `office-1.agents`. The tick loop does not process them
 - View audit log: `curl http://localhost:5000/api/audit/events`
 - Verify capabilities match task requirements
 

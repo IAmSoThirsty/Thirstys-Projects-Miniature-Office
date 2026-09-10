@@ -28,8 +28,9 @@ Miniature Office organizes code through:
 - In-memory `EntityRegistry` / `GlobalRegistry` with `threading.RLock`
 - `declare_relationship()` appends a `Relationship` dataclass. `Department.add_agent` calls it as a side effect
 - There is **no** runtime gate that refuses interaction when no relationship was declared
+- `Manager` subclasses `Agent` and registers as `EntityType.AGENT`. Default `init_simulation()` has **0** `EntityType.MANAGER` objects. The enum value exists; the shipped Manager class does not use it
 
-**Intended, not implemented:** a relationship matrix that blocks undeclared interaction.
+**Intended, not implemented:** a relationship matrix that blocks undeclared interaction. A distinct runtime Manager entity type.
 
 All objects inherit from `Entity` with formal types:
 - **Architectures** - Structural blueprints
@@ -74,6 +75,14 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 
 ### Layer 4: Agent System (`src/agents/agent.py`)
 
+**Shipped module:**
+- `AgentRole` enum: architect, builder, verifier, security, doc_agent, manager
+- Required department roles are the first five. **Manager is not required**
+- `Agent.__init__` always registers `EntityType.AGENT`. `Manager` inherits that
+- CapabilityProfile, ConsensusVote, ConsensusDecision exist as in-process dataclasses
+
+**Intended, not implemented:** a live consensus loop over default-seed assistants (they are not in `office.agents`, so they are not ticked).
+
 **Required Roles (per department):**
 1. **Architect** - Design authority
 2. **Builder** - Implementation
@@ -98,11 +107,12 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 
 **Shipped module:**
 - `Department.get_missing_roles()` checks five required roles: architect, builder, verifier, security, doc_agent. **Manager is not required.**
-- `DepartmentRegistry.register_department()` calls `auto_spawn_assistants()` for those missing roles
-- Default Flask world (`init_simulation()` in `src/server/app.py`) seeds **Python and JavaScript** departments only. Python gets `office-1` and Manager Alice (`mgr-001`). JavaScript gets auto-spawned assistants, no office, no manager
+- `DepartmentRegistry.register_department()` calls `auto_spawn_assistants()` for those missing roles. Assistants are added to the **department**, not to an office
+- Default Flask world (`init_simulation()` in `src/server/app.py`) seeds **Python and JavaScript** departments only. Python gets `office-1` with `office.manager = Alice` (`mgr-001`). **`office-1.agents` is `[]`** — `init_simulation()` never calls `Office.add_agent`. JavaScript gets auto-spawned assistants, no office, no manager
+- Independent seed on `7542ad6`: 11 `EntityType.AGENT` (10 assistants + Alice), 0 `EntityType.MANAGER`
 - The 28 toy `floors/` directories are not this in-memory world
 
-**Intended, not implemented:** one office and one manager per language floor.
+**Intended, not implemented:** one office and one manager per language floor; assistants sitting in `office.agents` so the tick loop processes them.
 
 Each floor *in the design* has a department representing a language domain.
 
@@ -148,27 +158,27 @@ Contract <Name> {
 - `World` / `Floor` / `Office` Python objects with `to_dict()` and `*Schema` dataclasses
 - There is **no `codex/` directory** and no JSON Schema files (`codex/office.json` is not in the tree)
 - Default world in `src/server/app.py` seeds **Python and JavaScript** floors, not the 28 toy language-floor directories
+- Python `office-1.agents` is empty. JavaScript has no office. Assistants live on the department registry
 
-**Intended, not implemented:** JSON Schema-validated world files.
+**Intended, not implemented:** JSON Schema-validated world files; every floor has an office whose `agents` list is the department staff.
 
 ```
 World
-  └── Floor (one per language)
-       └── Office (team within department)
-            ├── Manager
-            └── Agents
+  └── Floor (Python + JavaScript in the default seed)
+       └── Office (only Python office-1; manager set; agents list empty)
 ```
 
 ### Layer 9: Simulation Engine (`src/core/simulation.py`)
 
 **Shipped module:**
-- Tick loop processes floors / offices / agents / managers in-process
+- Tick loop processes floors / offices in-process. `OfficeProcessor.process_office` returns immediately if `office.manager` is missing; otherwise it walks `office.get_agents()` then `process_manager`
+- Default seed: `office-1.agents` is empty, so assistants are **not ticked**. Alice still goes through `process_manager`. JavaScript has no office, so its assistants are not ticked either
 - `persist_state()` logs an `agent_action` whose data says `state_persisted`. World and registries stay **in-memory**
 - Dataclass default is `SimulationConfig.tick_duration_ms = 100`
 - The shipped Flask `init_simulation()` in `src/server/app.py` hardcodes `tick_duration_ms=1000` (1 second per tick)
 - `.env.example` lists `TICK_DURATION_MS`; that name is **not** `getenv`'d
 
-**Intended, not implemented:** database or file persistence of world state.
+**Intended, not implemented:** database or file persistence of world state; ticking department-level assistants that were never added to an office.
 
 **Tick-based Processing (in-process; persist is a log label):**
 ```python
