@@ -59,7 +59,7 @@ What device do you have?
 4. **Open Your Browser**
    - Open Chrome, Firefox, or Edge
    - Go to: `http://localhost:5000`
-   - 🎉 You're in!
+   - That serves `index.html`. It does **not** lazy-init the simulation. Shipped JS on Socket.IO `connect` calls `GET /api/world/state`, which is **HTTP 500** `Simulation not initialized` until `/health`. The Log shows that error. Hit `http://localhost:5000/health` once, then REFRESH. Compose `healthcheck` is `/api/ide/health` and also does not init.
 
 ### Mac Users
 
@@ -83,7 +83,7 @@ What device do you have?
 4. **Open Your Browser**
    - Open Safari, Chrome, or Firefox
    - Go to: `http://localhost:5000`
-   - 🎉 You're in!
+   - Same as Windows: `GET /` does not init. First `GET /api/world/state` is HTTP 500 until `/health`
 
 ### Linux Users
 
@@ -105,7 +105,7 @@ What device do you have?
 
 4. **Open Your Browser**
    - Go to: `http://localhost:5000`
-   - 🎉 You're in!
+   - `GET /` does not lazy-init. Hit `/health` once, then REFRESH
 
 ---
 
@@ -136,7 +136,7 @@ Look for an address like `192.168.1.100`
 2. Open your phone's web browser (Chrome, Safari, etc.)
 3. Type in the address bar: `http://192.168.1.100:5000`
    (Replace `192.168.1.100` with your actual computer's IP)
-4. 🎉 You're in!
+4. 🎉 Bookmark works. First paint still 500s `GET /api/world/state` until `/health` on that server process
 
 ### Step 3: Add to Home Screen (Optional)
 

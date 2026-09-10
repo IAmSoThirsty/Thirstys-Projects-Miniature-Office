@@ -6,6 +6,42 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 20:03 UTC — observed main `a7f66bc` (pytest re-run; floor dir names 404; GET /api is 33/74; bundle report FINISHED)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree. Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59) and [#60](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/60) are open unmerged on this SHA.
+
+Present-tense miss on `a7f66bc` beyond #59/#60:
+
+1. `GET /api/floors/<language>` parses `ProgrammingLanguage(language.lower())`. Directory names from [floors/README.md](floors/README.md) `wasm` / `cuda` / `matlab` / `objective-c` / `rust-async` are **HTTP 404**. API keys are `webassembly` / `cuda_gpu` / `matlab_octave` / `objective_c` / `rust_async`. The other 23 directory names match. `GET /api` documents this as “Get specific floor specification” with no remap.
+2. `GET /api` `endpoints` lists **33** of **74** `@app.route` entries. It omits all 7 `/api/ide/*` routes and all 28 `/api/canonical-bundle*` routes (33 + 7 + 28 + 3 extra security GETs + 3 PWA/static = 74).
+3. `GET /api/canonical-bundle` `report` prints `Legitimate: Yes` / `Auditable: Yes` / `Reproducible: Yes` / `Governed: Yes` / `Bounded: Yes` / `Trustworthy: Yes` / **`CIVILIZATION LAYER: FINISHED`**. `is_complete` remains 27 non-None slots. Default `GET /api/tasks` is `[]`; simulation-traces `total_traces` is **0**.
+4. `POST /api/consigliere/assess` returns `"feasible": true` with hardcoded `{"agent_time": 15, "manager_attention": 3}` unless the request contains `impossible` / `cannot` / `unable`.
+5. `POST /api/security/audit` returns `"audit_type": "full_system"`, `"scope": ["all_floors","all_offices","all_artifacts"]`, `"findings": []`, `"is_complete": false`.
+6. `GET /` serves `index.html` and does not lazy-init. Shipped client Socket.IO `connect` → `refreshState` → `GET /api/world/state` is **HTTP 500**. Compose healthcheck `/api/ide/health` also does not init. [GETTING_STARTED.md](GETTING_STARTED.md) “You're in!” was this path.
+
+Independent Flask test client (fresh process): `/api/floors/wasm` 404; `/api/floors/webassembly` 200; `/api` endpoints len 33; `/` 200 HTML; `/api/world/state` 500; `/health` 200; then world/state 200 `is_running: false`.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| `GET /api` endpoints listed | **33** |
+| Floor directories | 28, all toy-bannered |
+| `GET /api/floors` | **28** spec dataclasses |
+| `GET /api/floors/wasm` | **HTTP 404** |
+| Bundle report | **CIVILIZATION LAYER: FINISHED** (slot occupancy) |
+| pytest | **1,573 passed**, 1 skipped, **12.98s** |
+| Coverage XML | **7,494 / 7,749** (96.71%) matching pin |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).

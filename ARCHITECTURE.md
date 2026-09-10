@@ -234,30 +234,34 @@ while world.isActive:
 
 **Live JSON that is not the product status.** Independent Flask test client on this tree:
 
-- `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. That is a route label. Canonical status is experimental Flask prototype — not a Cognitive IDE
+- `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. That is a route label. Canonical status is experimental Flask prototype — not a Cognitive IDE. The `endpoints` dict lists **33** of **74** `@app.route` entries. It omits all 7 `/api/ide/*` routes and all 28 `/api/canonical-bundle*` routes (plus 3 extra security GETs and 3 PWA/static routes)
 - `GET /health` is HTTP 200 liveness. Body `"simulation": "running"` means the global `simulation` object is not `None` (the handler lazy-inits it). Independent `GET /api/world/state` is `"is_running": false` until `POST /api/world/start`. `"status": "healthy"` is the liveness string, not a production probe
-- `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”
+- `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”. The report **also** prints `Legitimate: Yes` / `Auditable: Yes` / `Reproducible: Yes` / `Governed: Yes` / `Bounded: Yes` / `Trustworthy: Yes` / **`CIVILIZATION LAYER: FINISHED`**. Those strings are not measured against tasks, traces, or contracts
 - `GET /api/canonical-bundle/charter` JSON keys are `charter_id`, `version`, `issued_date`, `axioms`, `is_immutable`, `human_readable`. There is **no** `digital_signature` field. The `sha256(b"charter-001")` hex appears only inside `human_readable` (`to_human_readable()`). `CivilizationCharter.verify_signature` **always returns True** and ignores its `public_key` argument
 - `GET /api/canonical-bundle/purpose-lock` returns `"overall_locked": true` with `"subsystems_checked": 0`
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
 - `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
+- `POST /api/consigliere/assess` is documented as “Assess feasibility of request”. Independent client: unless the request text contains `impossible` / `cannot` / `unable`, it returns `"feasible": true` with hardcoded `estimated_resources` `{"agent_time": 15, "manager_attention": 3}`
 - `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+- `POST /api/security/audit` returns `"audit_type": "full_system"`, `"scope": ["all_floors","all_offices","all_artifacts"]`, `"findings": []`, `"is_complete": false`
+- `GET /api/floors` returns **28** `FloorSpecification` dataclasses. `GET /api/floors/<language>` parses `ProgrammingLanguage`. Directory names `wasm` / `cuda` / `matlab` / `objective-c` / `rust-async` are **HTTP 404**; API keys are `webassembly` / `cuda_gpu` / `matlab_octave` / `objective_c` / `rust_async`. That is not `world.floors` (**2**)
 
 **REST Endpoints (subset of the 74):**
-- `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
-- `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
+- `GET /api` - JSON index. Names “Cognitive IDE”; `endpoints` lists **33** of 74 routes. Omits all `/api/ide/*` and all `/api/canonical-bundle*`
+- `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`. Shipped `index.html` Socket.IO `connect` calls this; opening `GET /` does not init
 - `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
-- `POST /api/world/step` - Advance one tick
-- `POST /api/world/start` - Start continuous simulation
-- `POST /api/world/stop` - Stop simulation
-- `GET /api/agents` - List all agents
+- `POST /api/world/step` - Advance one tick (**HTTP 500** until `/health`)
+- `POST /api/world/start` - Start continuous simulation (**HTTP 500** until `/health`)
+- `POST /api/world/stop` - Stop simulation (**HTTP 500** until `/health`)
+- `GET /api/agents` - List all agents (HTTP 200 `[]` until `/health`; then 11). List payload is `agent_id` / `name` / `role` / `status` only
 - `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
-- `GET /api/departments` - List departments
+- `GET /api/departments` - List departments (HTTP 200 `[]` until `/health`; then both `is_fully_staffed: true`, including JavaScript which has no office)
 - `GET /api/supply-store` - Tool inventory
 - `GET /api/audit/events` - Audit trail
-- `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
-- `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
-- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
+- `GET /api/floors` / `GET /api/floors/<language>` - 28 specification dataclasses. Directory names `wasm`/`cuda`/`matlab`/`objective-c`/`rust-async` **404**
+- `GET /health` - liveness 200; body `"simulation"` is object-exists, not START. This is the lazy-init route
+- `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set). `/api/ide/health` does **not** init the simulation. Compose healthcheck uses it
+- `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence. Bundle report prints **CIVILIZATION LAYER: FINISHED**. `POST /api/consigliere/assess` is a substring check. `POST /api/security/audit` returns `is_complete: false`, `findings: []`
 
 **WebSocket Events:**
 - `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)

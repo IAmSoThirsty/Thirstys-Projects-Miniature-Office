@@ -13,8 +13,11 @@ This is **not** a production deploy guide. The tree is an experimental Flask pro
 | `docker compose up --build` | gunicorn (`src.server.app:app`, **4** eventlet workers) in a container. Each worker has its own in-memory `simulation` global. STEP on one worker is not visible to REFRESH on another. There is no Socket.IO message queue. `SECRET_KEY` is interpolated with **no default**. Production refuses placeholders. |
 | `GET /health` | Liveness probe. **Always HTTP 200** if this process can serve HTTP. It does **not** return 503 at startup. Tests: `test_health_without_simulation_is_liveness`. Body `"simulation": "running"` means the global object exists (lazy init), **not** that `POST /api/world/start` ran. Independent `GET /api/world/state` `"is_running"` is false until START. `"status": "healthy"` is the liveness string. |
 | `GET /metrics` | Prometheus text of in-memory counts. **503** while `simulation` is `None`. After `/health` lazy-init: HTTP 200. HELP `minioffice_floors_total` says “Total number of floors”; the value is `len(world.floors)` (**2** `World.Floor` objects: Python, JavaScript), not 28 language floors. `minioffice_agents_total` is 11. `minioffice_artifacts_total` is 0. |
-| `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. |
-| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck` |
+| `GET /api/world/state` | **HTTP 500** `Simulation not initialized` until `/health` (or another lazy-init) has run. After that: `is_running` is still **false** until START. Shipped `index.html` calls this on Socket.IO connect; `GET /` does not init. |
+| `GET /api` | JSON index. `"name"` is Cognitive IDE. `endpoints` lists **33** of **74** routes. Omits all `/api/ide/*` and all `/api/canonical-bundle*`. |
+| `GET /api/floors/<language>` | 28 `FloorSpecification` dataclasses. Directory names `wasm` / `cuda` / `matlab` / `objective-c` / `rust-async` are **HTTP 404** (`webassembly` / `cuda_gpu` / `matlab_octave` / `objective_c` / `rust_async`). Not `world.floors` (**2**). |
+| `GET /api/canonical-bundle` | `is_complete: true` is 27 non-None slots. Report prints **CIVILIZATION LAYER: FINISHED** plus Legitimate/Auditable/Reproducible/Governed/Bounded/Trustworthy: Yes. |
+| `GET /api/ide/health` | IDE-core liveness used by compose `healthcheck`. Does **not** init the simulation. A “healthy” container still 500s `/api/world/state` until `/health`. |
 | Kubernetes | **No `k8s/` directory.** No in-tree manifests. |
 | systemd unit | **Not in the tree.** |
 | GHCR | CD may push `ghcr.io/iamsothirsty/thirstys-projects-miniature-office`. That image is the same in-memory prototype, not a hardened service. |
