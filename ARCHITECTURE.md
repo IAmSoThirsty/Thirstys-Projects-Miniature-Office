@@ -248,25 +248,33 @@ while world.isActive:
 **Intended, not implemented:** a richer spatial / pixel-art office visualization.
 
 **Components that exist as HTML** (`src/client/index.html`; names are the `<h2>` / button labels):
-1. **World Canvas** — `fillRect` rectangles for floors and offices
+1. **World Canvas** — `fillRect` rectangles for floors and offices. Each office box labels `Agents: ` + `office.roles.length`. `Office.to_schema()` sets `roles=self.agents`. Default `office-1.agents` is `[]`, so the canvas paints **Agents: 0**. Metrics **Agents** is `GET /api/agents` (**11**). The WORLD tab does not draw the 10 department assistants or Alice inside the office rectangle.
 2. **Simulation** — buttons **STEP / START / STOP / REFRESH** (not a “Control Panel”)
-3. **Metrics** — labels Floors / Agents / Tasks / Tools (not “Metrics Dashboard”)
-4. **Agents** (not “Agent List”)
+3. **Metrics** — labels Floors / Agents / Tasks / Tools (not “Metrics Dashboard”). Default counts on `88e23a5`: Floors **2**, Agents **11**, Tasks **0**, Tools **2**
+4. **Agents** (not “Agent List”) — lists `GET /api/agents` (11 rows, all `idle`)
 5. **Log** (not “Event Log”)
 
 ## Design Principles
 
+**Shipped vs intended.** The four headings below were written as running laws. They are design prose unless a caller invokes the matching library. Independent `init_simulation()` + `sim.step()` on `88e23a5` does not enforce any of them.
+
 ### 1. Law of Least Ambiguity
-Every interface must resolve unambiguously before use. No implicit assumptions.
+
+**Intended.** There is no runtime gate that refuses an interface until ambiguity is resolved. `Task.needs_meeting()` is a boolean on an in-process object.
 
 ### 2. Decoupling Principle
-Departments integrate only through formal contracts. No direct coupling.
+
+**Intended.** Departments do not “integrate only through formal contracts.” `ElevatorProtocol.check_compatibility` is “consumer exists in the registry.” Layer 7 already records that it does not enforce “no implicit coupling.”
 
 ### 3. Safety First Doctrine
-Security constraints are first-class citizens, not add-ons.
+
+**Partial library.** Tools have `trust_score` / `security_rating`. Agents have `security_clearance`. `check_out_tool` does not compare capabilities. `MO_IDE_TOKEN` gates `/api/ide/*` only when set.
 
 ### 4. Economic Resource Allocation
-Compute and agent time are finite resources with budgeting.
+
+**Library, not the tick.** `src/core/scarcity_economics.py` defines `ResourceType` (`agent_time`, `manager_attention`, `consensus_bandwidth`, `tool_slots`, `simulation_budget`) and a ledger. Unit tests cover the module. `SimulationEngine.tick` and `init_simulation()` do **not** import it. Independent `sim.step()` does not spend those resources. Default allocations stay 0.
+
+**Intended, not implemented:** tick-time budget consumption that forces judgment.
 
 ## Data Flow Example
 

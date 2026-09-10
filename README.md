@@ -66,6 +66,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
 - Docker is a compose healthcheck, not a hardened stack (in-memory world, gunicorn `--workers 4`, `chmod 777` in CD)
 - Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.step()`: 11 agents stay `idle`.
+- `src/core/scarcity_economics.py` is not wired into the tick. Design Principle “finite resources with budgeting” is library-only. WORLD canvas paints `Agents: 0` (`office.roles`); Metrics Agents is 11.
 
 ## Quick start
 

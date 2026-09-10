@@ -111,6 +111,7 @@ Look for: inet 192.168.x.x
 | Port 5000 in use | Edit `run.py`, change port to 8080. `HOST` / `PORT` env vars are **not** read |
 | Can't connect from phone | Same WiFi? Firewall off? |
 | Permission denied | Run: `chmod +x install.sh start.sh start.command` |
+| WORLD canvas says Agents: 0 but Metrics Agents is 11 | Canvas reads `office.roles` (`office.agents`, default `[]`). Metrics Agents is `GET /api/agents`. Tick does not spend `scarcity_economics` budgets |
 
 ## Need Help?
 

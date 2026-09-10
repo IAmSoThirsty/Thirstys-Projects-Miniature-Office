@@ -37,6 +37,8 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
 | Hardened Docker | CD `test-docker` green. World is in-memory. Dockerfile CMD is gunicorn `--workers 4` (four in-memory worlds). Workflow `chmod 777`s host dirs. |
 | Default tick processes department assistants | No. Assistants live on the department. `init_simulation()` never calls `Office.add_agent`, so `office-1.agents` is `[]`. `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Independent `sim.step()`: all 11 `EntityType.AGENT` objects stay `idle`. JavaScript has no office. |
+| Finite resource budgeting | `src/core/scarcity_economics.py` is a unit-tested library. `SimulationEngine.tick` / `init_simulation()` do not import it. Independent `sim.step()` spends no `agent_time` / `manager_attention` / `consensus_bandwidth` / `tool_slots` / `simulation_budget`. |
+| WORLD canvas “Agents: N” equals Metrics Agents | No. Canvas reads `office.roles.length` (`Office.to_schema().roles = office.agents`). Default paints **Agents: 0**. Metrics Agents is `GET /api/agents` (**11**). |
 
 ## Code generation pipeline
 

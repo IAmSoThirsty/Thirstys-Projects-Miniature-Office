@@ -35,19 +35,19 @@ The server will start on `http://localhost:5000`
    - **REFRESH** — reload world state
    The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 
-3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”:
-   - Floors — default world has two floors (Python, JavaScript), each with one department
-   - Agents
-   - Tasks
-   - Tools
+3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”. Default counts after `init_simulation()`:
+   - Floors — **2** (Python, JavaScript)
+   - Agents — **11** (`GET /api/agents`: 10 assistants + Alice)
+   - Tasks — **0** (`GET /api/tasks` is `[]`; the WORLD canvas office box also shows `Agents: 0` because it reads `office.roles`, which is `office.agents`)
+   - Tools — **2** available (Python Interpreter, PyTest Framework)
 
-4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values:
-   - `idle` - Waiting for work
-   - `working` - Executing task
-   - `blocked` - Waiting on dependencies
-   - `in_meeting` - Resolving ambiguity
+4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values the enum/strings allow:
+   - `idle` - default seed; independent `sim.step()` leaves all 11 here
+   - `working` - `process_agent` sets this when a ticked agent has a current task (default seed does not)
+   - `blocked` - preconditions failed (default seed does not)
+   - `in_meeting` - `needs_meeting()` was true; the tick sets the string and returns. It does not mean a Decision Transcript exists
 
-   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them.
+   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them. The WORLD canvas office rectangle labels `Agents: 0`.
 
 5. **Log** (the heading is **Log**, not “Event Log”): scrolling audit trail
 

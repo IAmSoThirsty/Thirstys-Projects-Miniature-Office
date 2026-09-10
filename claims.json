@@ -171,6 +171,22 @@
     "cd_7542ad6": {
       "run": 34418505473,
       "conclusion": "success"
+    },
+    "ci_d976c5d": {
+      "run": 34481698942,
+      "conclusion": "success"
+    },
+    "cd_d976c5d": {
+      "run": 34481698924,
+      "conclusion": "success"
+    },
+    "ci_88e23a5": {
+      "run": 34488611556,
+      "conclusion": "success"
+    },
+    "cd_88e23a5": {
+      "run": 34488611517,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -264,7 +280,9 @@
     "Independent pytest 2026-09-09 23:45 UTC on observed main d5de225 after PR #48 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.24s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34417563379 and CD 34417563253 succeeded. INSTALL.md Termux path and QUICKSTART.md clone/pip path now state Python 3.10+. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-10 11:20 UTC on observed main 7542ad6 after PR #49 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.90s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART.md no longer claims one Manager per department; init_simulation() only creates Alice on the Python office. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-10 12:20 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.54s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. init_simulation() never calls Office.add_agent: office-1.agents is empty; OfficeProcessor.process_office does not tick department assistants; Manager registers as EntityType.AGENT (0 EntityType.MANAGER). Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-10 13:15 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART/GETTING_STARTED no longer invent UI chrome (STEP (+1 Tick), REFRESH STATE, World Metrics, Tools Available, Active Agents, Event Log). Shipped index.html is STEP/START/STOP/REFRESH, Metrics, Agents, Log, Tools. Independent sim.step(): 11 agents stay idle. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-10 13:15 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART/GETTING_STARTED no longer invent UI chrome (STEP (+1 Tick), REFRESH STATE, World Metrics, Tools Available, Active Agents, Event Log). Shipped index.html is STEP/START/STOP/REFRESH, Metrics, Agents, Log, Tools. Independent sim.step(): 11 agents stay idle. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-10 13:17 UTC on observed main d976c5d after PR #50 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.73s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34481698942 and CD 34481698924 succeeded. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-10 16:10 UTC on observed main 88e23a5 after PR #51 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 7.74s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34488611556 and CD 34488611517 succeeded. Open PRs #52/#53 cover Layer 3 meetings and Layer 4 consensus/domains. ARCHITECTURE Design Principles no longer claim tick-time resource budgeting or contract-only decoupling; scarcity_economics is not imported by the tick. WORLD canvas Agents: 0 (office.roles) vs Metrics Agents 11. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -436,9 +454,31 @@
       "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
       "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
       "matches_code_pin_trees": true
+    },
+    {
+      "sha": "d976c5d0b096c6e6afb677faacbc6abcb7e5f86e",
+      "short": "d976c5d",
+      "ci": 34481698942,
+      "cd": 34481698924,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
+    },
+    {
+      "sha": "88e23a5d830f5a5634f4e57a45f4de58c073ae9f",
+      "short": "88e23a5",
+      "ci": 34488611556,
+      "cd": 34488611517,
+      "kind": "pytest_rerun",
+      "pytest_rerun": true,
+      "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+      "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+      "matches_code_pin_trees": true
     }
   ],
-  "src_tests_identical_through_at_least": "7542ad64de7c20d06e530c8f340d6e69d06893fc",
+  "src_tests_identical_through_at_least": "88e23a5d830f5a5634f4e57a45f4de58c073ae9f",
   "remeasured": {
     "sha": "32a70dc7a73d3143a0f06c36361ff2b64a1a9124",
     "short": "32a70dc",
@@ -778,10 +818,10 @@
     "def_test_grep_whole_repo_unanchored": 1619,
     "pytest_passed": 1573,
     "pytest_skipped": 1,
-    "pytest_seconds": 12.90,
+    "pytest_seconds": 12.9,
     "fresh_cov_covered": 7493,
     "fresh_cov_statements": 7749,
-    "fresh_cov_percent": 96.70,
+    "fresh_cov_percent": 96.7,
     "pin_cov_covered": 7494,
     "pin_cov_statements": 7749,
     "pin_cov_percent": 96.71,
@@ -821,7 +861,7 @@
     "pytest_seconds": 12.54,
     "fresh_cov_covered": 7493,
     "fresh_cov_statements": 7749,
-    "fresh_cov_percent": 96.70,
+    "fresh_cov_percent": 96.7,
     "pin_cov_covered": 7494,
     "pin_cov_statements": 7749,
     "pin_cov_percent": 96.71,
