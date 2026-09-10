@@ -34,6 +34,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | Native 30-language runtime | 28 toy directories. SQL has a schema file; department logic is Python. |
 | VR | Browser + PWA only. No WebXR. |
 | 23+ SOLID / 17 smells | 5 patterns + 4 anti-patterns from AST walks. |
+| Default consensus / capability domains | `ConsensusDecision` is a library. Alice's `managed_agents` is `[]`, so the tick never initiates consensus. `_default_capabilities_for_role` never sets `domains` (all empty). Alice's profile is empty. |
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
 | Hardened Docker | CD `test-docker` green. World is in-memory. Dockerfile CMD is gunicorn `--workers 4` (four in-memory worlds). Workflow `chmod 777`s host dirs. |
 | Default tick processes department assistants | No. Assistants live on the department. `init_simulation()` never calls `Office.add_agent`, so `office-1.agents` is `[]`. `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Independent `sim.step()`: all 11 `EntityType.AGENT` objects stay `idle`. JavaScript has no office. |

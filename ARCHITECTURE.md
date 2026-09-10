@@ -81,7 +81,7 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 - `Agent.__init__` always registers `EntityType.AGENT`. `Manager` inherits that
 - CapabilityProfile, ConsensusVote, ConsensusDecision exist as in-process dataclasses
 
-**Intended, not implemented:** a live consensus loop over default-seed assistants (they are not in `office.agents`, so they are not ticked).
+**Intended, not implemented:** a live consensus loop over default-seed assistants (they are not in `office.agents`, so they are not ticked). Populated `domains` sets. A Manager capability profile. Tick-time `assign_task`.
 
 **Required Roles (per department):**
 1. **Architect** - Design authority
@@ -90,18 +90,17 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 4. **Security** - Threat modeling
 5. **DocAgent** - Documentation & communication
 
-**Capability Profiles:** Each agent has:
-- Languages (e.g., Python, Rust)
-- Tools (e.g., pytest, cargo)
-- Domains (e.g., backend, frontend)
-- Skills (e.g., testing, security)
-- Security clearance (1-5)
+**Capability Profiles (dataclass; default seed is sparse):**
+- Fields exist: languages, tools, domains, skills, security_clearance
+- `Department._default_capabilities_for_role` sets `languages` to the department domain and role skills/tools. It **never** writes `domains` — independent seed: all 11 agents have `domains == set()`
+- Alice (`Manager.__init__`) does not call `_default_capabilities_for_role`. Her profile is empty (languages/tools/domains/skills empty, clearance 1)
+- `Agent.assign_task` calls `can_handle_task` on `task.metadata["required_capabilities"]`. The tick never calls `assign_task`. `process_agent` calls `task.check_preconditions()`, not `can_handle_task`
 
-**Consensus System:**
-- Managers initiate consensus decisions
-- Agents vote with weights
-- Threshold determines outcome (default: 2/3 majority)
-- Overrides are logged (nothing silently overrides)
+**Consensus System (library, not the default tick):**
+- `ConsensusVote` / `ConsensusDecision` and `initiate_consensus` exist as in-process objects
+- `ManagerDecisionProtocol.process_manager` walks `manager.managed_agents` and may initiate consensus for tasks in APPROVAL
+- Default Alice `managed_agents` is `[]`. Independent `sim.step()` does not initiate consensus, does not collect votes, does not finalize
+- 2/3 threshold and override logging apply only on that library path when a caller has already populated `managed_agents` and a task is in APPROVAL
 
 ### Layer 5: Department Management (`src/departments/department.py`)
 

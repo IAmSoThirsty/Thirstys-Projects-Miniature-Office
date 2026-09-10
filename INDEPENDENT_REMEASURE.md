@@ -6,6 +6,55 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 15:30 UTC — observed main `88e23a5` (pytest re-run; Layer 4 consensus / empty domains)
+
+Independent clone of live main [`88e23a5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/88e23a5d830f5a5634f4e57a45f4de58c073ae9f) (PR [#51](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/51), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `88e23a5` itself.
+
+Open honesty PR [#52](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/52) already records Layer 3 meetings / unregistered `task-001` / unread `auto_assign_tasks`. Present-tense miss beyond that: [ARCHITECTURE.md](ARCHITECTURE.md) Layer 4 still said “Each agent has: Domains (e.g., backend, frontend)” and “Managers initiate consensus decisions.” `_default_capabilities_for_role` never writes `domains`. `Manager.__init__` does not call that helper, so Alice's profile is empty. `ManagerDecisionProtocol.process_manager` walks `managed_agents` (default `[]`). The tick never calls `assign_task` or `can_handle_task`.
+
+Independent `init_simulation()` + `sim.step()`:
+
+- 11 `EntityType.AGENT` (10 assistants + Alice); **0** `EntityType.MANAGER`
+- Python `office-1.manager` = Alice; **`office-1.agents == []`**
+- All 11 agents stay `idle` after 1 tick
+- All 11 `capabilities.domains == set()`
+- Alice capabilities: languages/tools/domains/skills empty, clearance 1
+- Alice `managed_agents == []`
+- Tools: Python Interpreter, PyTest Framework
+- Assistant names use `role.value.title()`, so **Assistant Doc_Agent**
+- Registered tasks: **0**. Meeting transcripts: **0**. Consensus decisions initiated: **0**
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`88e23a5`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/88e23a5d830f5a5634f4e57a45f4de58c073ae9f) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| Entity types / relations | 7 / 8 |
+| Default `EntityType.MANAGER` objects | **0** |
+| Default `EntityType.AGENT` objects | **11** |
+| `office-1.agents` | **[]** |
+| Registered tasks (`GET /api/tasks`) | **[]** |
+| Default `domains` sets | **all empty** |
+| Alice `managed_agents` | **[]** |
+| Tick initiates consensus | **no** |
+| Tick calls `assign_task` / `can_handle_task` | **no** |
+| UI simulation buttons | STEP / START / STOP / REFRESH |
+| UI metric labels | Floors / Agents / Tasks / Tools |
+| Docker gunicorn workers | **4** (split in-memory world) |
+| Checkout capability match | **comment only** |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Pytest | **1,573 passed**, 1 skipped, **12.80s** |
+| Coverage XML `--cov=src` | **7,494 / 7,749** (96.71%) matching the pin |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| CI on `88e23a5` | [34488611556](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34488611556) succeeded |
+| CD on `88e23a5` | [34488611517](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34488611517) succeeded |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 10 September 2026 14:20 UTC — observed main `d976c5d` (pytest re-run; gunicorn workers / Layer 11 chrome)
 
 Independent clone of live main [`d976c5d`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/d976c5d0b096c6e6afb677faacbc6abcb7e5f86e) (PR [#50](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/50), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `d976c5d` itself.

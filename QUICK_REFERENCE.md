@@ -111,6 +111,7 @@ Look for: inet 192.168.x.x
 | Port 5000 in use | Edit `run.py`, change port to 8080. `HOST` / `PORT` env vars are **not** read |
 | Can't connect from phone | Same WiFi? Firewall off? |
 | Permission denied | Run: `chmod +x install.sh start.sh start.command` |
+| Agents never vote / Metrics Tasks stays 0 | Tick does not assign tasks. Alice's `managed_agents` is `[]`, so consensus is not initiated. Capability `domains` are empty. `GET /api/tasks` lists registered tasks only |
 
 ## Need Help?
 

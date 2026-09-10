@@ -60,6 +60,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 
 - Generated Python is an identity transform (`result = data`), not spec-faithful logic. Non-Python tests are not executed
 - Analyzers cover 5 patterns and 4 anti-patterns, not “23+ SOLID / 17 smells”
+- Capability `domains` stay empty on the default seed. Alice's profile is empty. The tick never initiates consensus (`managed_agents` is `[]`)
 - Audit HMAC is optional. Without a real key the chain is unsigned
 - Bandit still reports 13 **low** findings
 - There is no WebXR

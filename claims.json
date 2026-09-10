@@ -171,6 +171,22 @@
     "cd_7542ad6": {
       "run": 34418505473,
       "conclusion": "success"
+    },
+    "ci_d976c5d": {
+      "run": 34481698942,
+      "conclusion": "success"
+    },
+    "cd_d976c5d": {
+      "run": 34481698924,
+      "conclusion": "success"
+    },
+    "ci_88e23a5": {
+      "run": 34488611556,
+      "conclusion": "success"
+    },
+    "cd_88e23a5": {
+      "run": 34488611517,
+      "conclusion": "success"
     }
   },
   "measured": {
@@ -264,7 +280,8 @@
     "Independent pytest 2026-09-09 23:45 UTC on observed main d5de225 after PR #48 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.24s; coverage XML 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34417563379 and CD 34417563253 succeeded. INSTALL.md Termux path and QUICKSTART.md clone/pip path now state Python 3.10+. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-10 11:20 UTC on observed main 7542ad6 after PR #49 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.90s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART.md no longer claims one Manager per department; init_simulation() only creates Alice on the Python office. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
     "Independent pytest 2026-09-10 12:20 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.54s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. init_simulation() never calls Office.add_agent: office-1.agents is empty; OfficeProcessor.process_office does not tick department assistants; Manager registers as EntityType.AGENT (0 EntityType.MANAGER). Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
-    "Independent pytest 2026-09-10 13:15 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART/GETTING_STARTED no longer invent UI chrome (STEP (+1 Tick), REFRESH STATE, World Metrics, Tools Available, Active Agents, Event Log). Shipped index.html is STEP/START/STOP/REFRESH, Metrics, Agents, Log, Tools. Independent sim.step(): 11 agents stay idle. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
+    "Independent pytest 2026-09-10 13:15 UTC on observed main 7542ad6 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.56s; coverage XML 7493/7749 (96.70%); pin remains 7494/7749 (96.71%); bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34418505373 and CD 34418505473 succeeded. QUICKSTART/GETTING_STARTED no longer invent UI chrome (STEP (+1 Tick), REFRESH STATE, World Metrics, Tools Available, Active Agents, Event Log). Shipped index.html is STEP/START/STOP/REFRESH, Metrics, Agents, Log, Tools. Independent sim.step(): 11 agents stay idle. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD.",
+    "Independent pytest 2026-09-10 15:30 UTC on observed main 88e23a5 after PR #51 (src tree fafbad68, tests tree 1ddf08f8, identical to code pin fdd9762): 1573 passed, 1 skipped, 12.80s; coverage XML 7494/7749 (96.71%) matching the pin; bandit -ll 0 medium/high; 13 bandit low; pip-audit clean. CI 34488611556 and CD 34488611517 succeeded. Open PR #52 records Layer 3 meetings / unregistered task-001. ARCHITECTURE Layer 4 no longer claims populated domains or a running consensus loop: default domains are empty, Alice managed_agents is [], tick does not initiate consensus or call assign_task. Pin stays fdd9762. Score stays 9/6/1/3 of 19. Production ready remains false. Do not name a docs SHA as HEAD."
   ],
   "commit": "fdd9762af2be9ebf0aeee3bc9148b3f87a5d684a",
   "convention": "Pin the last commit that changed src/ or tests/. A docs-only HEAD is not the measured tree. Do not record 'docs commit on main at this writing'.",
@@ -778,10 +795,10 @@
     "def_test_grep_whole_repo_unanchored": 1619,
     "pytest_passed": 1573,
     "pytest_skipped": 1,
-    "pytest_seconds": 12.90,
+    "pytest_seconds": 12.9,
     "fresh_cov_covered": 7493,
     "fresh_cov_statements": 7749,
-    "fresh_cov_percent": 96.70,
+    "fresh_cov_percent": 96.7,
     "pin_cov_covered": 7494,
     "pin_cov_statements": 7749,
     "pin_cov_percent": 96.71,
@@ -821,7 +838,7 @@
     "pytest_seconds": 12.54,
     "fresh_cov_covered": 7493,
     "fresh_cov_statements": 7749,
-    "fresh_cov_percent": 96.70,
+    "fresh_cov_percent": 96.7,
     "pin_cov_covered": 7494,
     "pin_cov_statements": 7749,
     "pin_cov_percent": 96.71,
@@ -837,5 +854,57 @@
     "ci": 34418505373,
     "cd": 34418505473,
     "note": "Docs-only relative to code pin fdd9762. office-1.agents is empty; tick does not process department assistants. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
+  },
+  "remeasured_pytest_88e23a5_layer4": {
+    "at": "2026-09-10T15:30:00Z",
+    "method": "Independent clone of 88e23a5. Counted src/**/*.py, floors/*, @app.route in src/, anchored def test_ in tests/. Ran pytest --cov=src (1573 passed, 12.80s, 7494/7749), bandit -ll, pip-audit. Called init_simulation() and one tick. Found Layer 4 present-tense: domains empty; Alice profile empty; managed_agents []; tick does not initiate consensus.",
+    "observed_main": "88e23a5d830f5a5634f4e57a45f4de58c073ae9f",
+    "src_python_files": 53,
+    "src_python_lines_total": 24441,
+    "src_python_lines_noncomment": 19058,
+    "code_civilization_lines": 1421,
+    "code_civilization_bytes": 52653,
+    "flask_routes_src": 74,
+    "app_py_routes": 67,
+    "ide_routes": 7,
+    "floor_directories": 28,
+    "sql_floor_has_sql": true,
+    "def_test_grep_anchored": 1606,
+    "def_test_grep_unanchored_tests": 1608,
+    "def_test_grep_whole_repo_unanchored": 1619,
+    "pytest_passed": 1573,
+    "pytest_skipped": 1,
+    "pytest_seconds": 12.8,
+    "fresh_cov_covered": 7494,
+    "fresh_cov_statements": 7749,
+    "fresh_cov_percent": 96.71,
+    "pin_cov_covered": 7494,
+    "pin_cov_statements": 7749,
+    "pin_cov_percent": 96.71,
+    "bandit_ll_medium_or_high": 0,
+    "bandit_low": 13,
+    "pip_audit": "clean",
+    "pwa_manifest": true,
+    "webxr": false,
+    "apache_2": true,
+    "entity_types": 7,
+    "relation_types": 8,
+    "patterns": 5,
+    "antipatterns": 4,
+    "default_world_managers": 1,
+    "default_entitytype_manager_objects": 0,
+    "default_entitytype_agent_objects": 11,
+    "office_1_agents": [],
+    "alice_managed_agents": [],
+    "alice_languages": [],
+    "all_domains_empty": true,
+    "tick_initiates_consensus": false,
+    "tick_calls_assign_task": false,
+    "matches_code_pin_metrics": true,
+    "src_tree": "fafbad684ed9d61bd5fd347098276eeea4b911d3",
+    "tests_tree": "1ddf08f8a24d9003054c0a395e06c95470009fe0",
+    "ci": 34488611556,
+    "cd": 34488611517,
+    "note": "Docs-only relative to code pin fdd9762. Layer 4 consensus is library-only on the default seed. Pin stays fdd9762. Score remains 9/6/1/3 of 19. Production ready remains false."
   }
 }
