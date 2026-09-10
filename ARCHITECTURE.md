@@ -237,7 +237,7 @@ while world.isActive:
 - `GET /api` returns `"name": "Miniature Office - Cognitive IDE"` and `"description": "A spatialized, agent-orchestrated development environment"`. That is a route label. Canonical status is experimental Flask prototype — not a Cognitive IDE
 - `GET /health` is HTTP 200 liveness. Body `"simulation": "running"` means the global `simulation` object is not `None` (the handler lazy-inits it). Independent `GET /api/world/state` is `"is_running": false` until `POST /api/world/start`. `"status": "healthy"` is the liveness string, not a production probe
 - `GET /api/canonical-bundle` returns `"is_complete": true`, `"missing_artifacts": []`. `verify_bundle_completeness()` only checks that 27 dataclass slots are not `None`. Empty archives still count. The report title is “NON-DESIGN CANONICAL BUNDLE” / “Complete: Yes”
-- `GET /api/canonical-bundle/charter` returns `"is_immutable": true` (dataclass default). `digital_signature` is `hashlib.sha256(b"charter-001").hexdigest()`. `CivilizationCharter.verify_signature` **always returns True**
+- `GET /api/canonical-bundle/charter` JSON keys are `charter_id`, `version`, `issued_date`, `axioms`, `is_immutable`, `human_readable`. There is **no** `digital_signature` field. The `sha256(b"charter-001")` hex appears only inside `human_readable` (`to_human_readable()`). `CivilizationCharter.verify_signature` **always returns True** and ignores its `public_key` argument
 - `GET /api/canonical-bundle/purpose-lock` returns `"overall_locked": true` with `"subsystems_checked": 0`
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
 - `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
@@ -245,7 +245,8 @@ while world.isActive:
 
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
-- `GET /api/world/state` - Current in-memory world (`is_running` is the START loop flag)
+- `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
+- `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
 - `POST /api/world/step` - Advance one tick
 - `POST /api/world/start` - Start continuous simulation
 - `POST /api/world/stop` - Stop simulation
