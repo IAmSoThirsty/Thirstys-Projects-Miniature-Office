@@ -242,6 +242,8 @@ while world.isActive:
 - `GET /api/canonical-bundle/authority-ledger` returns `total_grants` **0** / `active_grants` **0**
 - `GET /api/consigliere` returns `"role": "Chief Operating Executive"` with `can_alter_execution` / `can_issue_commands` / `can_manage_agents` **true**. Those are hardcoded methods that `return True`. `src/client/index.html` never calls `/api/consigliere*`. The tick does not import Consigliere
 - `GET /api/security` returns `"role": "Executive Authority - Security Sovereign"` with `can_force_rearchitecture` / `can_freeze_building` **true**, `policies` **3**, lockdowns **0**. No UI chrome. The tick does not import Head of Security
+- `POST /api/consigliere/preview` of `"freeze building"` returns canned consequences (`"All execution stops immediately"`, `"No new tasks can start"`, `resource_costs.system_availability: -100`). `preview_consequences()` is a keyword table (`"freeze" in proposed_action.lower()`), not a simulation. After `POST /api/security/lockdown` `scope=building` (`is_active: true`): freeze-protocol stays `is_frozen: false`; STEP still ticks; START returns `success: true`; `POST /api/ide/terminal` `echo hello` exits 0
+- `GET /api/agents/mgr-001` is Flask **404** HTML. The shipped route is `GET /api/agents/<id>/status` (Alice `idle`, `current_task_id` null). `POST /api/security/audit` `type=floor` is **400** `Unknown audit type: floor` (only `full_system` / `cross_floor`)
 
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
