@@ -50,6 +50,10 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | `GET /api/world/state` is always the running world | No. Before any lazy-init it is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits; `/api/world/state` / `/step` / `/start` / `/stop` do not. |
 | `GET /metrics` `floors_total` is 28 language floors | No. HELP text is “Total number of floors”. After `/health` lazy-init the value is `len(world.floors)` (**2**: `floor-python`, `floor-javascript`). 28 toy dirs live under `floors/`. Hitting `/metrics` first is **503**. |
 | Charter HTTP JSON includes `digital_signature` | No. Keys are `charter_id` / `version` / `issued_date` / `axioms` / `is_immutable` / `human_readable`. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `verify_signature` always returns True. |
+| `POST /api/world/start` starts a loop the UI can stop | No. The handler returns `"Simulation started"` without setting `is_running`. Independent test client: `is_running` stays false, `tick_count` 0. Shipped START paints RUNNING from local JS. Live `python3 run.py` can wedge HTTP after START so STOP cannot be reached. `stop()` sets `world.is_active = False` (terminal); START never sets it True. |
+| Alice manages the office assistants | No. `Office.set_manager` does not fill `managed_agents` (default `[]`). Assistants have role capabilities; Alice’s languages/skills/tools are empty. `process_manager` walks `managed_agents`. |
+| Supply-store versions are the runtime | No. Labels are Interpreter `3.11.0` / PyTest `7.4.0`. Independent terminal `python3 --version` is 3.10.21; `requirements.txt` is `pytest==9.0.3`. |
+| Compose `/api/ide/health` means the world is up | No. HTTP 200 `audit_chain_ok: true` with `audit_events: 0`. It does not lazy-init. `GET /api/world/state` stays 500. `GET /api/contracts` is `[]`. |
 
 ## Code generation pipeline
 
