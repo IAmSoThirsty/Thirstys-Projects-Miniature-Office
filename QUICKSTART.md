@@ -29,9 +29,9 @@ The server will start on `http://localhost:5000`
 1. **Open Browser:** Navigate to `http://localhost:5000`
 
 2. **Simulation** (right panel in `src/client/index.html`). The buttons are labeled **STEP**, **START**, **STOP**, and **REFRESH** — not “STEP (+1 Tick)” or “REFRESH STATE”:
-   - **STEP** — one tick (`SimulationEngine.step` → `tick`)
-   - **START** — continuous loop
-   - **STOP** — halt
+   - **STEP** — one tick (`SimulationEngine.step` → `tick`) **only while `world.is_active` is True**. After STOP, STEP still returns `success: true` and does not increment `tick_count`
+   - **START** — `socketio.start_background_task(simulation.run)`. Does not set `world.is_active` True. On `python3 run.py`, START can wedge HTTP so STOP cannot be reached
+   - **STOP** — terminal halt: sets `world.is_active = False`. Not a pause. START does not resume. `GET /api/canonical-bundle/shutdown-protocol` stays `is_shutdown: false`
    - **REFRESH** — reload world state
    The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 
