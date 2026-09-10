@@ -28,25 +28,28 @@ The server will start on `http://localhost:5000`
 
 1. **Open Browser:** Navigate to `http://localhost:5000`
 
-2. **Simulation Controls:**
-   - **STEP (+1 Tick):** Advance simulation by one time step
-   - **START:** Begin continuous simulation
-   - **STOP:** Halt simulation
-   - **REFRESH STATE:** Update UI with latest data
+2. **Simulation** (right panel in `src/client/index.html`). The buttons are labeled **STEP**, **START**, **STOP**, and **REFRESH** — not “STEP (+1 Tick)” or “REFRESH STATE”:
+   - **STEP** — one tick (`SimulationEngine.step` → `tick`)
+   - **START** — continuous loop
+   - **STOP** — halt
+   - **REFRESH** — reload world state
+   The workspace column also has **REFRESH** / **NEW FILE**. The editor has **SAVE**. The terminal has **RUN**.
 
-3. **World Metrics:** View real-time counts of:
-   - Floors (departments)
-   - Agents (workers)
-   - Tasks (work items)
-   - Tools Available (in supply store)
+3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”:
+   - Floors — default world has two floors (Python, JavaScript), each with one department
+   - Agents
+   - Tasks
+   - Tools
 
-4. **Active Agents:** See all agents and their current status:
+4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values:
    - `idle` - Waiting for work
    - `working` - Executing task
    - `blocked` - Waiting on dependencies
    - `in_meeting` - Resolving ambiguity
 
-5. **Event Log:** Scrolling audit trail of all actions
+   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them.
+
+5. **Log** (the heading is **Log**, not “Event Log”): scrolling audit trail
 
 ## Using the API
 
@@ -94,21 +97,31 @@ curl "http://localhost:5000/api/audit/events?actor_id=mgr-001" | python3 -m json
 curl http://localhost:5000/api/departments
 ```
 
-You should see 2 departments (Python and JavaScript), each fully staffed with 5 required roles.
+You should see 2 departments (Python Development and Frontend Development). Each is auto-staffed with the **5 required roles** (architect, builder, verifier, security, doc_agent). Manager is **not** a required role.
 
 ### 2. View Auto-Spawned Agents
 ```bash
 curl http://localhost:5000/api/agents | python3 -m json.tool
 ```
 
-Notice the system automatically created assistant agents for missing roles:
+`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent` and registers as that type (`EntityType.MANAGER` stays 0 in the default world), so Alice is in this list. Independent `init_simulation()` on `7542ad6`:
+
+- 11 `EntityType.AGENT` objects: 10 assistants + Alice
+- Python department: 5 assistants **on the department**, plus Manager Alice (`mgr-001`) set as `office-1.manager`
+- `office-1.agents` is **`[]`**. `init_simulation()` never calls `Office.add_agent`
+- JavaScript department: 5 assistants, **no** manager, **no** office
+- Tick processing (`OfficeProcessor.process_office`) walks `office.get_agents()` then `process_manager`. Default assistants are **not ticked**. `POST /api/world/step` still logs a `state_persisted` `agent_action`
+
+There is not one Manager per department.
+
+Assistant names come from `Assistant {role.value.title()}`:
 - Assistant Architect
 - Assistant Builder
 - Assistant Verifier
 - Assistant Security
-- Assistant DocAgent
+- Assistant Doc_Agent
 
-Plus one Manager per department.
+
 
 ### 3. Run Simulation Steps
 ```bash
@@ -146,14 +159,20 @@ Should show 2 tools:
 World: "Miniature Office IDE"
 ├── Floor: Python
 │   ├── Department: Python Development
+│   │   └── Agents: 5 assistants + Manager Alice (mgr-001) on the department
 │   └── Office: office-1
-│       ├── Manager: Alice Manager
-│       └── Agents: 5 assistant agents (one per role)
+│       ├── Manager: Alice Manager (office.manager)
+│       └── office.agents: []   # never Office.add_agent
 └── Floor: JavaScript
     ├── Department: Frontend Development
-    └── Offices: (can be added)
-        └── Agents: 5 assistant agents
+    │   └── Agents: 5 assistants (no manager)
+    └── (no office)
 ```
+
+`OfficeProcessor.process_office` only walks `office.get_agents()` (empty) and then `process_manager` when `office.manager` is set. Default assistants stay `idle` across ticks.
+
+The 28 toy language-floor directories under `floors/` are **not** seeded into this default world.
+
 
 ## Creating Custom Content
 
@@ -219,15 +238,17 @@ task.add_acceptance_criterion("Documentation updated")
 ### Assign Task to Agent
 
 ```python
-from src.core.entity import get_registry
+from src.core.entity import EntityType, get_registry
+from src.agents.agent import AgentRole
 
 # Get an idle builder agent
 agents = get_registry().get_by_type(EntityType.AGENT)
-builder = next((a for a in agents if a.role.value == 'builder' and a.status == 'idle'), None)
+builder = next((a for a in agents if getattr(a, "role", None) == AgentRole.BUILDER and a.status == 'idle'), None)
 
 if builder:
     builder.assign_task(task)
 ```
+
 
 ## Monitoring & Debugging
 
@@ -295,6 +316,7 @@ Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous eve
 
 ### Agents Not Working
 - Check agent status: `curl http://localhost:5000/api/agents`
+- Default-seed assistants live on the **department**, not in `office-1.agents`. The tick loop does not process them
 - View audit log: `curl http://localhost:5000/api/audit/events`
 - Verify capabilities match task requirements
 

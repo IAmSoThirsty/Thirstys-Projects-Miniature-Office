@@ -65,6 +65,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - There is no WebXR
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
 - Docker is a compose healthcheck, not a hardened stack (in-memory world, `chmod 777` in CD)
+- Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.step()`: 11 agents stay `idle`.
 
 ## Quick start
 
