@@ -54,24 +54,35 @@ All objects inherit from `Entity` with formal types:
 
 ### Layer 3: Mission Logic (`src/core/mission.py`)
 
-**Directive Tree:**
+**Shipped module:**
+- `TaskState` enum and `Directive` / `Task` objects with optional precondition / postcondition / acceptance callables
+- `Task` does **not** auto-register in `EntityRegistry` (Agent / Tool / Department do). `GET /api/tasks` lists `EntityType.ARTIFACT` instances that are `Task`
+- Default `init_simulation()` constructs `task-001` ("Implement User Authentication") as a **local**. It is never `registry.register`'d and never `assign_task`'d. After init returns, `GET /api/tasks` is `[]`. The Metrics **Tasks** count is 0
+- `MeetingSystem.hold_meeting()` exists and writes a `DecisionTranscript` (unit-tested). The tick loop does **not** call it
+- `AgentExecutionEngine.process_agent`: if `task.needs_meeting()`, sets `agent.status = "in_meeting"` and returns. No transcript
+- `SimulationConfig.auto_assign_tasks` and `auto_resolve_meetings` are stored on the dataclass and **never read**. Flask init hardcodes `auto_assign_tasks=True` with no effect
+- Alice's `managed_agents` is `[]`. `ManagerDecisionProtocol.process_manager` walks that list
+
+**Intended, not implemented:** a registered, assigned default task; tick-loop meetings that call `hold_meeting()`; auto-assign from the config flag.
+
+**Directive Tree (in-process objects, not a running pipeline):**
 ```
 User Intent
   └── Architect Intent
        └── Task Nodes
 ```
 
-Each node has:
-- **Preconditions** - Must be true to start
-- **Postconditions** - Must be true when done
-- **Acceptance Criteria** - For production readiness
+Each node *can* have:
+- **Preconditions** - optional callables; no checker means `is_satisfied` stays False
+- **Postconditions** - same
+- **Acceptance Criteria** - same
 
-**Task Lifecycle:**
+**Task Lifecycle (enum + `can_transition_to`, not the default seed):**
 ```
 Scheduled → InReview → Blocked → Approval → Merged → Deployed
 ```
 
-**Meeting System:** Tasks with ambiguity ≥ threshold trigger meetings that produce Decision Transcripts.
+**Meeting System (library, not the tick):** `hold_meeting()` produces a Decision Transcript when a caller invokes it. Ambiguity ≥ threshold does not, by itself, hold a meeting.
 
 ### Layer 4: Agent System (`src/agents/agent.py`)
 
@@ -185,8 +196,10 @@ World
 - Dataclass default is `SimulationConfig.tick_duration_ms = 100`
 - The shipped Flask `init_simulation()` in `src/server/app.py` hardcodes `tick_duration_ms=1000` (1 second per tick)
 - `.env.example` lists `TICK_DURATION_MS`; that name is **not** `getenv`'d
+- `auto_assign_tasks` / `auto_resolve_meetings` are dataclass fields. Flask init sets `auto_assign_tasks=True`. **Neither flag is read.** `OfficeProcessor.process_office` does not assign tasks
+- Default seed `task-001` is not in the registry, so there is nothing to assign
 
-**Intended, not implemented:** database or file persistence of world state; ticking department-level assistants that were never added to an office.
+**Intended, not implemented:** database or file persistence of world state; ticking department-level assistants that were never added to an office; auto-assign / auto-resolve from the config flags.
 
 **Tick-based Processing (in-process; persist is a log label):**
 ```python
@@ -202,17 +215,17 @@ while world.isActive:
     persistState(world)  # logs agent_action; does not write the world
 ```
 
-**Agent Execution:**
-1. Check if agent has task
-2. Verify capabilities cover preconditions
-3. Execute or request support
-4. Errors trigger blocking
+**Agent Execution (only agents already in `office.agents` with `current_task_id`):**
+1. If no current task: return
+2. `task.check_preconditions()` — optional callables, not agent-capability matching
+3. If `needs_meeting()`: set `in_meeting` and return (no `hold_meeting()`, no transcript)
+4. Else SCHEDULED → IN_REVIEW, or IN_REVIEW → APPROVAL when postconditions pass
 
-**Manager Decision:**
-1. Review tasks in approval state
-2. Initiate consensus if needed
-3. Approve or reject based on voting
-4. Transition task state
+**Manager Decision (walks `manager.managed_agents`, default `[]`):**
+1. Review tasks in approval state on those managed agents
+2. Initiate consensus if `is_ready_for_commit()`
+3. Manager casts a weight-2 vote and finalizes
+4. Transition MERGED only if consensus finalizes
 
 ### Layer 10: API Server (`src/server/app.py`)
 
@@ -270,18 +283,20 @@ Compute and agent time are finite resources with budgeting.
 
 ## Data Flow Example
 
-**User wants to implement authentication:**
+**Intended pipeline, not the default seed.** `init_simulation()` constructs unregistered `task-001` and never assigns it. Assistants are not in `office.agents`. `auto_assign_tasks` is unread. Independent `sim.step()` does not run the steps below.
+
+**User wants to implement authentication (design prose):**
 
 1. **Directive Created:** User intent → Architect intent → Task nodes
-2. **Task Assigned:** Manager finds idle Builder agent with matching capabilities
-3. **Agent Executes:** Builder checks preconditions, starts work
-4. **State Transition:** Task moves from Scheduled → InReview
-5. **Verification:** Verifier agent runs tests (postconditions)
-6. **Security Review:** Security agent performs threat analysis
-7. **Meeting (if needed):** If ambiguity ≥ threshold, meeting produces Decision Transcript
-8. **Consensus:** Manager initiates consensus vote
-9. **Approval:** If 2/3 agents approve → Task transitions to Merged
-10. **Audit Trail:** Every step logged with causality links
+2. **Task Assigned:** *Intended.* Manager does not auto-assign. `assign_task` is a method a caller must invoke
+3. **Agent Executes:** *Intended.* `process_agent` only runs for agents in `office.agents`
+4. **State Transition:** *Intended.* SCHEDULED → IN_REVIEW when a ticked agent has a task
+5. **Verification:** *Intended.* No default verifier loop
+6. **Security Review:** *Intended.* No default security loop
+7. **Meeting (if needed):** *Intended.* Tick only sets `in_meeting`. `hold_meeting()` is a library call
+8. **Consensus:** *Intended.* `process_manager` walks `managed_agents` (default `[]`)
+9. **Approval:** *Intended.* MERGED only if consensus finalizes
+10. **Audit Trail:** SHA-256 chain of events that actually ran. Default tick logs `state_persisted`
 
 ## Scaling Considerations
 

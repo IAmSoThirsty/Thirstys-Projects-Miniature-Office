@@ -66,6 +66,7 @@ It is **not** a production IDE, not VR-native, not a cryptographic ledger, and n
 - `/api/ide/*` is open unless `MO_IDE_TOKEN` is set
 - Docker is a compose healthcheck, not a hardened stack (in-memory world, gunicorn `--workers 4`, `chmod 777` in CD)
 - Default-seed assistants live on the department, not in `office-1.agents`. The tick loop does not process them. Independent `sim.step()`: 11 agents stay `idle`.
+- Default seed constructs `task-001` as a local and never registers it. `GET /api/tasks` is `[]`. Tick does not assign tasks or call `hold_meeting()`. `auto_assign_tasks` / `auto_resolve_meetings` are unread.
 
 ## Quick start
 

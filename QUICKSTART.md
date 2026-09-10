@@ -37,9 +37,9 @@ The server will start on `http://localhost:5000`
 
 3. **Metrics** (the heading is **Metrics**, not “World Metrics”). Labels are **Floors**, **Agents**, **Tasks**, **Tools** — not “Tools Available”:
    - Floors — default world has two floors (Python, JavaScript), each with one department
-   - Agents
-   - Tasks
-   - Tools
+   - Agents — 11 `EntityType.AGENT` (10 assistants + Alice)
+   - Tasks — `GET /api/tasks` is **`[]`**. `init_simulation()` constructs `task-001` as a local and never `registry.register`s it. `Task` does not auto-register
+   - Tools — Python Interpreter, PyTest Framework
 
 4. **Agents** (the heading is **Agents**, not “Active Agents”). Status values:
    - `idle` - Waiting for work
@@ -47,7 +47,7 @@ The server will start on `http://localhost:5000`
    - `blocked` - Waiting on dependencies
    - `in_meeting` - Resolving ambiguity
 
-   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them.
+   Default-seed assistants stay `idle` across ticks. They live on the department, not in `office-1.agents`, so `OfficeProcessor.process_office` does not process them. `in_meeting` is only set if a ticked agent already has a task with `ambiguity_score ≥ 0.5`. The tick does not call `hold_meeting()`.
 
 5. **Log** (the heading is **Log**, not “Event Log”): scrolling audit trail
 
@@ -216,8 +216,11 @@ get_supply_store().add_tool(cargo_tool)
 
 ### Create a Task
 
+`Task(...)` does **not** auto-register. Without `get_registry().register(task)`, `GET /api/tasks` stays empty. Default `task-001` is this trap.
+
 ```python
 from src.core.mission import Task, TaskState
+from src.core.entity import get_registry
 
 task = Task(
     "task-002",
@@ -226,8 +229,9 @@ task = Task(
     None,  # parent_directive_id
     None   # assigned_agent_id
 )
+get_registry().register(task)
 
-# Add criteria
+# Add criteria (no checker callable → check() stays False)
 task.add_precondition("API specification document exists")
 task.add_postcondition("Endpoint returns 201 on success")
 task.add_acceptance_criterion("Integration tests pass")
@@ -318,7 +322,7 @@ Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous eve
 - Check agent status: `curl http://localhost:5000/api/agents`
 - Default-seed assistants live on the **department**, not in `office-1.agents`. The tick loop does not process them
 - View audit log: `curl http://localhost:5000/api/audit/events`
-- Verify capabilities match task requirements
+- There is no default task to match. `GET /api/tasks` is empty. `auto_assign_tasks` is unread. Tool checkout does not compare agent capabilities
 
 ## Next Steps
 
@@ -329,6 +333,6 @@ Each event stores a SHA-256 of its own fields plus `prev_hash` (the previous eve
 ## Getting Help
 
 - Check the audit log for error events
-- Review agent capabilities and task requirements
+- Default seed has no registered task and does not auto-assign
 - Ensure all required roles are filled in departments
-- Verify tool availability in supply store
+- Verify tool availability in supply store (checkout does not match capabilities)

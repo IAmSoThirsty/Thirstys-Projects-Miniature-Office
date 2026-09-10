@@ -37,6 +37,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | Tamper-proof ledger | Hashing exists. HMAC is optional. |
 | Hardened Docker | CD `test-docker` green. World is in-memory. Dockerfile CMD is gunicorn `--workers 4` (four in-memory worlds). Workflow `chmod 777`s host dirs. |
 | Default tick processes department assistants | No. Assistants live on the department. `init_simulation()` never calls `Office.add_agent`, so `office-1.agents` is `[]`. `OfficeProcessor.process_office` walks `office.get_agents()` then `process_manager`. Independent `sim.step()`: all 11 `EntityType.AGENT` objects stay `idle`. JavaScript has no office. |
+| Default sample task / meetings / auto-assign | `task-001` is constructed, not `registry.register`'d, not assigned. `GET /api/tasks` is `[]`. Metrics **Tasks** is 0. Tick sets `in_meeting` and returns; it does not call `hold_meeting()`. `auto_assign_tasks` / `auto_resolve_meetings` are unread. Alice's `managed_agents` is `[]`. |
 
 ## Code generation pipeline
 
