@@ -246,13 +246,14 @@ while world.isActive:
 **REST Endpoints (subset of the 74):**
 - `GET /api` - JSON index. Names “Cognitive IDE”; does not list the 28 `/api/canonical-bundle*` routes
 - `GET /api/world/state` - **HTTP 500** until `/health` lazy-inits. After that: in-memory world (`is_running` is the START loop flag). `world.floors` is **2** (`floor-python` / `floor-javascript`); `office-1.roles` is `[]`
-- `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs
+- `GET /metrics` - **503** until lazy-init. HELP `minioffice_floors_total` counts `len(world.floors)` (**2**), not 28 `floors/` dirs. HELP `minioffice_audit_events_total` says “Total number of audit events” but sums 6 `EventType`s and **omits** `DIRECTIVE_CREATED` (**42** vs `GET /api/audit/events` **43**)
+- `GET /api/agents` - **HTTP 200** `{"agents": []}` until `/health`. After that: 11 `EntityType.AGENT`. Same empty-200 before init for `/api/departments`, `/api/supply-store`, `/api/audit/events`, `/api/tasks`
+- `GET /api/floors` - **28** `FloorSpecification` dataclasses (`get_all_floors()`), not `World.Floor`. Independent of `/health`. Python spec `requires_contracts_for` is **27** languages; default `EntityType.CONTRACT` is **0**
 - `POST /api/world/step` - Advance one tick
 - `POST /api/world/start` - Start continuous simulation
 - `POST /api/world/stop` - Stop simulation
-- `GET /api/agents` - List all agents
-- `GET /api/tasks` - List registered `Task` artifacts (default `[]`)
-- `GET /api/departments` - List departments
+- `GET /api/tasks` - List registered `Task` artifacts (default `[]`; HTTP 200 empty before `/health`)
+- `GET /api/departments` - List departments (HTTP 200 `[]` before `/health`; after init both report `is_fully_staffed: true`, including JavaScript which has no office)
 - `GET /api/supply-store` - Tool inventory
 - `GET /api/audit/events` - Audit trail
 - `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
