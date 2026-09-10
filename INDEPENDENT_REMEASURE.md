@@ -6,6 +6,35 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 23:31 UTC — observed main `a7f66bc` (pytest re-run; Consigliere assess returns ready_to_execute and does not execute)
+
+Independent clone of live main [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) (PR [#58](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/58), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Honesty PRs [#59](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/59)–[#66](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/66) remain open.
+
+Present-tense miss beyond #59–#66:
+
+1. `GET /api` labels `POST /api/consigliere/assess` “Assess feasibility of request”. Independent Flask test client after `/health`: `POST /api/consigliere/assess` `{"request":"ship a rust floor"}` returns HTTP 200 `feasible: true`, `status: "ready_to_execute"`, canned `approach: "Route to appropriate floor, allocate resources, coordinate execution"`, `estimated_resources: {agent_time: 15, manager_attention: 3}`. It does not add a rust floor (`world.floors` stays `floor-python` / `floor-javascript`). `GET /api/tasks` stays `[]`. Consigliere `draft_count` / `explanation_count` / `preview_count` / `translation_count` stay **0**. `GET /api/canonical-bundle/consigliere-logs` stays `total_interactions: 0`.
+2. The handler is a keyword check: any of `impossible` / `cannot` / `unable` in the request returns canned `feasible: false`. It does not inspect floors, agents, or resources. PR [#62](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/62) listed other Consigliere POSTs; **assess was not in that list**. PR [#64](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/64) covers canned freeze preview, not assess.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`a7f66bc`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/a7f66bc4ad80a1521c0dee155b9fc5ae49ef1ddc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| Assess “ship a rust floor” | `feasible: true` / `ready_to_execute`; no rust floor |
+| Assess keyword “impossible” | canned `feasible: false` |
+| Consigliere-logs after assess | **0** |
+| pytest | **1,573 passed**, 1 skipped, **12.69s** |
+| Coverage XML | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| Bandit `-ll` | 0 medium/high (13 low) |
+| pip-audit | clean |
+| CI | [34519739988](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519739988) succeeded |
+| CD | [34519740016](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34519740016) succeeded |
+
+Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19. Pin stays `fdd9762`. Production ready remains false.
+
 ## 10 September 2026 19:12 UTC — observed main `ef936f3` (pytest re-run; world/state 500; metrics floors_total is 2; charter JSON omits signature)
 
 Independent clone of live main [`ef936f3`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/ef936f3745101116e0ae8c334d8d70cad391caf1) (PR [#57](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/57), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on the identical tree (`e3d316e` / `ef936f3` src/tests).

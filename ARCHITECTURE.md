@@ -258,6 +258,7 @@ while world.isActive:
 - `GET /health` - liveness 200; body `"simulation"` is object-exists, not START
 - `GET /api/ide/*` - jailed workspace / editor / terminal (token-gated when `MO_IDE_TOKEN` is set)
 - `GET /api/consigliere` / `GET /api/security` / `GET /api/canonical-bundle*` - in-memory JSON views. Not UI chrome. Completeness / immutability / LOCKED are slot defaults, not evidence
+- `POST /api/consigliere/assess` - `GET /api` says “Assess feasibility of request”. Independent POST `"ship a rust floor"` returns `feasible: true` / `status: "ready_to_execute"` and does not execute. Keyword check only (`impossible` / `cannot` / `unable`)
 
 **WebSocket Events:**
 - `tick_start` - Tick begins (Flask-SocketIO emit from the worker that ran the tick)

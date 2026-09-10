@@ -50,6 +50,7 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | `GET /api/world/state` is always the running world | No. Before any lazy-init it is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits; `/api/world/state` / `/step` / `/start` / `/stop` do not. |
 | `GET /metrics` `floors_total` is 28 language floors | No. HELP text is “Total number of floors”. After `/health` lazy-init the value is `len(world.floors)` (**2**: `floor-python`, `floor-javascript`). 28 toy dirs live under `floors/`. Hitting `/metrics` first is **503**. |
 | Charter HTTP JSON includes `digital_signature` | No. Keys are `charter_id` / `version` / `issued_date` / `axioms` / `is_immutable` / `human_readable`. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `verify_signature` always returns True. |
+| `POST /api/consigliere/assess` assesses and is ready to execute | No. `GET /api` labels it “Assess feasibility of request”. Independent POST `"ship a rust floor"` returns `feasible: true` / `status: "ready_to_execute"` / a canned approach. It does not route, allocate, or execute. `world.floors` stays 2. `GET /api/tasks` stays `[]`. Consigliere-logs stay 0. The handler is a keyword check (`impossible` / `cannot` / `unable`). |
 
 ## Code generation pipeline
 
