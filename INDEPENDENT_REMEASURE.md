@@ -6,7 +6,46 @@
 
 Score remains **9 hold / 6 partial / 1 inflated / 3 false** of 19.
 
+## 10 September 2026 11:20 UTC — observed main `7542ad6` (pytest re-run)
+
+Independent clone of live main [`7542ad6`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/7542ad64de7c20d06e530c8f340d6e69d06893fc) (PR [#49](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/49), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `7542ad6` itself.
+
+Present-tense miss: [QUICKSTART.md](QUICKSTART.md) Example Workflow still said two departments, “each fully staffed with 5 required roles,” plus “one Manager per department.” `src/server/app.py` `init_simulation()` auto-spawns the five required roles (architect, builder, verifier, security, doc_agent) when a department is registered. Only the Python floor gets `office-1` and Manager Alice (`mgr-001`). The JavaScript floor has no office and no manager. `GET /api/agents` lists `EntityType.AGENT`; `Manager` subclasses `Agent` and registers as that type, so Alice appears in the list. [ARCHITECTURE.md](ARCHITECTURE.md) Layer 5 now records that seed.
+
+| Metric | Value |
+| --- | --- |
+| Observed main | [`7542ad6`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/7542ad64de7c20d06e530c8f340d6e69d06893fc) |
+| `src/**/*.py` files | 53 |
+| `src/` lines | 24,441 total / 19,058 non-comment |
+| `code_civilization.py` | 1,421 lines / 52,653 bytes |
+| `@app.route` in `src/` | 74 (67 in `app.py` + 7 IDE) |
+| Floor directories | 28, all toy-bannered |
+| `floors/sql/schema.sql` | present |
+| `codex/` directory | absent |
+| `k8s/` directory | absent |
+| Entity types / relations | 7 / 8 |
+| AST patterns / anti-patterns | 5 / 4 |
+| Anchored `def test_` in `tests/` | 1,606 |
+| Unanchored `def test_` in `tests/` | 1,608 |
+| Whole-repo unanchored `def test_` | 1,619 |
+| Pytest | **1,573 passed**, 1 skipped, **12.90s** |
+| Coverage XML `--cov=src` | **7,493 / 7,749** (96.70%); pin remains **7,494 / 7,749** (96.71%) |
+| `bandit -r src -ll` | 0 medium/high (13 low) |
+| `pip-audit -r requirements.txt` | clean |
+| PWA `manifest.json` + `sw.js` | present |
+| WebXR | absent |
+| LICENSE | Apache 2.0 |
+| Compose `SECRET_KEY` default | none |
+| `package.json` keywords | flask / prototype / agents / experimental |
+| Start scripts activate a venv | **no** (`python3 run.py` / `python run.py`) |
+| Default world managers | **1** (Python Alice only; not one per department) |
+| CI on `7542ad6` | [34418505373](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34418505373) succeeded |
+| CD on `7542ad6` | [34418505473](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/actions/runs/34418505473) succeeded |
+
+Headline metrics match the code pin. Pin stays `fdd9762`. Score stays **9/6/1/3 of 19**. Production ready remains false. Do not name a docs SHA as HEAD.
+
 ## 9 September 2026 23:45 UTC — observed main `d5de225` (pytest re-run)
+
 
 Independent clone of live main [`d5de225`](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/commit/d5de2256c2a5bdb4a85f6db11e0aab1c4e9a62e6) (PR [#48](https://github.com/IAmSoThirsty/Thirstys-Projects-Miniature-Office/pull/48), docs-only). `src/` tree `fafbad684ed9d61bd5fd347098276eeea4b911d3` and `tests/` tree `1ddf08f8a24d9003054c0a395e06c95470009fe0` match code pin `fdd9762`. Pytest ran on `d5de225` itself.
 

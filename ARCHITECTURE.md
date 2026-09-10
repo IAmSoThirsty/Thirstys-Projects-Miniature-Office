@@ -96,9 +96,16 @@ Scheduled → InReview → Blocked → Approval → Merged → Deployed
 
 ### Layer 5: Department Management (`src/departments/department.py`)
 
-Each floor has a department representing a language domain (Python, JavaScript, etc.).
+**Shipped module:**
+- `Department.get_missing_roles()` checks five required roles: architect, builder, verifier, security, doc_agent. **Manager is not required.**
+- `DepartmentRegistry.register_department()` calls `auto_spawn_assistants()` for those missing roles
+- Default Flask world (`init_simulation()` in `src/server/app.py`) seeds **Python and JavaScript** departments only. Python gets `office-1` and Manager Alice (`mgr-001`). JavaScript gets auto-spawned assistants, no office, no manager
+- The 28 toy `floors/` directories are not this in-memory world
 
-**Auto-staffing:** If any required role is missing, assistant agents are auto-spawned.
+**Intended, not implemented:** one office and one manager per language floor.
+
+Each floor *in the design* has a department representing a language domain.
+
 
 ### Layer 6: Tool & Supply Store (`src/tools/supply_store.py`)
 

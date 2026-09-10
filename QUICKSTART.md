@@ -94,21 +94,27 @@ curl "http://localhost:5000/api/audit/events?actor_id=mgr-001" | python3 -m json
 curl http://localhost:5000/api/departments
 ```
 
-You should see 2 departments (Python and JavaScript), each fully staffed with 5 required roles.
+You should see 2 departments (Python Development and Frontend Development). Each is auto-staffed with the **5 required roles** (architect, builder, verifier, security, doc_agent). Manager is **not** a required role.
 
 ### 2. View Auto-Spawned Agents
 ```bash
 curl http://localhost:5000/api/agents | python3 -m json.tool
 ```
 
-Notice the system automatically created assistant agents for missing roles:
+`GET /api/agents` lists `EntityType.AGENT`. The `Manager` class subclasses `Agent`, so Alice is in this list. The seed from `init_simulation()` is:
+
+- Python: 5 assistant agents plus **one** Manager (`mgr-001`, Alice Manager) on `office-1`
+- JavaScript: 5 assistant agents, **no** manager, **no** office
+
+There is not one Manager per department.
+
+Assistant names look like:
 - Assistant Architect
 - Assistant Builder
 - Assistant Verifier
 - Assistant Security
 - Assistant DocAgent
 
-Plus one Manager per department.
 
 ### 3. Run Simulation Steps
 ```bash
@@ -148,12 +154,15 @@ World: "Miniature Office IDE"
 │   ├── Department: Python Development
 │   └── Office: office-1
 │       ├── Manager: Alice Manager
-│       └── Agents: 5 assistant agents (one per role)
+│       └── Agents: 5 assistant agents (one per required role)
 └── Floor: JavaScript
     ├── Department: Frontend Development
-    └── Offices: (can be added)
-        └── Agents: 5 assistant agents
+    └── (no office, no manager)
+        └── Agents: 5 assistant agents on the department
 ```
+
+The 28 toy language-floor directories under `floors/` are **not** seeded into this default world.
+
 
 ## Creating Custom Content
 
@@ -219,15 +228,17 @@ task.add_acceptance_criterion("Documentation updated")
 ### Assign Task to Agent
 
 ```python
-from src.core.entity import get_registry
+from src.core.entity import EntityType, get_registry
+from src.agents.agent import AgentRole
 
 # Get an idle builder agent
 agents = get_registry().get_by_type(EntityType.AGENT)
-builder = next((a for a in agents if a.role.value == 'builder' and a.status == 'idle'), None)
+builder = next((a for a in agents if getattr(a, "role", None) == AgentRole.BUILDER and a.status == 'idle'), None)
 
 if builder:
     builder.assign_task(task)
 ```
+
 
 ## Monitoring & Debugging
 
