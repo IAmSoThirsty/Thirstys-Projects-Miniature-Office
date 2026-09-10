@@ -50,6 +50,10 @@ Do not treat `IMPLEMENTATION_COMPLETE*.md`, `PRODUCTION_READY.md`, or `MAXIMUM_A
 | `GET /api/world/state` is always the running world | No. Before any lazy-init it is **HTTP 500** `{"error": "Simulation not initialized"}`. `/health` lazy-inits; `/api/world/state` / `/step` / `/start` / `/stop` do not. |
 | `GET /metrics` `floors_total` is 28 language floors | No. HELP text is “Total number of floors”. After `/health` lazy-init the value is `len(world.floors)` (**2**: `floor-python`, `floor-javascript`). 28 toy dirs live under `floors/`. Hitting `/metrics` first is **503**. |
 | Charter HTTP JSON includes `digital_signature` | No. Keys are `charter_id` / `version` / `issued_date` / `axioms` / `is_immutable` / `human_readable`. The `sha256(b"charter-001")` hex appears only inside `human_readable`. `verify_signature` always returns True. |
+| QUICKSTART curls of `/api/world/state` work on a fresh process | No. `GET /api/world/state` / `POST /step` / `/start` / `/stop` are **HTTP 500** until `/health` lazy-inits. `/api/agents`, `/api/departments`, `/api/supply-store`, `/api/audit/events` are empty **200**s until then. `/api/ide/health` does not init the simulation. |
+| `GET /api/floors` is the running office | No. It is 28 `FloorSpecification` dataclasses. Rust spec says “Clippy linting enforced” and “Miri validation for unsafe code”. Python spec says “PEP 8 compliance”. `world.floors` is **2**. There is no Clippy/Miri/PEP8 runner. |
+| `minioffice_audit_events_total` is the audit log | No. HELP says “Total number of audit events”. After `/health` the value is **42**. `GET /api/audit/events` and `GET /api/ide/health` `audit_events` are **43**. Metrics sums 6 `EventType`s and omits `directive_created`. |
+| Canonical-bundle metrics-canon is measured completeness | No. `GET /api/canonical-bundle/metrics-canon` `completeness_metrics` strings are “All directive requirements addressed” / “Complete audit trail exists” / “Full documentation provided”. Default `GET /api/tasks` is `[]`; `simulation-traces` `total_traces` is **0**; `GET /api/contracts` is `[]`. |
 
 ## Code generation pipeline
 
